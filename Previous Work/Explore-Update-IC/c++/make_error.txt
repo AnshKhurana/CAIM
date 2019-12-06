@@ -1,0 +1,17 @@
+make: *** [main] Error 1
+r/include/strings.h:23:0,
+                 from /usr/include/string.h:431,
+                 from /usr/include/c++/7/cstring:42,
+                 from /usr/include/boost/functional/hash/detail/hash_float.hpp:21,
+                 from /usr/include/boost/functional/hash/hash.hpp:21,
+                 from /usr/include/boost/functional/hash.hpp:6,
+                 from /usr/include/boost/unordered/unordered_set.hpp:18,
+                 from /usr/include/boost/unordered_set.hpp:17,
+                 from /usr/include/boost/graph/adjacency_list.hpp:21,
+                 from ./main.cpp:2:
+./main.cpp:710:20: note:   ‘std::ifstream {aka std::basic_ifstream<char>}’ is not derived from ‘const std::unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>’
+        if (infile==NULL){
+                    ^
+p, _CharT, _Traits, _Dist>&)
+     operator==(const istream_iterator<_Tp, _CharT, _Traits, _Dist>& __x,
+     ^~~~~~~~

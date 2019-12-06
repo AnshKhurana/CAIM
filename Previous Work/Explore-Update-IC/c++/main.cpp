@@ -78,8 +78,7 @@ void print_size(DiGraph G) {
 DiGraph read_graph(string graph_filename) {
     cout << graph_filename << endl;
     ifstream infile(graph_filename);
-    // if (infile==NULL){
-        if (! infile.is_open()){
+    if (infile==NULL){
         cout << "Unable to open the input file\n";
     }
 
@@ -115,8 +114,7 @@ void read_features(string feature_filename, DiGraph G, unordered_map<int, vector
 
 
     ifstream infile(feature_filename);
-    // if (infile==NULL){
-        if (! infile.is_open()){
+    if (infile==NULL){
         cout << "Unable to open the input file\n";
     }
     while(getline(infile, line)) {
@@ -138,9 +136,7 @@ void read_features(string feature_filename, DiGraph G, unordered_map<int, vector
 
 void read_probabilities(string prob_filename, edge_prob &P) {
     ifstream infile(prob_filename);
-    // if (infile==NULL){
-        if (! infile.is_open()){
-
+    if (infile==NULL){
         cout << "Unable to open the input file\n";
     }
     int u, v;
@@ -153,8 +149,7 @@ void read_probabilities(string prob_filename, edge_prob &P) {
 void read_probabilities2 (string prob_filename, vector<pair<int, int> > &order, vector<double> &P) {
     vector<vector<double> > edges;
     ifstream infile(prob_filename);
-    // if (infile==NULL){
-        if (! infile.is_open()){
+    if (infile==NULL){
         cout << "Unable to open the input file\n";
     }
     double u, v, p;
@@ -172,8 +167,7 @@ void read_probabilities2 (string prob_filename, vector<pair<int, int> > &order, 
 
 void read_groups(string group_filename, unordered_map<int, unordered_set<int> > &groups) {
     ifstream infile(group_filename);
-    // if (infile==NULL){
-        if (! infile.is_open()){
+    if (infile==NULL){
         cout << "Unable to open the input file\n";
     }
     string line;
@@ -191,8 +185,7 @@ void read_groups(string group_filename, unordered_map<int, unordered_set<int> > 
 
 void read_seeds(string seeds_filename, unordered_set<int> &S, int length) {
     ifstream infile(seeds_filename);
-    // if (infile==NULL){
-        if (! infile.is_open()){
+    if (infile==NULL){
         cout << "Unable to open the input file\n";
     }
     int node, i=0;
@@ -713,9 +706,8 @@ int main(int argc, char* argv[]) {
         cout << "Got parameters..." << endl;
         string setup_file = argv[1];
         cout << setup_file << endl;
-        ifstream infile(setup_file);
-    //    if (infile==NULL){
-        if (! infile.is_open()){
+       ifstream infile(setup_file);
+       if (infile==NULL){
            cout << "Unable to open the input file\n";
        }
 
