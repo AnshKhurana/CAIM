@@ -339,6 +339,56 @@ def get_pi(G, Ain, S):
         Pi.update(G.out_edges(u))
     return Pi
 
+def explore_update_beam(G, B, Q, S, K, Ef, theta, BEAM_WIDTH=3):
+    """
+    Explore-Update algorithm which uses beam search.
+    :param G: networkx graph
+    :param B: dataframe base probabilities
+    :param Q: dataframe product probabilities
+    :param S: list of seed set
+    :param K: integer of number of required features
+    :param Ef: dictionary of feature to edges
+    :param theta: float threshold parameter
+    :return F: list of selected features
+    """
+
+    P = B.copy() # initialize edge probabilities
+
+    Ain = explore(G, P, S, theta)
+    Pi = get_pi(G, Ain, S)
+
+    F = []
+    Phi = set(Ef.keys())
+
+    count = 0
+    while len(F) < K:
+        print('|F| = {}'.format(len(F)))
+        max_feature = None
+        max_spread = -1
+        for f in Phi.difference(F):
+            e_intersection = Pi.intersection(Ef[f])
+            if e_intersection:
+                changed = increase_probabilities(G, B, Q, F + [f], Ef[f], P)
+                Ain = explore(G, P, S, theta)
+                spread = update(Ain, S, P)
+                if spread > max_spread:
+                    max_spread = spread
+                    max_feature = f
+                decrease_probabilities(changed, P)
+            else:
+                count += 1
+        if max_feature:
+            F.append(max_feature)
+            increase_probabilities(G, B, Q, F, Ef[max_feature], P)
+            Ain = explore(G, P, S, theta)
+            Pi = get_pi(G, Ain, S)
+        else:
+            #raise ValueError, 'Not found max_feature. F: {}'.format(F)
+            raise Exception(ValueError, 'Not found max_feature. F: {}'.format(F))
+    return F
+
+
+
 def explore_update(G, B, Q, S, K, Ef, theta):
     """
     Explore-Update algorithm.
