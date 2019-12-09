@@ -4,6 +4,7 @@ from __future__ import division
 import networkx as nx
 import pandas as pd
 import time
+import heapq
 import random
 import math
 from collections import Counter
@@ -102,7 +103,7 @@ def increase_probabilities(G, B, Q, F, E, P):
     :param E: edges that require update
     :param K: number of required features
     :param P: final probabilities on edges (updated only Ef)
-    :return:
+    :return:  previous probabilities of changed edges
     """
     changed = dict() # changed edges and its previous probabilities
     for e in E:
@@ -152,27 +153,51 @@ def calculate_MC_spread(G, S, P, I):
     return spread/I
 
 def greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3):
+    """
+    Return best features to PIMUS problem using greedy algorithm.
+    :param G: networkx graph
+    :param B: dataframe of base probabilities
+    :param Q: dataframe of product probabilities
+    :param Ef: dictionary feature -> edges
+    :param S: list of seed set
+    :param Phi: set of all features
+    :param K: integer of number of required features
+    :param I: integer number of Monte-Carlo simulations
+    :param BEAM_WIDTH: beam width
+    :return: F: list of K best features
+    """
+    print('Beam width: ', BEAM_WIDTH)
     P = B.copy()
     F = []
     best_beam = []
+    best_beam = heapq.heapify(best_beam)
     candidates = [] # list of pairs (F, val) for choosing the best 3
+    candidates = heapq.heapify(candidates)
+    # Since py heaps do not support max heaps, we use negative spread values to order the candidates
     influence = dict()
     t = 0
+    max_spread = +1 # Negative values
     while t < K:
-        for F in best_beam:
-            max_spread = -1 # iterative calculation of the maximum value
+        candidates = []
+        for val, F in best_beam:
             print '|F| = {}'.format(len(F))
+            P = B.copy()
+            increase_probabilities(G, B, Q, F, Ef, P) # restore prob values to having set F
             for f in Phi.difference(F):
-                changed = increase_probabilities(G, B, Q, F + [f], Ef[f], P)
+                changed = increase_probabilities(G, B, Q, F + [f], Ef[f], P) 
                 spread = calculate_MC_spread(G, S, P, I)
-                if spread > max_spread:
-                    max_spread = spread
-                    max_feature = f
-                decrease_probabilities(changed, P)
-            t += 1
-            F.append(max_feature) # length always increases by 1
-            influence[len(F)] = max_spread
-            increase_probabilities(G, B, Q, F + [max_feature], Ef[max_feature], P)
+                # if spread > max_spread:
+                #     max_spread = spread
+                #     max_feature = f
+                decrease_probabilities(changed, P) # get back to old prob
+                heapq.push(candidates, ((-1*spread, F.append(f))))
+        # got all candidates now take best beam
+        best_beam = candidates[:BEAM_WIDTH].copy()
+        t+=1
+        # Now we have BEAM_WIDTH top elements for the next round
+    
+    negSpread, F = best_beam[0]    
+    influence = -negSpread
     return F, influence
 
 # F = greedy(G, B, Q, Ef, S, K, theta) # can be also greedy, top-edges, top-nodes, etc.
@@ -436,7 +461,7 @@ if __name__ == "__main__":
     print('Selecting features')
     start = time.time()
     # F = greedy(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
-    F = greedy(G, B, Q, Ef, S, Phi, K, I)
+    F = greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3)
     finish = time.time()
     print('Selected F:', F)
     print('Time:', finish - start)
