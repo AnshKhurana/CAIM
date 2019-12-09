@@ -9,7 +9,7 @@ import math
 from collections import Counter
 from itertools import chain, combinations
 
-def read_graph(filename, directed=True, sep=' ', header = None):
+def read_graph_OLD(filename, directed=True, sep=' ', header = None):
     """
     Create networkx graph using pandas.
     :param filename: every line (u, v)
@@ -22,15 +22,15 @@ def read_graph(filename, directed=True, sep=' ', header = None):
         G = nx.from_pandas_dataframe(df, 0, 1, create_using=nx.DiGraph())
     else:
         G = nx.from_pandas_dataframe(df, 0, 1)
-    print 'Read graph'
+    print('Read graph')
     return G
 
-def read_graph2(filename, directed=False):
+def read_graph(filename, directed=True):
     """
     Create networkx graph reading file.
     :param filename: every line (u, v)
     :param directed: boolean
-    :return:
+    :return: G
     """
     if not directed:
         G = nx.Graph()
@@ -40,7 +40,7 @@ def read_graph2(filename, directed=False):
         for line in f:
             d = line.split()
             G.add_edge(int(d[0]), int(d[1]))
-    print 'Read Graph'
+    print('Read Graph')
     return G
 
 def add_graph_attributes(G, filename):
@@ -60,9 +60,10 @@ def add_graph_attributes(G, filename):
             features = d[1:]
             for f in features:
                 Ef.setdefault(f, []).extend(G.in_edges(u)) # add feature-dependent edges
-            G.node[u]['Fu'] = features
+            #G.node[u]['Fu'] = features
+            G.nodes[u]['Fu'] = features
             Nf[u] = features
-    print 'Read graph attributes'
+    print('Read graph attributes')
     return Ef, Nf
 
 def read_probabilities(filename, sep=' '):
@@ -73,7 +74,7 @@ def read_probabilities(filename, sep=' '):
     :return:
     """
     df = pd.read_csv(filename, sep=sep, header = None)
-    print 'Read probabilities'
+    print('Read probabilities')
     return df.set_index([0, 1])
 
 def read_groups(filename):
@@ -88,7 +89,7 @@ def read_groups(filename):
             d = line.split()
             members = map(int, d[1:])
             groups[d[0]] = members
-    print 'Read groups'
+    print('Read groups')
     return groups
 
 def increase_probabilities(G, B, Q, F, E, P):
@@ -174,6 +175,7 @@ def greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3):
             increase_probabilities(G, B, Q, F + [max_feature], Ef[max_feature], P)
     return F, influence
 
+# F = greedy(G, B, Q, Ef, S, K, theta) # can be also greedy, top-edges, top-nodes, etc.
 
 def greedy(G, B, Q, Ef, S, Phi, K, I):
     """
@@ -193,7 +195,7 @@ def greedy(G, B, Q, Ef, S, Phi, K, I):
     influence = dict()
     while len(F) < K:
         max_spread = -1
-        print '|F| = {}'.format(len(F))
+        print('|F| = {}'.format(len(F)))
         for f in Phi.difference(F):
             changed = increase_probabilities(G, B, Q, F + [f], Ef[f], P)
             spread = calculate_MC_spread(G, S, P, I)
@@ -321,7 +323,7 @@ def explore_update(G, B, Q, S, K, Ef, theta):
 
     count = 0
     while len(F) < K:
-        print '|F| = {}'.format(len(F))
+        print('|F| = {}'.format(len(F)))
         max_feature = None
         max_spread = -1
         for f in Phi.difference(F):
@@ -342,7 +344,8 @@ def explore_update(G, B, Q, S, K, Ef, theta):
             Ain = explore(G, P, S, theta)
             Pi = get_pi(G, Ain, S)
         else:
-            raise ValueError, 'Not found max_feature. F: {}'.format(F)
+            #raise ValueError, 'Not found max_feature. F: {}'.format(F)
+            raise Exception(ValueError, 'Not found max_feature. F: {}'.format(F))
     return F
 
 def calculate_spread(G, B, Q, S, F, Ef, I):
@@ -394,7 +397,8 @@ def top_edges(Ef, K):
     :param K: number of required features
     :return: list of Top-Edges features
     """
-    return map(lambda (k, v): k, sorted(Ef.items(), key= lambda (k, v): len(v), reverse=True)[:K])
+    #return map(lambda (k, v): k, sorted(Ef.items(), key= lambda (k, v): len(v), reverse=True)[:K])
+    return map(lambda k, v: k, sorted(Ef.items(), key= lambda k, v: len(v), reverse=True)[:K])
 
 def top_nodes(Nf, K):
     """ Return features based on the edges.
@@ -402,34 +406,43 @@ def top_nodes(Nf, K):
     :param K: number of required features
     :return: list of Top-Nodes features
     """
-    return map(lambda (k, v): k, Counter(chain.from_iterable(Nf.values())).most_common(K))
+    #return map(lambda (k, v): k, Counter(chain.from_iterable(Nf.values())).most_common(K))
+    return map(lambda k, v: k, Counter(chain.from_iterable(Nf.values())).most_common(K))
 
 if __name__ == "__main__":
 
     model = "mv"
 
-    G = read_graph('datasets/gnutella.txt')
-    Ef, Nf = add_graph_attributes(G, 'datasets/gnutella_mem.txt')
+    #G = read_graph('datasets/gnutella.txt')
+    G = read_graph('../datasets/gnutella/gnutella.txt')
+    #Ef, Nf = add_graph_attributes(G, 'datasets/gnutella_mem.txt')
+    Ef, Nf = add_graph_attributes(G, '../datasets/gnutella/gnutella_mem.txt')
+
     Phi = set(Ef.keys())
 
-    B = read_probabilities('datasets/gnutella_{}.txt'.format(model))
-    Q = read_probabilities('datasets/gnutella_{}.txt'.format(model))
+    #B = read_probabilities('datasets/gnutella_{}.txt'.format(model))
+    B = read_probabilities('../datasets/gnutella/gnutella_{}.txt'.format(model))
+    #Q = read_probabilities('datasets/gnutella_{}.txt'.format(model))
+    Q = read_probabilities('../datasets/gnutella/gnutella_{}.txt'.format(model))
 
-    groups = read_groups('datasets/gnutella_com.txt')
+    #groups = read_groups('datasets/gnutella_com.txt')
+    groups = read_groups('../datasets/gnutella/gnutella_com.txt')
 
     S = groups['9'] # select some group as a seed set
     K = 10
     theta = 1./40
-
-    print 'Selecting features'
-    start = time.time()
-    F = explore_update(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
-    finish = time.time()
-    print 'Selected F:', F
-    print 'Time:', finish - start
-
     I = 1000 # number of Monte-Carlo simulations
+
+    print('Selecting features')
+    start = time.time()
+    # F = greedy(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
+    F = greedy(G, B, Q, Ef, S, Phi, K, I)
+    finish = time.time()
+    print('Selected F:', F)
+    print('Time:', finish - start)
+
+    
     spread = calculate_spread(G, B, Q, S, F, Ef, I)
-    print 'Spread:', spread
+    print('Spread:', spread)
 
     console = []

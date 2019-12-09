@@ -1,0 +1,8 @@
+../datasets/vk/vk_small.txt
+../datasets/vk/vk_wc.txt
+../datasets/vk/vk_mem.txt
+../datasets/vk/vk_com.txt
+../datasets/vk/vk_seeds.txt
+0
+3
+100

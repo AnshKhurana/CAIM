@@ -9,7 +9,7 @@ To run code, first specify input parameters in **setup.txt** in the following or
 - memberships file
 - communities file
 - seeds file
-- the number of a group, which will be a seed set (in case, you want seeds to be one of the groups from communities file; keep it anyway, even you provide seeds file)
+- the number of a group, which will be a seed set (in case, you want seeds to be one of the groups from communities file; keep it anyway, even you provide seeds file) - specify a particular group to be the seedset.
 - number of features required, i.e. K
 - number of Monte-Carlo simulations
 

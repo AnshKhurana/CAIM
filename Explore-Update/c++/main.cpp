@@ -13,7 +13,7 @@
 
 using namespace std;
 
-struct vertex_info {int label;};
+struct vertex_info {int label;}; // also have vertex thresholds?
 
 typedef boost::adjacency_list <boost::vecS, boost::vecS, boost::bidirectionalS> DiGraph;
 typedef boost::adjacency_list <boost::vecS, boost::vecS, boost::bidirectionalS, vertex_info> SubGraph;
@@ -719,11 +719,11 @@ int main(int argc, char* argv[]) {
            cout << "Unable to open the input file\n";
        }
 
-       getline(infile, dataset_file);
-       getline(infile, probs_file);
-       getline(infile, features_file);
-       getline(infile, groups_file);
-       getline(infile, seeds_file);
+       getline(infile, dataset_file); // vk.txt
+       getline(infile, probs_file); // vk_wc.txt
+       getline(infile, features_file); // vk_mem.txt
+       getline(infile, groups_file); // vk_com.txt
+       getline(infile, seeds_file); // vk_seeds.txt
 
        string line;
        getline(infile, line);
