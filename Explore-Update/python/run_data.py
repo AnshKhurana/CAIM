@@ -177,6 +177,19 @@ def greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3):
     influence = dict()
     t = 0
     max_spread = +1 # Negative values
+    print '|F| = {}'.format(len(F))
+    P = B.copy()
+    for f in Phi.difference(F):
+        changed = increase_probabilities(G, B, Q, F + [f], Ef[f], P) 
+        spread = calculate_MC_spread(G, S, P, I)
+        # if spread > max_spread:
+        #     max_spread = spread
+        #     max_feature = f
+        decrease_probabilities(changed, P) # get back to old prob
+        heapq.push(candidates, ((-1*spread, F.append(f))))
+# got all candidates now take best beam
+    best_beam = candidates[:BEAM_WIDTH].copy()
+    t+=1
     while t < K:
         candidates = []
         for val, F in best_beam:
