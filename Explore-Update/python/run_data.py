@@ -360,31 +360,51 @@ def explore_update_beam(G, B, Q, S, K, Ef, theta, BEAM_WIDTH=3):
     F = []
     Phi = set(Ef.keys())
 
-    count = 0
-    while len(F) < K:
-        print('|F| = {}'.format(len(F)))
-        max_feature = None
-        max_spread = -1
-        for f in Phi.difference(F):
-            e_intersection = Pi.intersection(Ef[f])
-            if e_intersection:
-                changed = increase_probabilities(G, B, Q, F + [f], Ef[f], P)
-                Ain = explore(G, P, S, theta)
-                spread = update(Ain, S, P)
-                if spread > max_spread:
-                    max_spread = spread
-                    max_feature = f
-                decrease_probabilities(changed, P)
-            else:
-                count += 1
-        if max_feature:
-            F.append(max_feature)
-            increase_probabilities(G, B, Q, F, Ef[max_feature], P)
+    best_beam = [] # script F
+    candidates = []
+
+    t = 1
+    count = 0 # What is count?
+
+    for f in Phi.difference(F):
+        e_intersection = Pi.intersection(Ef[f])
+        if e_intersection:
+            changed = increase_probabilities(G, B, Q, F + [f], Ef[f], P)
             Ain = explore(G, P, S, theta)
-            Pi = get_pi(G, Ain, S)
+            spread = update(Ain, S, P)
+            decrease_probabilities(changed, P)
+            candidates.append((-1*spread, F+[f]))
         else:
-            #raise ValueError, 'Not found max_feature. F: {}'.format(F)
-            raise Exception(ValueError, 'Not found max_feature. F: {}'.format(F))
+            count += 1
+    
+    
+    heapq.heapify(candidates)
+
+    try:
+        best_beam = candidates[:BEAM_WIDTH]
+    except:
+        print "Beam width too high"
+
+    while t < K:
+
+        print('|F| = {}'.format(t))
+        for val, F in best_beam:
+            P = B.copy()
+            candidates = []
+            for f in Phi.difference(F):
+                e_intersection = Pi.intersection(Ef[f])
+                if e_intersection:
+                    changed = increase_probabilities(G, B, Q, F + [f], Ef[f], P)
+                    Ain = explore(G, P, S, theta)
+                    spread = update(Ain, S, P)
+                    heapq.heappush(candidates, (-1 * spread, F + [f]))
+                    decrease_probabilities(changed, P)
+                else:
+                    count += 1    
+            best_beam = copy(candidates[:BEAM_WIDTH])
+        t+=1
+    F = best_beam[0][1]
+    print(best_beam)
     return F
 
 
@@ -421,6 +441,7 @@ def explore_update(G, B, Q, S, K, Ef, theta):
                 Ain = explore(G, P, S, theta)
                 spread = update(Ain, S, P)
                 if spread > max_spread:
+                    print(spread)
                     max_spread = spread
                     max_feature = f
                 decrease_probabilities(changed, P)
@@ -652,14 +673,15 @@ def run_toy():
     # VK PARAMETERS
     # print(type(groups), groups.keys())
     S = groups['39545549']
-    K = 21    
+    K = 3    
     theta = 1./40
-    I = 1000
+    I = 10000
 
     print('Selecting features')
     start = time.time()
     # F = greedy(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
-    F = greedy(G, B, Q, Ef, S, Phi, K, I)
+    # F = greedy(G, B, Q, Ef, S, Phi, K, I)
+    F = explore_update(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
     # F = greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3)
     finish = time.time()
     print('Selected F:', F)

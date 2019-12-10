@@ -1,0 +1,59 @@
+***py_eu on Toy dataset F = 21
+
+G = read_graph('../datasets/toy/edge_list.txt')
+Ef, Nf = add_graph_attributes(G, '../datasets/toy/mem.txt')
+
+Phi = set(Ef.keys())
+
+B = read_probabilities('../datasets/toy/edge_weights.txt')
+Q = read_probabilities('../datasets/toy/edge_weights.txt')
+
+
+groups = read_groups('../datasets/toy/com.txt')
+
+
+Spread value = 6.9391
+# Nodes = 100
+# Selected Features = 21
+theta = 1./40 
+I = 10000
+
+('Selected F:', ['26', '5227', '52630202', '13326719', '25678227', '662196', '34129360', '24230705', '35323770', '24226428', '26438876', '37231453', '318936', '30637940', '82476651', '49466225', '22736114', '18537646', '20878405', '63273', '56'])
+('Time:', 1718.4231779575348)
+('Spread:', 6.9391)
+
+***py_eu_BEAM on Toy dataset F = 3
+
+Read Graph
+Read graph attributes
+Read probabilities
+Read probabilities
+Read groups
+Selecting features
+|F| = 1
+|F| = 2
+('Selected F:', ['52630202', '13326719', '34129360'])
+('Time:', 494.1838948726654)
+('Spread:', 6.2523)
+(caimpy2) konstantinost@dbserve
+
+
+
+***py_eu on Toy dataset F = 3
+
+Read Graph
+Read graph attributes
+Read probabilities
+Read probabilities
+Read groups
+Selecting features
+|F| = 1
+|F| = 2
+('Selected F:', ['52630202', '13326719', '34129360'])
+('Time:', 494.1838948726654)
+
+('Spread:', 6.3197)
+('Spread:', 6.3255)
+
+
+

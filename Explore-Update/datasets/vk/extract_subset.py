@@ -2,8 +2,8 @@
 import os
 
 src = "./"
-dst = "../toy/"
-N = 100
+dst = "../very_small/"
+N = 30
 
 def gen_mem():
     with open(os.path.join(src, "vk_mem.txt"), 'r') as fin:
@@ -28,8 +28,8 @@ def gen_com():
                 line = fin.readline()
 
 def gen_edge_list():
-    with open(os.path.join(src, "vk_" + model + ".txt")) as fin:
-        with open(os.path.join(dst, "edge_weights.txt"), 'w') as fout:
+    with open(os.path.join(src, "vk.txt")) as fin:
+        with open(os.path.join(dst, "edge_list.txt"), 'w') as fout:
             line = fin.readline()
             while line:
                 x = [int(a) for a in line.strip().split()[:2]]
@@ -38,8 +38,7 @@ def gen_edge_list():
                 line = fin.readline()
 
 
-def gen_wts(model="wc"):
-
+def gen_wts(model = "wc"):
     with open(os.path.join(src, "vk_" + model + ".txt")) as fin:
         with open(os.path.join(dst, "edge_weights.txt"), 'w') as fout:
             line = fin.readline()
@@ -59,4 +58,7 @@ def gen_seeds():
                 line = fin.readline() 
 
 if __name__ == "__main__":
-    gen_seeds()
+    gen_edge_list()
+    gen_wts()
+    gen_com()
+
