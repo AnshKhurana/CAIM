@@ -1,6 +1,7 @@
 # author: sivanov
 # date: 27 Oct 2015
 from __future__ import division
+from copy import copy
 import networkx as nx
 import pandas as pd
 import time
@@ -170,9 +171,8 @@ def greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3):
     P = B.copy()
     F = []
     best_beam = []
-    best_beam = heapq.heapify(best_beam)
     candidates = [] # list of pairs (F, val) for choosing the best 3
-    candidates = heapq.heapify(candidates)
+
     # Since py heaps do not support max heaps, we use negative spread values to order the candidates
     influence = dict()
     t = 0
@@ -186,7 +186,7 @@ def greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3):
         #     max_spread = spread
         #     max_feature = f
         decrease_probabilities(changed, P) # get back to old prob
-        heapq.push(candidates, ((-1*spread, F.append(f))))
+        heapq.heappush(candidates, ((-1*spread, F.append(f))))
 # got all candidates now take best beam
     best_beam = candidates[:BEAM_WIDTH].copy()
     t+=1
@@ -203,9 +203,9 @@ def greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3):
                 #     max_spread = spread
                 #     max_feature = f
                 decrease_probabilities(changed, P) # get back to old prob
-                heapq.push(candidates, ((-1*spread, F.append(f))))
+                heapq.heappush(candidates, ((-1*spread, F.append(f))))
         # got all candidates now take best beam
-        best_beam = candidates[:BEAM_WIDTH].copy()
+        best_beam = copy(candidates[:BEAM_WIDTH])
         t+=1
         # Now we have BEAM_WIDTH top elements for the next round
     
@@ -497,24 +497,16 @@ def top_nodes(Nf, K):
     #return map(lambda (k, v): k, Counter(chain.from_iterable(Nf.values())).most_common(K))
     return map(lambda k, v: k, Counter(chain.from_iterable(Nf.values())).most_common(K))
 
-if __name__ == "__main__":
+def run_gnutella():
 
     model = "mv"
-
-    #G = read_graph('datasets/gnutella.txt')
-    G = read_graph('../datasets/gnutella/gnutella.txt')
-    #Ef, Nf = add_graph_attributes(G, 'datasets/gnutella_mem.txt')
-    Ef, Nf = add_graph_attributes(G, '../datasets/gnutella/gnutella_mem.txt')
-
+    G = read_graph('datasets/gnutella/gnutella.txt')
+    Ef, Nf = add_graph_attributes(G, 'datasets/gnutella/gnutella_mem.txt')
     Phi = set(Ef.keys())
+    B = read_probabilities('datasets/gnutella/gnutella_{}.txt'.format(model))
+    Q = read_probabilities('datasets/gnutella/gnutella_{}.txt'.format(model))
+    groups = read_groups('datasets/gnutella/gnutella_com.txt')
 
-    #B = read_probabilities('datasets/gnutella_{}.txt'.format(model))
-    B = read_probabilities('../datasets/gnutella/gnutella_{}.txt'.format(model))
-    #Q = read_probabilities('datasets/gnutella_{}.txt'.format(model))
-    Q = read_probabilities('../datasets/gnutella/gnutella_{}.txt'.format(model))
-
-    #groups = read_groups('datasets/gnutella_com.txt')
-    groups = read_groups('../datasets/gnutella/gnutella_com.txt')
 
     S = groups['9'] # select some group as a seed set
     K = 10
@@ -534,3 +526,151 @@ if __name__ == "__main__":
     print('Spread:', spread)
 
     console = []
+
+def run_vk():
+
+    # model = "mv"
+    model = "wc"
+
+    #G = read_graph('datasets/gnutella.txt')
+    # 
+    # G = read_graph('../datasets/vk/vk.txt')
+    
+    G = read_graph('../datasets/vk/vk_small.txt')
+
+    #Ef, Nf = add_graph_attributes(G, 'datasets/gnutella_mem.txt')
+    Ef, Nf = add_graph_attributes(G, '../datasets/vk/vk_mem.txt')
+
+    Phi = set(Ef.keys())
+
+    #B = read_probabilities('datasets/gnutella_{}.txt'.format(model))
+    B = read_probabilities('../datasets/vk/vk_{}.txt'.format(model))
+    #Q = read_probabilities('datasets/gnutella_{}.txt'.format(model))
+    Q = read_probabilities('../datasets/vk/vk_{}.txt'.format(model))
+
+    #groups = read_groups('datasets/gnutella_com.txt')
+    groups = read_groups('../datasets/vk/vk_com.txt')
+
+    # GNUTELLA PARAMETERS
+    # S = groups['9'] # select some group as a seed set
+    # K = 10
+    # theta = 1./40
+    # I = 1000 # number of Monte-Carlo simulations
+
+
+    # VK PARAMETERS
+    # print(type(groups), groups.keys())
+    S = groups['31598870']
+    K = 51    
+    theta = 1./40
+    I = 10000
+
+    print('Selecting features')
+    start = time.time()
+    # F = greedy(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
+    F = greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3)
+    finish = time.time()
+    print('Selected F:', F)
+    print('Time:', finish - start)
+
+    
+    spread = calculate_spread(G, B, Q, S, F, Ef, I)
+    print('Spread:', spread)
+
+    console = []
+
+def run_vk_small():
+    model = "wc"
+
+    #G = read_graph('datasets/gnutella.txt')
+    # 
+    # G = read_graph('../datasets/vk/vk.txt')
+    
+    G = read_graph('../datasets/vk/vk_small.txt')
+
+    #Ef, Nf = add_graph_attributes(G, 'datasets/gnutella_mem.txt')
+    Ef, Nf = add_graph_attributes(G, '../datasets/vk/vk_mem.txt')
+
+    Phi = set(Ef.keys())
+
+    #B = read_probabilities('datasets/gnutella_{}.txt'.format(model))
+    B = read_probabilities('../datasets/vk/vk_{}.txt'.format(model))
+    #Q = read_probabilities('datasets/gnutella_{}.txt'.format(model))
+    Q = read_probabilities('../datasets/vk/vk_{}.txt'.format(model))
+
+    #groups = read_groups('datasets/gnutella_com.txt')
+    groups = read_groups('../datasets/vk/vk_com.txt')
+
+    # GNUTELLA PARAMETERS
+    # S = groups['9'] # select some group as a seed set
+    # K = 10
+    # theta = 1./40
+    # I = 1000 # number of Monte-Carlo simulations
+
+
+    # VK PARAMETERS
+    # print(type(groups), groups.keys())
+    S = groups['31598870']
+    K = 51    
+    theta = 1./40
+    I = 10000
+
+    print('Selecting features')
+    start = time.time()
+    # F = greedy(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
+    F = greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3)
+    finish = time.time()
+    print('Selected F:', F)
+    print('Time:', finish - start)
+
+    
+    spread = calculate_spread(G, B, Q, S, F, Ef, I)
+    print('Spread:', spread)
+
+    console = []
+    
+def run_toy():
+    
+    G = read_graph('../datasets/toy/edge_list.txt')
+    Ef, Nf = add_graph_attributes(G, '../datasets/toy/mem.txt')
+
+    Phi = set(Ef.keys())
+
+    B = read_probabilities('../datasets/toy/edge_weights.txt')
+    Q = read_probabilities('../datasets/toy/edge_weights.txt')
+
+
+    groups = read_groups('../datasets/toy/com.txt')
+
+    # GNUTELLA PARAMETERS
+    # S = groups['9'] # select some group as a seed set
+    # K = 10
+    # theta = 1./40
+    # I = 1000 # number of Monte-Carlo simulations
+
+
+    # VK PARAMETERS
+    # print(type(groups), groups.keys())
+    S = groups['39545549']
+    K = 21    
+    theta = 1./40
+    I = 1000
+
+    print('Selecting features')
+    start = time.time()
+    # F = greedy(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
+    F = greedy(G, B, Q, Ef, S, Phi, K, I)
+    # F = greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3)
+    finish = time.time()
+    print('Selected F:', F)
+    print('Time:', finish - start)
+
+    
+    spread = calculate_spread(G, B, Q, S, F, Ef, I)
+    print('Spread:', spread)
+
+    console = []
+
+if __name__ == "__main__":
+
+    run_toy()

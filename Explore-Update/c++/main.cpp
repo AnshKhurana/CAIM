@@ -299,6 +299,8 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob B, e
 
     P.insert(B.begin(), B.end());
 
+    int len = 0; // Current selected items length
+
     while (F.size() < K) {
         max_spread = -1;
         printf("it = %i; ", (int)F.size() + 1);
