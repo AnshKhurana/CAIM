@@ -94,6 +94,16 @@ def read_groups(filename):
     print('Read groups')
     return groups
 
+def inc_prob_set(G, B, Q, F, Ef, P):
+    """
+    Set version of the increase probabilites function
+    """
+    cur = []
+    for f in F:
+        increase_probabilities(G, B, Q, cur + [f], Ef[f], P)
+        cur = cur + [f]
+
+
 def increase_probabilities(G, B, Q, F, E, P):
     """
     Increase probabilities of edges E depending on selected features F. Returns previous probabilities of changed edges.
@@ -124,6 +134,36 @@ def decrease_probabilities(changed, P):
     """
     for e in changed:
         P.loc[e] = changed[e]
+
+def opt_calculate_MC_spread(G, S, P, I, thresh):
+    """
+    Returns influence spread in IC model from S with features F using I Monte-Carlo simulations.
+    :param G: networkx graph
+    :param S: list of seed set
+    :param P: dataframe of probabilities
+    :param I: integer of number of MC iterations
+    :return: influence spread
+    """
+    spread = 0.
+    runs = 0
+    for _ in range(I):
+        activated = dict(zip(G.nodes(), [False]*len(G)))
+        for node in S:
+            activated[node] = True
+        T = [node for node in S]
+        i = 0
+        while i < len(T):
+            v = T[i]
+            for neighbor in G[v]:
+                if not activated[neighbor]:
+                    prob = float(P.loc[v, neighbor])
+                    if random.random() < prob:
+                        activated[neighbor] = True
+                        T.append(neighbor)
+            i += 1
+        spread += len(T)
+        runs +=1
+    return spread/runs
 
 def calculate_MC_spread(G, S, P, I):
     """
@@ -190,6 +230,7 @@ def greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3):
 # got all candidates now take best beam
     best_beam = candidates[:BEAM_WIDTH].copy()
     t+=1
+
     while t < K:
         candidates = []
         for val, F in best_beam:
@@ -380,17 +421,15 @@ def explore_update_beam(G, B, Q, S, K, Ef, theta, BEAM_WIDTH=3):
     
     heapq.heapify(candidates)
 
-    try:
-        best_beam = candidates[:BEAM_WIDTH]
-    except:
-        print "Beam width too high"
-
+    best_beam = copy(candidates[:BEAM_WIDTH])
+        
     while t < K:
-
+        candidates = []
         print('|F| = {}'.format(t))
         for val, F in best_beam:
             P = B.copy()
-            candidates = []
+            print F
+            inc_prob_set(G, B, Q, F, Ef, P) # Restore prob values to these
             for f in Phi.difference(F):
                 e_intersection = Pi.intersection(Ef[f])
                 if e_intersection:
@@ -441,7 +480,7 @@ def explore_update(G, B, Q, S, K, Ef, theta):
                 Ain = explore(G, P, S, theta)
                 spread = update(Ain, S, P)
                 if spread > max_spread:
-                    print(spread)
+                    # print(spread)
                     max_spread = spread
                     max_feature = f
                 decrease_probabilities(changed, P)
@@ -455,6 +494,7 @@ def explore_update(G, B, Q, S, K, Ef, theta):
         else:
             #raise ValueError, 'Not found max_feature. F: {}'.format(F)
             raise Exception(ValueError, 'Not found max_feature. F: {}'.format(F))
+    print max_spread
     return F
 
 def calculate_spread(G, B, Q, S, F, Ef, I):
@@ -654,7 +694,7 @@ def run_toy():
     
     G = read_graph('../datasets/toy/edge_list.txt')
     Ef, Nf = add_graph_attributes(G, '../datasets/toy/mem.txt')
-
+    
     Phi = set(Ef.keys())
 
     B = read_probabilities('../datasets/toy/edge_weights.txt')
@@ -662,15 +702,8 @@ def run_toy():
 
 
     groups = read_groups('../datasets/toy/com.txt')
-
-    # GNUTELLA PARAMETERS
-    # S = groups['9'] # select some group as a seed set
-    # K = 10
-    # theta = 1./40
-    # I = 1000 # number of Monte-Carlo simulations
-
-
-    # VK PARAMETERS
+ 
+    # PARAMETERS
     # print(type(groups), groups.keys())
     S = groups['39545549']
     K = 3    
@@ -680,7 +713,7 @@ def run_toy():
     print('Selecting features')
     start = time.time()
     # F = greedy(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
-    # F = greedy(G, B, Q, Ef, S, Phi, K, I)
+    # F, _ = greedy_beam(G, B, Q, Ef, S, Phi, K, I)
     F = explore_update(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
     # F = greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3)
     finish = time.time()
