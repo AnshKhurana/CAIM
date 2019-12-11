@@ -2,8 +2,8 @@
 import os
 
 src = "./"
-dst = "../very_small/"
-N = 30
+dst = "../medium/"
+N = 1000
 
 def gen_mem():
     with open(os.path.join(src, "vk_mem.txt"), 'r') as fin:
@@ -61,4 +61,5 @@ if __name__ == "__main__":
     gen_edge_list()
     gen_wts()
     gen_com()
+    gen_mem()
 

@@ -4,12 +4,27 @@ from __future__ import division
 from copy import copy
 import networkx as nx
 import pandas as pd
+import os
 import time
 import heapq
 import random
 import math
 from collections import Counter
 from itertools import chain, combinations
+import argparse
+
+parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+
+parser.add_argument("-v", "--verbosity", help="increase output verbosity", action="store_true")
+parser.add_argument('--version', action='version', version='%(prog)s 1.1')
+parser.add_argument('--dataset', default='vk', help="Dataset to be used for the experiment")
+parser.add_argument('-K', '--K', default=51, type=int, help="Number of features to be selected")
+parser.add_argument('-SG', '--SG', type=int, help="Manually specify seed group number")
+parser.add_argument('-a', '--algo', default='eub', help="Algorithm for calculating spread")
+parser.add_argument('-I', '--I', default=10000, type=int, help="Number of MC simulations")
+parser.add_argument('-bw', '--bw', default=3, type=int, help="BEAM_WIDTH")
+parser.add_argument('--theta', type=float, default=1./40, help="Explore Update theta")
+
 
 def read_graph_OLD(filename, directed=True, sep=' ', header = None):
     """
@@ -236,7 +251,7 @@ def greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3):
         for val, F in best_beam:
             print '|F| = {}'.format(len(F))
             P = B.copy()
-            increase_probabilities(G, B, Q, F, Ef, P) # restore prob values to having set F
+            inc_prob_set(G, B, Q, F, Ef, P) # restore prob values to having set F
             for f in Phi.difference(F):
                 changed = increase_probabilities(G, B, Q, F + [f], Ef[f], P) 
                 spread = calculate_MC_spread(G, S, P, I)
@@ -597,7 +612,7 @@ def run_vk():
     # 
     # G = read_graph('../datasets/vk/vk.txt')
     
-    G = read_graph('../datasets/vk/vk_small.txt')
+    G = read_graph('../datasets/vk/vk.txt')
 
     #Ef, Nf = add_graph_attributes(G, 'datasets/gnutella_mem.txt')
     Ef, Nf = add_graph_attributes(G, '../datasets/vk/vk_mem.txt')
@@ -612,16 +627,12 @@ def run_vk():
     #groups = read_groups('datasets/gnutella_com.txt')
     groups = read_groups('../datasets/vk/vk_com.txt')
 
-    # GNUTELLA PARAMETERS
-    # S = groups['9'] # select some group as a seed set
-    # K = 10
-    # theta = 1./40
-    # I = 1000 # number of Monte-Carlo simulations
-
-
-    # VK PARAMETERS
+    # VK PARAMETERS - from setup.txt file
     # print(type(groups), groups.keys())
-    S = groups['31598870']
+    S = groups['223212']
+
+    print ("Seed set size: ", len(S))
+    
     K = 51    
     theta = 1./40
     I = 10000
@@ -629,7 +640,7 @@ def run_vk():
     print('Selecting features')
     start = time.time()
     # F = greedy(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
-    F = greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3)
+    F = explore_update_beam(G, B, Q, S, K, Ef, theta, BEAM_WIDTH=3)
     finish = time.time()
     print('Selected F:', F)
     print('Time:', finish - start)
@@ -706,6 +717,7 @@ def run_toy():
     # PARAMETERS
     # print(type(groups), groups.keys())
     S = groups['39545549']
+    print(S)
     K = 3    
     theta = 1./40
     I = 10000
@@ -714,7 +726,7 @@ def run_toy():
     start = time.time()
     # F = greedy(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
     # F, _ = greedy_beam(G, B, Q, Ef, S, Phi, K, I)
-    F = explore_update(G, B, Q, S, K, Ef, theta) # can be also greedy, top-edges, top-nodes, etc.
+    F = explore_update_beam(G, B, Q, S, K, Ef, theta, BEAM_WIDTH=3) # can be also greedy, top-edges, top-nodes, etc.
     # F = greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3)
     finish = time.time()
     print('Selected F:', F)
@@ -726,6 +738,75 @@ def run_toy():
 
     console = []
 
-if __name__ == "__main__":
+def run_general(dataset, K, SG, algo='eu', theta=1./40,  I=10000, BEAM_WIDTH=3):
+    """
+    Generic function to run the experiment
+    :param dataset: Dataset to be used
+    :param K: Number of features to be selected 
+    :param SG: Group number to be used as the seed
+    :param algo: Algorithm to be used to calculate the feature set
+    :param I: Number of MC simulations
+    :param BEAM_WIDTH: BEAM WIDTH
+    """
+    if dataset == "vk":
+        model = "wc"
+        G = read_graph('../datasets/vk/vk.txt')
+        Ef, Nf = add_graph_attributes(G, '../datasets/vk/vk_mem.txt')
+        Phi = set(Ef.keys())
+        B = read_probabilities('../datasets/vk/vk_{}.txt'.format(model))
+        Q = read_probabilities('../datasets/vk/vk_{}.txt'.format(model))
+        groups = read_groups('../datasets/vk/vk_com.txt')
 
-    run_toy()
+    else:
+        # READ GRAPH
+        G = read_graph(os.path.join('../datasets/', dataset, 'edge_list.txt'))
+        Ef, Nf = add_graph_attributes(G, os.path.join('../datasets/', dataset, 'mem.txt'))
+        Phi = set(Ef.keys())
+        B = read_probabilities(os.path.join('../datasets/', dataset, 'edge_weights.txt'))
+        Q = read_probabilities('../datasets/', dataset, 'edge_weights.txt')
+        groups = read_groups('../datasets/', dataset, 'com.txt')
+
+    S = groups[str(SG)]
+    print(S)
+    
+    print('Selecting features')
+    start = time.time()
+
+    if algo=='g':
+        F, _ = greedy(G, B, Q, S, K, Ef, theta) 
+    
+    if algo=='gb':
+        F, _ = greedy_beam(G, B, Q, Ef, S, Phi, K, I) 
+    
+    if algo=='eu':
+        F = explore_update(G, B, Q, S, K, Ef, theta) 
+    
+    if algo=='eub':
+        F = explore_update_beam(G, B, Q, S, K, Ef, theta, BEAM_WIDTH) 
+    finish = time.time()
+    print('Selected F:', F)
+    print('Time:', finish - start)
+
+    spread = calculate_spread(G, B, Q, S, F, Ef, I)
+    print('Spread:', spread)
+
+    console = []
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+
+    if args.dataset == 'vk':
+        SG = 223212
+    elif args.dataset == 'toy':
+        SG = 39545549
+    elif args.dataset == 'medium':
+        SG = 39545549
+    else: # GNUTELLA?        
+        SG = 9
+    
+    if args.SG:
+        SG = args.sg
+    
+    run_general(dataset=args.dataset, K=args.K, SG=SG, algo=args.algo, theta=args.theta, I=args.I, BEAM_WIDTH=args.bw)
+
+    # run_vk()
