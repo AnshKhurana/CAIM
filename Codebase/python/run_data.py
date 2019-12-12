@@ -243,7 +243,7 @@ def greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3):
         decrease_probabilities(changed, P) # get back to old prob
         heapq.heappush(candidates, ((-1*spread, F.append(f))))
 # got all candidates now take best beam
-    best_beam = candidates[:BEAM_WIDTH].copy()
+    best_beam = copy(candidates[:BEAM_WIDTH])
     t+=1
 
     while t < K:
