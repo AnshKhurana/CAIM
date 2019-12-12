@@ -1,8 +1,8 @@
-../datasets/vk/vk_small.txt
-../datasets/vk/vk_wc.txt
-../datasets/vk/vk_mem.txt
-../datasets/vk/vk_com.txt
-../datasets/vk/vk_seeds.txt
+../datasets/toy/edge_list.txt
+../datasets/toy/edge_weights.txt
+../datasets/toy/mem.txt
+../datasets/toy/com.txt
+../datasets/toy/seeds.txt
 0
 3
 100

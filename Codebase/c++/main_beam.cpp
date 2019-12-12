@@ -223,7 +223,9 @@ edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_
         unordered_set<int> s(F_target.begin(), F_target.end());
         intersect = count_if(F.begin(), F.end(), [&](int k) {return s.find(k) != s.end();});
         h = intersect/F_target.size();
+        cout<<"Change in edge weights: "<<P[edge]<<" :  ";
         P[edge] = h*q + b;
+        cout<<P[edge]<<endl;
     }
     return changed;
 }
@@ -567,25 +569,26 @@ set<pair<int, int> > get_pi(DiGraph G, unordered_map<int, set<pair<int, int> > >
     return Pi;
 }
 
-
-vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, edge_prob P, unordered_set<int> S, unordered_map<int,vector<int> > Nf,
+// explore_update_beam(G, B, Q, P, S, Nf, Ef, Phi, K, theta);
+vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_set<int> S, unordered_map<int,vector<int> > Nf,
                            unordered_map<int, vector<pair<int, int> > > Ef, vector<int> Phi, int K, double theta, int beam_width=3) {
 
 
-    
-    vector <pair<int, vector<int> > > best_beam;
+    cout<<"BEAM_WIDTH: "<<beam_width<<endl;
+    vector <pair<double, vector<int> > > best_beam;
     vector<int> F;
     unordered_map<int, set<pair<int, int> > > Ain_edges;
     set<pair<int, int> > Pi;
-    int max_feature;
-    double max_spread, spread;
+    double spread;
+    edge_prob P;
+    P.insert(B.begin(), B.end()); 
     
     bool intersected;
     edge_prob changed;
     int omissions = 0;
     clock_t begin, finish;
     
-    cout << "Starting Explore-Update.\nInitializing..." << endl;
+    cout << "Starting Explore-Update-Beam.\nInitializing..." << endl;
     Ain_edges = explore(G, P, S, theta);
     Pi = get_pi(G, Ain_edges, S);
     cout << "Finished initializiation.\nStart selecting features..." << endl;
@@ -593,15 +596,64 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, edge_prob P
     int t = 0;
     cout<<"size "<<t<<" : ";
     fflush(stdout);
+    priority_queue <pair<double, vector<int> > > firstcandidates;
+    int count = 0;
+    for (auto &f: Phi)
+    {
+        if (count%100 == 0) {
+                cout << count << " ";
+                fflush(stdout);
+            }
+        count++;
+        intersected = false;
+        for (auto &edge: Ef[f]) 
+        {
+            if (Pi.find(edge) != Pi.end()) 
+            {
+                intersected = true;
+                break;
+            }
+        }
 
+        if (intersected)
+        {
+            
+            vector <int> candidate;
+            candidate.push_back(f);
+            changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
+            Ain_edges = explore(G, P, S, theta);
+            spread = update(Ain_edges, S, P);
+            // cout<<spread<<" "<<f<<endl;
+            firstcandidates.push(make_pair(spread, candidate));
+            decrease_probabilities(changed, P);
+        }
+        else
+        {
+            ++omissions;
+        }                    
+    }
+
+    for (size_t i = 0; i < beam_width; i++)
+    {
+        pair <double, vector<int> > el(firstcandidates.top());
+        best_beam.push_back(el);
+        firstcandidates.pop();
+    }
+    
+    // # best beam intitizized with singleton feature sets
+
+    t++;
+    cout<<"t = "<<t<<" best spread at current t: "<<best_beam[0].first<<endl;
+    cout<<"Second best val = "<<best_beam[1].first<<endl;
     while (t < K)
     {
-        priority_queue <pair<int, vector<int> > > candidates; // redeclare for fresh start
+        priority_queue <pair<double, vector<int> > > candidates; // redeclare for fresh start
         
         
         
         for (size_t z = 0; z < beam_width; z++)
         {
+            
             edge_prob P;
             P.insert(B.begin(), B.end()); // equivalent of B.copy()
             // Now set the prob to that of using the set F.
@@ -614,6 +666,8 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, edge_prob P
             // int count; // why?
             for (auto &f: Phi)
             {
+                cout<<"size "<<t<<" : ";
+                fflush(stdout);
                 if (not selected[f])
                 {
                     intersected = false;
@@ -633,6 +687,7 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, edge_prob P
                         changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
                         Ain_edges = explore(G, P, S, theta);
                         spread = update(Ain_edges, S, P);
+                        // cout<<spread<<" "<<f<<endl;
                         candidates.push(make_pair(spread, candidate));
                         decrease_probabilities(changed, P);
                     }
@@ -641,6 +696,11 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, edge_prob P
                         ++omissions;
                     }                    
                 }
+                else
+                {
+                    cout<<"Already selected feature: "<<f<<endl;
+                }
+                
             }
         }
         // After filling up all the candidates, time to update best_beam
@@ -706,6 +766,7 @@ vector<int> explore_update(DiGraph G, edge_prob B, edge_prob Q, edge_prob P, uno
                     changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
                     Ain_edges = explore(G, P, S, theta);
                     spread = update(Ain_edges, S, P);
+                    // cout<<spread<<" "<<f<<endl;
                     if (spread > max_spread) {
                         max_spread = spread;
                         max_feature = f;
@@ -805,12 +866,11 @@ double test(SubGraph Ain_v, edge_prob P, unordered_set<int> S) {
     return 1 - prod;
 }
 
-int main(int argc, char* argv[]) {
-//    srand(time(NULL));
-
+int main(int argc, char const *argv[])
+{
     unordered_map<int, vector<int> > Nf;
     unordered_map<int, vector<pair<int, int> > > Ef;
-    edge_prob B, Q, P;
+    edge_prob B, Q;// P;
     unordered_map<int, unordered_set<int> > groups;
     vector<int> F;
     unordered_set<int> S;
@@ -820,24 +880,29 @@ int main(int argc, char* argv[]) {
     in_edge_iter qi, q_end;
     clock_t start, finish;
     string dataset_file, probs_file, features_file, groups_file, out_features_file, out_results_file, seeds_file;
-
-    // read parameters from command-line
+    
+        // read parameters from command-line
     if (argc > 1) {
 
-        cout << "Got parameters..." << endl;
-        string setup_file = argv[1];
-        cout << setup_file << endl;
-        ifstream infile(setup_file);
-    //    if (infile==NULL){
-        if (! infile.is_open()){
-           cout << "Unable to open the input file\n";
+       cout << "Got parameters..." << endl;
+       string setup_file = argv[1];
+       cout << setup_file << endl;
+
+       //ifstream infile(setup_file);
+       //if (infile==NULL){
+           //cout << "Unable to open the input file\n";
+       //}
+       ifstream infile;
+       infile.open(setup_file, ifstream::in);
+       if (!infile.is_open()) {
+           cout << "Unable to open the input file in 'main' function\n";  exit(-1);
        }
 
-       getline(infile, dataset_file); // vk.txt
-       getline(infile, probs_file); // vk_wc.txt
-       getline(infile, features_file); // vk_mem.txt
-       getline(infile, groups_file); // vk_com.txt
-       getline(infile, seeds_file); // vk_seeds.txt
+       getline(infile, dataset_file);
+       getline(infile, probs_file);
+       getline(infile, features_file);
+       getline(infile, groups_file);
+       getline(infile, seeds_file);
 
        string line;
        getline(infile, line);
@@ -857,114 +922,42 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-   DiGraph G = read_graph(dataset_file);
-   read_features(features_file, G, Nf, Ef);
-   read_probabilities(probs_file, B);
-   read_probabilities(probs_file, Q);
-   read_probabilities(probs_file, P);
-   read_groups(groups_file, groups);
+    DiGraph G = read_graph(dataset_file);
+    read_features(features_file, G, Nf, Ef);
+    read_probabilities(probs_file, B);
+    read_probabilities(probs_file, Q);
+    // read_probabilities(probs_file, P);
+    read_groups(groups_file, groups);
 
-   vector<int> Phi;
-   for (auto &item: Ef) {
-       Phi.push_back(item.first);
-   }
+    vector<int> Phi;
+    for (auto &item: Ef) {
+        Phi.push_back(item.first);
+    }
 
-   // SPECIFY SEEDS
-   read_seeds(seeds_file, S, 15); // for VK network
-   // S = groups[group_number]; // for Gnutella network
-   cout << "S: ";
-   for (auto &node: S) {
-        cout << node << " ";
-   }
-   cout << endl;
-   for (auto &node: S) {
-       boost::clear_in_edges(node, G);
-   }
+    // SPECIFY SEEDS
+    read_seeds(seeds_file, S, 15); // for VK network
+    // S = groups[group_number]; // for Gnutella network
+    cout << "S: ";
+    for (auto &node: S) {
+            cout << node << " ";
+    }
+    cout << endl;
+    for (auto &node: S) {
+        boost::clear_in_edges(node, G);
+    }
 
-   cout << "I: " << I << endl;
-   cout << "K: " << K << endl;
-   FILE *results_f, *outfile;
+    cout << "I: " << I << endl;
+    cout << "K: " << K << endl;
+    FILE *results_f, *outfile;
 
 
-   //    top-edges heuristic
-  cout << "Start Top-Edges..." << endl;
-  F.clear();
-  start = clock();
-  F = top_edges(Ef, K);
-  finish = clock();
-
-  results_f = fopen("tope_results.txt", "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
-  fprintf(results_f, "%f\n", (double) (finish - start)/CLOCKS_PER_SEC);
-  cout << (double) (finish - start)/CLOCKS_PER_SEC << " sec." << endl;
-  for (int num = 1; num <= K; num+=5) {
-      vector<int> subv(F.begin(), F.begin()+num);
-      spread = calculate_spread(G, B, Q, Nf, S, subv, Ef, I);
-      fprintf(results_f, "%f\n", spread);
-      cout << num << ": " << spread << endl;
-  }
-  fclose(results_f);
-   cout << endl;
-
-   sort(F.begin(), F.end());
-  outfile = fopen("tope_features.txt", "w"); // SPECIFY OUTPUT FILE FOR FEATURES
-  cout << "Features: ";
-  for (auto &f: F) {
-      fprintf(outfile, "%i ", f);
-      cout << f << " ";
-  }
-  fclose(outfile);
-  cout << endl;
-
-    //    top-nodes heuristic
-  cout << "Start Top-Nodes..." << endl;
-  F.clear();
-  start = clock();
-  F = top_nodes(Nf, K);
-  finish = clock();
-
-  results_f = fopen("topn_results.txt", "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
-  fprintf(results_f, "%f\n", (double) (finish - start)/CLOCKS_PER_SEC);
-  cout << (double) (finish - start)/CLOCKS_PER_SEC << " sec." << endl;
-  for (int num = 1; num <= K; num+=5) {
-      vector<int> subv(F.begin(), F.begin()+num);
-      spread = calculate_spread(G, B, Q, Nf, S, subv, Ef, I);
-      fprintf(results_f, "%f\n", spread);
-      cout << num << ": " << spread << endl;
-  }
-  fclose(results_f);
-  cout << endl;
-
-  sort(F.begin(), F.end());
-  outfile = fopen("topn_features.txt", "w"); // SPECIFY OUTPUT FILE FOR FEATURES
-  cout << "Features: ";
-  for (auto &f: F) {
-      fprintf(outfile, "%i ", f);
-      cout << f << " ";
-  }
-  fclose(outfile);
-  cout << endl;
-
-   // Explore-Update algorithm
-   // if features are stored in the file (copy this, instead of calculating features, for other heuristics too).
-   // string filename;
-   // ifstream infile;
-   // int f;
-   // filename = "results/experiment1_10000/mv/gnutella_eu_features.txt";
-   // infile.open(filename);
-   // if (infile == NULL)
-   //     cout << "Cannot open file" << endl;
-   // while (infile >> f) {
-   //     F.push_back(f);
-   // }
-   // infile.close();
-//    if features should be calculated here
-   cout << "Start explore-update" << endl;
+   cout << "Start explore-update-beam" << endl;
    F.clear();
    start = clock();
-   F = explore_update(G, B, Q, P, S, Nf, Ef, Phi, K, theta);
+   F = explore_update_beam(G, B, Q, S, Nf, Ef, Phi, K, theta);
    finish = clock();
 
-   results_f = fopen("eu_results.txt", "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
+   results_f = fopen("eu_beam_results.txt", "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
    fprintf(results_f, "%f\n", (double) (finish - start)/CLOCKS_PER_SEC);
    cout << (double) (finish - start)/CLOCKS_PER_SEC << " sec." << endl;
    for (int num = 1; num <= K; num+=5) {
@@ -974,11 +967,13 @@ int main(int argc, char* argv[]) {
        cout << num << ": " << spread << endl;
    }
    fclose(results_f);
+   spread = calculate_spread(G, B, Q, Nf, S, F, Ef, I);
+   cout<<"Final spread value: "<<spread<<endl;
    cout << endl;
 
    
    sort(F.begin(), F.end());
-   outfile = fopen("eu_features.txt", "w"); // SPECIFY OUTPUT FILE FOR FEATURES
+   outfile = fopen("eu_beam_features.txt", "w"); // SPECIFY OUTPUT FILE FOR FEATURES
    cout << "Features: ";
    for (auto &f: F) {
        fprintf(outfile, "%i ", f);
@@ -987,28 +982,214 @@ int main(int argc, char* argv[]) {
    fclose(outfile);
    cout << endl;
 
-      cout << "Start greedy algorithm..." << endl;
-  start = clock();
-  boost::tie(F, influence) = greedy(G, B, Q, S, Nf, Ef, Phi, K, I);
-  finish = clock();
-//    writing selected features, time, and spread
-  outfile = fopen("greedy_features.txt", "w"); // SPECIFY OUTPUT FILE FOR FEATURES
-  cout << "Features: ";
-  for (auto &f: F) {
-      fprintf(outfile, "%i ", f);
-      cout << f << " ";
-  }
-  fclose(outfile);
-  cout << endl;
-  results_f = fopen("greedy_results.txt", "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
-  fprintf(results_f, "%f\n", (double) (finish - start)/CLOCKS_PER_SEC);
-  cout << (double) (finish - start)/CLOCKS_PER_SEC << " sec." << endl;
-  for (int num = 1; num <= K; ++num) {
-      fprintf(results_f, "%f\n", influence[num]);
-      cout << num << ": " << influence[num]  << " spread" << endl;
-  }
-  fclose(results_f);
-  cout << endl;
-
    return 0;
 }
+
+
+// int testall() {
+// //    srand(time(NULL));
+
+//     unordered_map<int, vector<int> > Nf;
+//     unordered_map<int, vector<pair<int, int> > > Ef;
+//     edge_prob B, Q, P;
+//     unordered_map<int, unordered_set<int> > groups;
+//     vector<int> F;
+//     unordered_set<int> S;
+//     int I, K, group_number;
+//     unordered_map<int, double> influence;
+//     double theta = 1./40, spread=0;
+//     in_edge_iter qi, q_end;
+//     clock_t start, finish;
+//     string dataset_file, probs_file, features_file, groups_file, out_features_file, out_results_file, seeds_file;
+
+//     // read parameters from command-line
+//     if (argc > 1) {
+
+//         cout << "Got parameters..." << endl;
+//         string setup_file = argv[1];
+//         cout << setup_file << endl;
+//         ifstream infile(setup_file);
+//     //    if (infile==NULL){
+//         if (! infile.is_open()){
+//            cout << "Unable to open the input file\n";
+//        }
+
+//        getline(infile, dataset_file); // vk.txt
+//        getline(infile, probs_file); // vk_wc.txt
+//        getline(infile, features_file); // vk_mem.txt
+//        getline(infile, groups_file); // vk_com.txt
+//        getline(infile, seeds_file); // vk_seeds.txt
+
+//        string line;
+//        getline(infile, line);
+//        group_number = stoi(line);
+//        getline(infile, line);
+//        K = stoi(line);
+//        getline(infile, line);
+//        I = stoi(line);
+
+//        cout << "Input:" << endl;
+//        cout << dataset_file << " " << probs_file << " " << features_file << " " << groups_file << endl;
+//        cout << group_number << " " << K << " " << I << endl;
+
+//     }
+//     else {
+//         cout << "Something went wrong! Exiting!" << endl;
+//         return 1;
+//     }
+
+//    DiGraph G = read_graph(dataset_file);
+//    read_features(features_file, G, Nf, Ef);
+//    read_probabilities(probs_file, B);
+//    read_probabilities(probs_file, Q);
+//    read_probabilities(probs_file, P);
+//    read_groups(groups_file, groups);
+
+//    vector<int> Phi;
+//    for (auto &item: Ef) {
+//        Phi.push_back(item.first);
+//    }
+
+//    // SPECIFY SEEDS
+//    read_seeds(seeds_file, S, 15); // for VK network
+//    // S = groups[group_number]; // for Gnutella network
+//    cout << "S: ";
+//    for (auto &node: S) {
+//         cout << node << " ";
+//    }
+//    cout << endl;
+//    for (auto &node: S) {
+//        boost::clear_in_edges(node, G);
+//    }
+
+//    cout << "I: " << I << endl;
+//    cout << "K: " << K << endl;
+//    FILE *results_f, *outfile;
+
+
+//    //    top-edges heuristic
+//   cout << "Start Top-Edges..." << endl;
+//   F.clear();
+//   start = clock();
+//   F = top_edges(Ef, K);
+//   finish = clock();
+
+//   results_f = fopen("tope_results.txt", "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
+//   fprintf(results_f, "%f\n", (double) (finish - start)/CLOCKS_PER_SEC);
+//   cout << (double) (finish - start)/CLOCKS_PER_SEC << " sec." << endl;
+//   for (int num = 1; num <= K; num+=5) {
+//       vector<int> subv(F.begin(), F.begin()+num);
+//       spread = calculate_spread(G, B, Q, Nf, S, subv, Ef, I);
+//       fprintf(results_f, "%f\n", spread);
+//       cout << num << ": " << spread << endl;
+//   }
+//   fclose(results_f);
+//    cout << endl;
+
+//    sort(F.begin(), F.end());
+//   outfile = fopen("tope_features.txt", "w"); // SPECIFY OUTPUT FILE FOR FEATURES
+//   cout << "Features: ";
+//   for (auto &f: F) {
+//       fprintf(outfile, "%i ", f);
+//       cout << f << " ";
+//   }
+//   fclose(outfile);
+//   cout << endl;
+
+//     //    top-nodes heuristic
+//   cout << "Start Top-Nodes..." << endl;
+//   F.clear();
+//   start = clock();
+//   F = top_nodes(Nf, K);
+//   finish = clock();
+
+//   results_f = fopen("topn_results.txt", "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
+//   fprintf(results_f, "%f\n", (double) (finish - start)/CLOCKS_PER_SEC);
+//   cout << (double) (finish - start)/CLOCKS_PER_SEC << " sec." << endl;
+//   for (int num = 1; num <= K; num+=5) {
+//       vector<int> subv(F.begin(), F.begin()+num);
+//       spread = calculate_spread(G, B, Q, Nf, S, subv, Ef, I);
+//       fprintf(results_f, "%f\n", spread);
+//       cout << num << ": " << spread << endl;
+//   }
+//   fclose(results_f);
+//   cout << endl;
+
+//   sort(F.begin(), F.end());
+//   outfile = fopen("topn_features.txt", "w"); // SPECIFY OUTPUT FILE FOR FEATURES
+//   cout << "Features: ";
+//   for (auto &f: F) {
+//       fprintf(outfile, "%i ", f);
+//       cout << f << " ";
+//   }
+//   fclose(outfile);
+//   cout << endl;
+
+//    // Explore-Update algorithm
+//    // if features are stored in the file (copy this, instead of calculating features, for other heuristics too).
+//    // string filename;
+//    // ifstream infile;
+//    // int f;
+//    // filename = "results/experiment1_10000/mv/gnutella_eu_features.txt";
+//    // infile.open(filename);
+//    // if (infile == NULL)
+//    //     cout << "Cannot open file" << endl;
+//    // while (infile >> f) {
+//    //     F.push_back(f);
+//    // }
+//    // infile.close();
+// //    if features should be calculated here
+//    cout << "Start explore-update" << endl;
+//    F.clear();
+//    start = clock();
+//    F = explore_update(G, B, Q, P, S, Nf, Ef, Phi, K, theta);
+//    finish = clock();
+
+//    results_f = fopen("eu_results.txt", "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
+//    fprintf(results_f, "%f\n", (double) (finish - start)/CLOCKS_PER_SEC);
+//    cout << (double) (finish - start)/CLOCKS_PER_SEC << " sec." << endl;
+//    for (int num = 1; num <= K; num+=5) {
+//        vector<int> subv(F.begin(), F.begin()+num);
+//        spread = calculate_spread(G, B, Q, Nf, S, subv, Ef, I);
+//        fprintf(results_f, "%f\n", spread);
+//        cout << num << ": " << spread << endl;
+//    }
+//    fclose(results_f);
+//    cout << endl;
+
+   
+//    sort(F.begin(), F.end());
+//    outfile = fopen("eu_features.txt", "w"); // SPECIFY OUTPUT FILE FOR FEATURES
+//    cout << "Features: ";
+//    for (auto &f: F) {
+//        fprintf(outfile, "%i ", f);
+//        cout << f << " ";
+//    }
+//    fclose(outfile);
+//    cout << endl;
+
+//       cout << "Start greedy algorithm..." << endl;
+//   start = clock();
+//   boost::tie(F, influence) = greedy(G, B, Q, S, Nf, Ef, Phi, K, I);
+//   finish = clock();
+// //    writing selected features, time, and spread
+//   outfile = fopen("greedy_features.txt", "w"); // SPECIFY OUTPUT FILE FOR FEATURES
+//   cout << "Features: ";
+//   for (auto &f: F) {
+//       fprintf(outfile, "%i ", f);
+//       cout << f << " ";
+//   }
+//   fclose(outfile);
+//   cout << endl;
+//   results_f = fopen("greedy_results.txt", "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
+//   fprintf(results_f, "%f\n", (double) (finish - start)/CLOCKS_PER_SEC);
+//   cout << (double) (finish - start)/CLOCKS_PER_SEC << " sec." << endl;
+//   for (int num = 1; num <= K; ++num) {
+//       fprintf(results_f, "%f\n", influence[num]);
+//       cout << num << ": " << influence[num]  << " spread" << endl;
+//   }
+//   fclose(results_f);
+//   cout << endl;
+
+//    return 0;
+// }

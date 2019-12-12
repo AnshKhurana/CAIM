@@ -705,7 +705,7 @@ def run_toy():
     
     G = read_graph('../datasets/toy/edge_list.txt')
     Ef, Nf = add_graph_attributes(G, '../datasets/toy/mem.txt')
-    
+
     Phi = set(Ef.keys())
 
     B = read_probabilities('../datasets/toy/edge_weights.txt')

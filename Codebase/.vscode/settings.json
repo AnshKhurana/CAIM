@@ -1,4 +1,7 @@
 {
     "python.pythonPath": "/Users/ansh/anaconda3/envs/aimlpy2/bin/python",
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "files.associations": {
+        "iostream": "cpp"
+    }
 }
