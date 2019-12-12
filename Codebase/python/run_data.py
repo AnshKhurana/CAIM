@@ -763,8 +763,8 @@ def run_general(dataset, K, SG, algo='eu', theta=1./40,  I=10000, BEAM_WIDTH=3):
         Ef, Nf = add_graph_attributes(G, os.path.join('../datasets/', dataset, 'mem.txt'))
         Phi = set(Ef.keys())
         B = read_probabilities(os.path.join('../datasets/', dataset, 'edge_weights.txt'))
-        Q = read_probabilities('../datasets/', dataset, 'edge_weights.txt')
-        groups = read_groups('../datasets/', dataset, 'com.txt')
+        Q = read_probabilities (os.path.join('../datasets/', dataset, 'edge_weights.txt'))
+        groups = read_groups(os.path.join('../datasets/', dataset, 'com.txt'))
 
     S = groups[str(SG)]
     print(S)

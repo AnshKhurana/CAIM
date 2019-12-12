@@ -8,12 +8,14 @@
 #include <boost/range/algorithm.hpp>
 #include <boost/graph/topological_sort.hpp>
 #include <unordered_map>
+#include <queue>
+#include <string>
 #include <ctime>
 #include <tuple>
 
 using namespace std;
 
-struct vertex_info {int label;};
+struct vertex_info {int label;}; // also have vertex thresholds?
 
 typedef boost::adjacency_list <boost::vecS, boost::vecS, boost::bidirectionalS> DiGraph;
 typedef boost::adjacency_list <boost::vecS, boost::vecS, boost::bidirectionalS, vertex_info> SubGraph;
@@ -76,16 +78,11 @@ void print_size(DiGraph G) {
 }
 
 DiGraph read_graph(string graph_filename) {
-
     cout << graph_filename << endl;
-    //ifstream infile(graph_filename);
-    //if (infile==NULL){
-        //cout << "Unable to open the input file\n";
-    //}
-    ifstream infile;
-    infile.open(graph_filename, ifstream::in);
-    if (!infile.is_open()) {
-        cout << "Unable to open the input file in 'read_graph' function\n";  exit(-1);
+    ifstream infile(graph_filename);
+    // if (infile==NULL){
+        if (! infile.is_open()){
+        cout << "Unable to open the input file\n";
     }
 
     unordered_map<int, int> unordered_mapped;
@@ -118,21 +115,17 @@ void read_features(string feature_filename, DiGraph G, unordered_map<int, vector
     int u, f;
     in_edge_iter ei, e_end;
 
-    //ifstream infile(feature_filename);
-    //if (infile==NULL){
-        //cout << "Unable to open the input file\n";
-    //}
-    ifstream infile;
-    infile.open(feature_filename, ifstream::in);
-    if (!infile.is_open()) {
-        cout << "Unable to open the input file in 'read_features' function\n";  exit(-1);
-    }
 
+    ifstream infile(feature_filename);
+    // if (infile==NULL){
+        if (! infile.is_open()){
+        cout << "Unable to open the input file\n";
+    }
     while(getline(infile, line)) {
         boost::split(line_splitted, line, boost::is_any_of(" "));
         u = stoi(line_splitted[0]);
         vector<int> u_features;
-        for (unsigned i=1; i < line_splitted.size(); ++i) {
+        for (int i=1; i < line_splitted.size(); ++i) {
             f = stoi(line_splitted[i]);
             u_features.push_back(f);
         }
@@ -146,16 +139,12 @@ void read_features(string feature_filename, DiGraph G, unordered_map<int, vector
 }
 
 void read_probabilities(string prob_filename, edge_prob &P) {
-    //ifstream infile(prob_filename);
-    //if (infile==NULL){
-        //cout << "Unable to open the input file\n";
-    //}
-    ifstream infile;
-    infile.open(prob_filename, ifstream::in);
-    if (!infile.is_open()) {
-        cout << "Unable to open the input file in 'read_probabilities' function\n";  exit(-1);
-    }
+    ifstream infile(prob_filename);
+    // if (infile==NULL){
+        if (! infile.is_open()){
 
+        cout << "Unable to open the input file\n";
+    }
     int u, v;
     double p;
     while (infile >> u >> v >> p) {
@@ -163,18 +152,13 @@ void read_probabilities(string prob_filename, edge_prob &P) {
     }
 }
 
-void read_probabilities2(string prob_filename, vector<pair<int, int> > &order, vector<double> &P) {
-    //ifstream infile(prob_filename);
-    //if (infile==NULL){
-        //cout << "Unable to open the input file\n";
-    //}
-    ifstream infile;
-    infile.open(prob_filename, ifstream::in);
-    if (!infile.is_open()) {
-        cout << "Unable to open the input file in 'read_probabilities2' function\n";  exit(-1);
-    }
-
+void read_probabilities2 (string prob_filename, vector<pair<int, int> > &order, vector<double> &P) {
     vector<vector<double> > edges;
+    ifstream infile(prob_filename);
+    // if (infile==NULL){
+        if (! infile.is_open()){
+        cout << "Unable to open the input file\n";
+    }
     double u, v, p;
 
     while (infile >> u >> v >> p) {
@@ -189,23 +173,18 @@ void read_probabilities2(string prob_filename, vector<pair<int, int> > &order, v
 }
 
 void read_groups(string group_filename, unordered_map<int, unordered_set<int> > &groups) {
-    //ifstream infile(group_filename);
-    //if (infile==NULL){
-        //cout << "Unable to open the input file\n";
-    //}
-    ifstream infile;
-    infile.open(group_filename, ifstream::in);
-    if (!infile.is_open()) {
-        cout << "Unable to open the input file in 'read_groups' function\n";  exit(-1);
+    ifstream infile(group_filename);
+    // if (infile==NULL){
+        if (! infile.is_open()){
+        cout << "Unable to open the input file\n";
     }
-
     string line;
     vector<string> line_splitted;
 
     while (getline(infile, line)) {
         boost::split(line_splitted, line, boost::is_any_of(" "));
         unordered_set<int> nodes;
-        for (unsigned i = 1; i < line_splitted.size(); ++i) {
+        for (int i = 1; i < line_splitted.size(); ++i) {
             nodes.insert(stoi(line_splitted[i]));
         }
         groups[stoi(line_splitted[0])] = nodes;
@@ -213,16 +192,11 @@ void read_groups(string group_filename, unordered_map<int, unordered_set<int> > 
 }
 
 void read_seeds(string seeds_filename, unordered_set<int> &S, int length) {
-    //ifstream infile(seeds_filename);
-    //if (infile==NULL){
-        //cout << "Unable to open the input file\n";
-    //}
-    ifstream infile;
-    infile.open(seeds_filename, ifstream::in);
-    if (!infile.is_open()) {
-        cout << "Unable to open the input file in 'read_seeds' function\n";  exit(-1);
+    ifstream infile(seeds_filename);
+    // if (infile==NULL){
+        if (! infile.is_open()){
+        cout << "Unable to open the input file\n";
     }
-
     int node, i=0;
 
     while (infile >> node and i < length) {
@@ -230,6 +204,7 @@ void read_seeds(string seeds_filename, unordered_set<int> &S, int length) {
         i++;
     }
 }
+
 
 edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > Nf, vector<int> F,
                                  vector<pair<int, int> > E, edge_prob &P) {
@@ -253,6 +228,21 @@ edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_
     return changed;
 }
 
+void increase_prob_set(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > Nf, vector<int> F,
+                                 unordered_map<int, vector<pair<int, int> > > Ef, edge_prob &P)
+{
+    
+    vector<pair<int, int> > E;
+    for (int i =0; i<F.size(); ++i) {
+        for (int j=0; j < Ef[F[i]].size(); ++j) {
+            E.push_back(Ef[F[i]][j]);
+        }
+    }
+
+    increase_probabilities(G, B, Q, Nf, F, E, P);
+}
+
+
 void decrease_probabilities(edge_prob changed, edge_prob &P) {
     for (auto &item: changed) {
         pair<int, int> edge = item.first;
@@ -261,6 +251,7 @@ void decrease_probabilities(edge_prob changed, edge_prob &P) {
     }
 }
 
+
 double calculate_spread (DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > Nf, unordered_set<int> S,
                         vector<int> F, unordered_map<int, vector<pair<int, int> > > Ef, int I) {
 
@@ -268,8 +259,8 @@ double calculate_spread (DiGraph G, edge_prob B, edge_prob Q, unordered_map<int,
     Prob.insert(B.begin(), B.end());
 
     vector<pair<int, int> > E;
-    for (unsigned i=0; i < F.size(); ++i) {
-        for (unsigned j=0; j < Ef[F[i]].size(); ++j) {
+    for (int i =0; i<F.size(); ++i) {
+        for (int j=0; j < Ef[F[i]].size(); ++j) {
             E.push_back(Ef[F[i]][j]);
         }
     }
@@ -292,7 +283,7 @@ double calculate_spread (DiGraph G, edge_prob B, edge_prob Q, unordered_map<int,
             activated[node] = false;
             T.push_back(node);
         }
-        unsigned count = 0;
+        int count = 0;
         while (count < T.size()) {
             u = T[count];
             for (boost::tie(ei, e_end) = out_edges(u, G); ei!=e_end; ++ei) {
@@ -315,7 +306,7 @@ double calculate_spread (DiGraph G, edge_prob B, edge_prob Q, unordered_map<int,
 }
 
 pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob B, edge_prob Q, unordered_set<int> S, unordered_map<int,
-        vector<int> > Nf, unordered_map<int, vector<pair<int, int> > > Ef, vector<int> Phi, unsigned K, int I) {
+        vector<int> > Nf, unordered_map<int, vector<pair<int, int> > > Ef, vector<int> Phi, int K, int I) {
 
     vector<int> F;
     edge_prob P;
@@ -326,6 +317,8 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob B, e
     unordered_map<int, double> influence;
 
     P.insert(B.begin(), B.end());
+
+    int len = 0; // Current selected items length
 
     while (F.size() < K) {
         max_spread = -1;
@@ -574,8 +567,101 @@ set<pair<int, int> > get_pi(DiGraph G, unordered_map<int, set<pair<int, int> > >
     return Pi;
 }
 
+
+vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, edge_prob P, unordered_set<int> S, unordered_map<int,vector<int> > Nf,
+                           unordered_map<int, vector<pair<int, int> > > Ef, vector<int> Phi, int K, double theta, int beam_width=3) {
+
+
+    
+    vector <pair<int, vector<int> > > best_beam;
+    vector<int> F;
+    unordered_map<int, set<pair<int, int> > > Ain_edges;
+    set<pair<int, int> > Pi;
+    int max_feature;
+    double max_spread, spread;
+    
+    bool intersected;
+    edge_prob changed;
+    int omissions = 0;
+    clock_t begin, finish;
+    
+    cout << "Starting Explore-Update.\nInitializing..." << endl;
+    Ain_edges = explore(G, P, S, theta);
+    Pi = get_pi(G, Ain_edges, S);
+    cout << "Finished initializiation.\nStart selecting features..." << endl;
+
+    int t = 0;
+    cout<<"size "<<t<<" : ";
+    fflush(stdout);
+
+    while (t < K)
+    {
+        priority_queue <pair<int, vector<int> > > candidates; // redeclare for fresh start
+        
+        
+        
+        for (size_t z = 0; z < beam_width; z++)
+        {
+            edge_prob P;
+            P.insert(B.begin(), B.end()); // equivalent of B.copy()
+            // Now set the prob to that of using the set F.
+            unordered_map<int, bool> selected;
+            for (size_t i = 0; i < best_beam[z].second.size(); i++)
+            {
+                selected[best_beam[z].second[i]] = true;
+            }
+            increase_prob_set(G, B, Q, Nf, best_beam[z].second, Ef, P); 
+            // int count; // why?
+            for (auto &f: Phi)
+            {
+                if (not selected[f])
+                {
+                    intersected = false;
+                    for (auto &edge: Ef[f]) 
+                    {
+                        if (Pi.find(edge) != Pi.end()) 
+                        {
+                            intersected = true;
+                            break;
+                        }
+                    }
+
+                    if (intersected)
+                    {
+                        vector <int> candidate(best_beam[z].second);
+                        candidate.push_back(f);
+                        changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
+                        Ain_edges = explore(G, P, S, theta);
+                        spread = update(Ain_edges, S, P);
+                        candidates.push(make_pair(spread, candidate));
+                        decrease_probabilities(changed, P);
+                    }
+                    else
+                    {
+                        ++omissions;
+                    }                    
+                }
+            }
+        }
+        // After filling up all the candidates, time to update best_beam
+        for (size_t i = 0; i < beam_width; i++)
+        {
+
+            best_beam[i] = candidates.top();
+            candidates.pop();
+        }
+        cout<<"best spread at current t: "<<best_beam[0].first<<endl;
+        t++;
+    }
+
+    vector <int> result(best_beam[0].second);
+    return result;
+}
+
+
+
 vector<int> explore_update(DiGraph G, edge_prob B, edge_prob Q, edge_prob P, unordered_set<int> S, unordered_map<int,vector<int> > Nf,
-                           unordered_map<int, vector<pair<int, int> > > Ef, vector<int> Phi, unsigned K, double theta) {
+                           unordered_map<int, vector<pair<int, int> > > Ef, vector<int> Phi, int K, double theta) {
 
 
     vector<int> F;
@@ -643,7 +729,7 @@ vector<int> explore_update(DiGraph G, edge_prob B, edge_prob Q, edge_prob P, uno
     return F;
 }
 
-vector<int> top_edges(unordered_map<int, vector<pair<int, int> > > Ef, unsigned K) {
+vector<int> top_edges(unordered_map<int, vector<pair<int, int> > > Ef, int K) {
 
     vector<pair<int, int> > tuples;
     int len;
@@ -662,14 +748,14 @@ vector<int> top_edges(unordered_map<int, vector<pair<int, int> > > Ef, unsigned 
     }
 }
 
-vector<int> top_nodes(unordered_map<int, vector<int> > Nf, unsigned K) {
+vector<int> top_nodes(unordered_map<int, vector<int> > Nf, int K) {
     vector<int> F;
     unordered_map<int, int> degrees;
     vector<int> nodes;vector<pair<int, int> > tuples;
     int len;
 
     for (auto &item: Nf) {
-        for (unsigned i=0; i < item.second.size(); ++i) {
+        for (int i=0; i<item.second.size(); ++i) {
             ++degrees[item.second[i]];
         }
     }
@@ -738,25 +824,20 @@ int main(int argc, char* argv[]) {
     // read parameters from command-line
     if (argc > 1) {
 
-       cout << "Got parameters..." << endl;
-       string setup_file = argv[1];
-       cout << setup_file << endl;
-
-       //ifstream infile(setup_file);
-       //if (infile==NULL){
-           //cout << "Unable to open the input file\n";
-       //}
-       ifstream infile;
-       infile.open(setup_file, ifstream::in);
-       if (!infile.is_open()) {
-           cout << "Unable to open the input file in 'main' function\n";  exit(-1);
+        cout << "Got parameters..." << endl;
+        string setup_file = argv[1];
+        cout << setup_file << endl;
+        ifstream infile(setup_file);
+    //    if (infile==NULL){
+        if (! infile.is_open()){
+           cout << "Unable to open the input file\n";
        }
 
-       getline(infile, dataset_file);
-       getline(infile, probs_file);
-       getline(infile, features_file);
-       getline(infile, groups_file);
-       getline(infile, seeds_file);
+       getline(infile, dataset_file); // vk.txt
+       getline(infile, probs_file); // vk_wc.txt
+       getline(infile, features_file); // vk_mem.txt
+       getline(infile, groups_file); // vk_com.txt
+       getline(infile, seeds_file); // vk_seeds.txt
 
        string line;
        getline(infile, line);
@@ -804,28 +885,6 @@ int main(int argc, char* argv[]) {
    cout << "K: " << K << endl;
    FILE *results_f, *outfile;
 
-  cout << "Start greedy algorithm..." << endl;
-  start = clock();
-  boost::tie(F, influence) = greedy(G, B, Q, S, Nf, Ef, Phi, K, I);
-  finish = clock();
-//    writing selected features, time, and spread
-  outfile = fopen("greedy_features.txt", "w"); // SPECIFY OUTPUT FILE FOR FEATURES
-  cout << "Features: ";
-  for (auto &f: F) {
-      fprintf(outfile, "%i ", f);
-      cout << f << " ";
-  }
-  fclose(outfile);
-  cout << endl;
-  results_f = fopen("greedy_results.txt", "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
-  fprintf(results_f, "%f\n", (double) (finish - start)/CLOCKS_PER_SEC);
-  cout << (double) (finish - start)/CLOCKS_PER_SEC << " sec." << endl;
-  for (int num = 1; num <= K; ++num) {
-      fprintf(results_f, "%f\n", influence[num]);
-      cout << num << ": " << influence[num]  << " spread" << endl;
-  }
-  fclose(results_f);
-  cout << endl;
 
    //    top-edges heuristic
   cout << "Start Top-Edges..." << endl;
@@ -927,6 +986,29 @@ int main(int argc, char* argv[]) {
    }
    fclose(outfile);
    cout << endl;
+
+      cout << "Start greedy algorithm..." << endl;
+  start = clock();
+  boost::tie(F, influence) = greedy(G, B, Q, S, Nf, Ef, Phi, K, I);
+  finish = clock();
+//    writing selected features, time, and spread
+  outfile = fopen("greedy_features.txt", "w"); // SPECIFY OUTPUT FILE FOR FEATURES
+  cout << "Features: ";
+  for (auto &f: F) {
+      fprintf(outfile, "%i ", f);
+      cout << f << " ";
+  }
+  fclose(outfile);
+  cout << endl;
+  results_f = fopen("greedy_results.txt", "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
+  fprintf(results_f, "%f\n", (double) (finish - start)/CLOCKS_PER_SEC);
+  cout << (double) (finish - start)/CLOCKS_PER_SEC << " sec." << endl;
+  for (int num = 1; num <= K; ++num) {
+      fprintf(results_f, "%f\n", influence[num]);
+      cout << num << ": " << influence[num]  << " spread" << endl;
+  }
+  fclose(results_f);
+  cout << endl;
 
    return 0;
 }
