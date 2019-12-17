@@ -3,6 +3,7 @@
 ../datasets/vk/vk_mem.txt
 ../datasets/vk/vk_com.txt
 eu
-0
+300241
 5
 10000
+3

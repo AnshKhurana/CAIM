@@ -2,8 +2,8 @@
 ../datasets/small_greedy/edge_weights.txt
 ../datasets/small_greedy/mem.txt
 ../datasets/small_greedy/com.txt
+gb
 6263996
-0
 5
 10000
 3

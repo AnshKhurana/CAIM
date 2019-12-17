@@ -245,6 +245,7 @@ edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_
         h = intersect/F_target.size();
         // cout<<"Change in edge weights: "<<P[edge]<<" :  ";
         P[edge] = h*q + b;
+        // wait what about taking min with 1
         // cout<<P[edge]<<endl;
     }
     return changed;
@@ -254,14 +255,17 @@ void increase_prob_set(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, v
                                  unordered_map<int, vector<pair<int, int> > > Ef, edge_prob &P)
 {
     
+    P.clear(); // precaution
+    P.insert(B.begin(), B.end());
+
     vector<pair<int, int> > E;
     for (int i =0; i<F.size(); ++i) {
         for (int j=0; j < Ef[F[i]].size(); ++j) {
-            E.push_back(Ef[F[i]][j]);
+            E.push_back(Ef[F[i]][j]); // basically all edges for the feature set
         }
     }
 
-    increase_probabilities(G, B, Q, Nf, F, E, P);
+    increase_probabilities(G, B, Q, Nf, F, E, P); 
 }
 
 
@@ -347,7 +351,7 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob B, e
         printf("it = %i; ", (int)F.size() + 1);
         fflush(stdout);
         for (auto &f: Phi) {
-            cout << f << " ";
+            // cout << f << " ";
             fflush(stdout);
             if (not selected[f]) {
                 F.push_back(f);
@@ -589,8 +593,9 @@ set<pair<int, int> > get_pi(DiGraph G, unordered_map<int, set<pair<int, int> > >
     return Pi;
 }
 
-pair<vector<int>, unordered_map<int, double> >  greedy_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_set<int> S, unordered_map<int,
-        vector<int> > Nf, unordered_map<int, vector<pair<int, int> > > Ef, vector<int> Phi, int K, int I, int beam_width=3) {
+vector<int>  greedy_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_set<int> S, unordered_map<int,
+        vector<int> > Nf, unordered_map<int, vector<pair<int, int> > > Ef, vector<int> Phi, int K, int I, int beam_width=3)
+{
 
     vector<int> F;
     edge_prob P;
@@ -598,70 +603,150 @@ pair<vector<int>, unordered_map<int, double> >  greedy_beam(DiGraph G, edge_prob
     edge_prob changed;
     double spread, max_spread;
     int max_feature;
-    unordered_map<int, double> influence;
 
     P.insert(B.begin(), B.end());
     // make a copy of B to get P
     int len = 0; // Current selected items length
 
-    while (F.size() < K) {
-        max_spread = -1;
-        printf("it = %i; ", (int)F.size() + 1);
-        fflush(stdout);
-        for (auto &f: Phi) {
-            cout << f << " ";
-            fflush(stdout);
-            if (not selected[f]) {
-                F.push_back(f);
-                changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
-                spread = calculate_spread(G, B, Q, Nf, S, F, Ef, I);
-                if (spread > max_spread) {
-                    max_spread = spread;
-                    max_feature = f;
-                }
-                decrease_probabilities(changed, P);
-                F.pop_back();
-            }
-        }
-        F.push_back(max_feature);
-        selected[max_feature] = true;
-        printf("f = %i; spread = %.2f\n", max_feature, max_spread);
-        increase_probabilities(G, B, Q, Nf, F, Ef[max_feature], P);
-        influence[F.size()] = max_spread;
+    cout<<"BEAM WIDTH: "<<beam_width<<endl;
+
+    cout<<"Initializing best_beam DS\n";
+
+    cout<<"size 0"<<endl;
+    fflush(stdout);
+
+    // BEAM data structures
+
+    vector <pair <double, vector <int> > > best_beam;
+    priority_queue <pair <double, vector <int> > > candidates;
+    map <set <int>, bool> present_set;
+    F.clear();
+    for (auto &f: Phi)
+    {
+        F.push_back(f);
+        changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
+        spread = calculate_spread(G, B, Q, Nf, S, F, Ef, I);
+        candidates.push(make_pair(spread, F));
+        decrease_probabilities(changed, P);
+        F.pop_back();
     }
-    return make_pair(F, influence);
+    for (int i = 0; i < beam_width; i++)
+    {
+
+        best_beam.push_back(candidates.top());
+        candidates.pop();
+    }
+    print_beam(best_beam);
+
+    int t =1;
+    while (t < K)
+    {
+        cout<<"size "<<t<<endl;
+        fflush(stdout);
+        F.clear();
+        present_set.clear(); // features present across all candidates
+        candidates = priority_queue <pair <double, vector <int> > > ();
+
+        for (int i = 0; i < beam_width; i++)
+        {
+            P.clear();
+            P.insert(B.begin(), B.end());
+            F = best_beam[i].second; // base set now
+            increase_prob_set(G, B, Q, Nf, F, Ef, P);
+            selected.clear();
+            for (auto &f: F)
+            {
+                selected[f] = true;
+            }
+            int count = 0;
+            for(auto &f: Phi)
+            {
+                if (count % 100 == 0)
+                {
+                    cout<<count<<" ";
+                    fflush(stdout);
+                }
+                count++;
+                if (not selected[f])
+                {
+                    
+                    F.push_back(f);
+                    // check here if new set is present
+                    if (present_set.count(set <int> (F.begin(), F.end())) > 0)
+                    {
+                        // This feature combination was already considered as a canidate
+                        F.pop_back();
+                        continue;
+                    }
+                    present_set.insert(make_pair(set <int> (F.begin(), F.end()), true));
+                    changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
+                    spread = calculate_spread(G, B, Q, Nf, S, F, Ef, I);
+                    candidates.push(make_pair(spread, F));
+                    decrease_probabilities(changed, P);
+                    F.pop_back();
+                }
+            }
+            cout<<endl; 
+        } // Considered all the candidates by the end of this for loop
+        // Time to copy the best 3
+        for (int i = 0; i < beam_width; i++)
+        {
+            best_beam[i] = candidates.top();
+            candidates.pop();
+        }
+        print_beam(best_beam);
+        t++;
+    }
+    vector <int> res(best_beam[0].second);
+    int influence = best_beam[0].first;
+    cout<<"Influence greedy beam: "<<influence;
+    return res;
 }
 
 
-// explore_update_beam(G, B, Q, P, S, Nf, Ef, Phi, K, theta);
 vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_set<int> S, unordered_map<int,vector<int> > Nf,
                            unordered_map<int, vector<pair<int, int> > > Ef, vector<int> Phi, int K, double theta, int beam_width=3) {
 
 
-    cout<<"BEAM_WIDTH: "<<beam_width<<endl;
-    vector <pair<double, vector<int> > > best_beam;
+    
+    
     vector<int> F;
     unordered_map<int, set<pair<int, int> > > Ain_edges;
     set<pair<int, int> > Pi;
     double spread;
     edge_prob P;
     P.insert(B.begin(), B.end()); 
+
+    cout<<"BEAM_WIDTH: "<<beam_width<<endl;
     
+    
+    // special EU variables 
     bool intersected;
     edge_prob changed;
     int omissions = 0;
+   
+   
     clock_t begin, finish;
     
     cout << "Starting Explore-Update-Beam.\nInitializing..." << endl;
-    Ain_edges = explore(G, P, S, theta);
+    Ain_edges = explore(G, P, S, theta); // explore with base prob
     Pi = get_pi(G, Ain_edges, S);
     cout << "Finished initializiation.\nStart selecting features..." << endl;
 
+    cout<<"Initializing best_beam DS\n";
     int t = 0;
     cout<<"size "<<t<<" : ";
     fflush(stdout);
-    priority_queue <pair<double, vector<int> > > firstcandidates;
+
+    // Initialize beam data structures
+    vector <pair<double, vector<int> > > best_beam;
+    priority_queue <pair<double, vector<int> > > candidates;
+    map <set <int>, bool> present_set;
+    
     int count = 0;
+    F.clear();
+
+
     for (auto &f: Phi)
     {
         if (count%100 == 0) {
@@ -682,14 +767,14 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_s
         if (intersected)
         {
             
-            vector <int> candidate;
-            candidate.push_back(f);
+            
+            F.push_back(f);
             changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
             Ain_edges = explore(G, P, S, theta);
             spread = update(Ain_edges, S, P);
-            // cout<<spread<<" "<<f<<endl;
-            firstcandidates.push(make_pair(spread, candidate));
+            candidates.push(make_pair(spread, F));
             decrease_probabilities(changed, P);
+            F.pop_back();
         }
         else
         {
@@ -699,38 +784,42 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_s
 
     for (size_t i = 0; i < beam_width; i++)
     {
-        pair <double, vector<int> > el(firstcandidates.top());
-        best_beam.push_back(el);
-        firstcandidates.pop();
+        best_beam.push_back(candidates.top());
+        candidates.pop();
     }
     
     // # best beam intitizized with singleton feature sets
 
-    t++;
+    t = 1;
     cout<<"t = "<<t<<" best spread at current t: "<<best_beam[0].first<<endl;
     cout<<"Second best val = "<<best_beam[1].first<<endl;
+    
+    print_beam(best_beam);
+
     while (t < K)
     {
-        priority_queue <pair<double, vector<int> > > candidates; // redeclare for fresh start
-        
-        
-        
-        for (size_t z = 0; z < beam_width; z++)
+        candidates = priority_queue <pair<double, vector<int> > > (); // redeclare for fresh start
+        F.clear();
+        present_set.clear();
+        for (int z = 0; z < beam_width; z++)
         {
-            
-            edge_prob P;
+            P.clear();
             P.insert(B.begin(), B.end()); // equivalent of B.copy()
             // Now set the prob to that of using the set F.
-            unordered_map<int, bool> selected;
-            for (size_t i = 0; i < best_beam[z].second.size(); i++)
-            {
-                selected[best_beam[z].second[i]] = true;
-            }
+            F = best_beam[z].second; // base F
             increase_prob_set(G, B, Q, Nf, best_beam[z].second, Ef, P); 
+            unordered_map<int, bool> selected; // reset for every set in every iteration
+            
+            for (auto &f: F)
+            {
+                selected[f] = true;
+            }
+
             // int count; // why?
+            
             for (auto &f: Phi)
             {
-                cout<<"size "<<t<<" : ";
+                
                 fflush(stdout);
                 if (not selected[f])
                 {
@@ -746,26 +835,33 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_s
 
                     if (intersected)
                     {
-                        vector <int> candidate(best_beam[z].second);
-                        candidate.push_back(f);
+                        
+                        F.push_back(f);
+
+                        if (present_set.count(set <int> (F.begin(), F.end())) > 0)
+                        {
+                        // This feature combination was already considered as a canidate
+                            F.pop_back();
+                            continue;
+                        }
+                        present_set.insert(make_pair(set <int> (F.begin(), F.end()), true));
                         changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
                         Ain_edges = explore(G, P, S, theta);
                         spread = update(Ain_edges, S, P);
                         // cout<<spread<<" "<<f<<endl;
-                        candidates.push(make_pair(spread, candidate));
+                        candidates.push(make_pair(spread, F));
                         decrease_probabilities(changed, P);
+                        F.pop_back();
                     }
                     else
                     {
                         ++omissions;
                     }                    
                 }
-                else
-                {
-                    cout<<"Already selected feature: "<<f<<endl;
-                }
+               
                 
             }
+           
         }
         // After filling up all the candidates, time to update best_beam
         for (size_t i = 0; i < beam_width; i++)
@@ -774,10 +870,10 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_s
             best_beam[i] = candidates.top();
             candidates.pop();
         }
-        cout<<"best spread at current t: "<<best_beam[0].first<<endl;
+        print_beam(best_beam);
         t++;
     }
-
+    cout<<"Total number of omissions: "<<omissions<<endl;
     vector <int> result(best_beam[0].second);
     return result;
 }
@@ -830,8 +926,7 @@ vector<int> explore_update(DiGraph G, edge_prob B, edge_prob Q, edge_prob P, uno
                     changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
                     Ain_edges = explore(G, P, S, theta);
                     spread = update(Ain_edges, S, P);
-                    // cout<<spread<<" "<<f<<endl;
-                    if (spread > max_spread) {
+                    if (spread >= max_spread) {
                         max_spread = spread;
                         max_feature = f;
                     }
@@ -844,9 +939,11 @@ vector<int> explore_update(DiGraph G, edge_prob B, edge_prob Q, edge_prob P, uno
             }
         }
         finish = clock();
-        cout << (double) (finish - begin)/CLOCKS_PER_SEC;
+        cout <<"Time: "<<(double) (finish - begin)/CLOCKS_PER_SEC;
         cout << endl;
         F.push_back(max_feature);
+        
+        cout<<"max feature & spread: "<<max_feature<<" & "<<max_spread<<endl;
         selected[max_feature] = true;
         increase_probabilities(G, B, Q, Nf, F, Ef[max_feature], P);
     }
@@ -1043,19 +1140,21 @@ int main(int argc, char const *argv[])
 
     if (strcmp(algo_name.c_str(), "eu") == 0)
     {
+        cout<<"In correct algo\n";
         edge_prob P;
         read_probabilities(probs_file, P);
         F = explore_update(G, B, Q, P, S, Nf, Ef, Phi, K, theta);
     }
     else if (strcmp(algo_name.c_str(), "g") == 0)
     {
-        cout<<"In correct algo\n";
+        
         boost::tie(F, influence) = greedy(G, B, Q, S, Nf, Ef, Phi, K, I);
         
     }
     else if (strcmp(algo_name.c_str(), "gb") == 0)
     {
-        boost::tie(F, influence) = greedy_beam(G, B, Q, S, Nf, Ef, Phi, K, I);
+        
+        F = greedy_beam(G, B, Q, S, Nf, Ef, Phi, K, I);
         
     }
     else
