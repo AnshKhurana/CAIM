@@ -232,7 +232,7 @@ def greedy_beam(G, B, Q, Ef, S, Phi, K, I, BEAM_WIDTH=3):
     influence = dict()
     t = 0
     max_spread = +1 # Negative values
-    print '|F| = {}'.format(len(F))
+    print ('|F| = ' + str(t))
     P = B.copy()
     for f in Phi.difference(F):
         changed = increase_probabilities(G, B, Q, F + [f], Ef[f], P) 
@@ -289,7 +289,7 @@ def greedy(G, B, Q, Ef, S, Phi, K, I):
     influence = dict()
     while len(F) < K:
         max_spread = -1
-        print('|F| = {}'.format(len(F)))
+        print '|F| =' + str(t)
         for f in Phi.difference(F):
             changed = increase_probabilities(G, B, Q, F + [f], Ef[f], P)
             spread = calculate_MC_spread(G, S, P, I)

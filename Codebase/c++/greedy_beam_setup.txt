@@ -1,0 +1,9 @@
+../datasets/small_greedy/edge_list.txt
+../datasets/small_greedy/edge_weights.txt
+../datasets/small_greedy/mem.txt
+../datasets/small_greedy/com.txt
+6263996
+0
+5
+10000
+3

@@ -1,0 +1,10 @@
+<path to edge-list>
+<path to weights>
+<path to memberships>
+<path to com-wise file>
+<name of algorithm>
+<group to be used as seed set>
+<Number of features to be selected>
+<Number of MC simulations>
+<beam width>
+<parameter theta>
