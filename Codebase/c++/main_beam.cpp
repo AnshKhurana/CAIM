@@ -8,6 +8,7 @@
 #include <boost/range/algorithm.hpp>
 #include <boost/graph/topological_sort.hpp>
 #include <unordered_map>
+#include <unordered_set>
 #include <queue>
 #include <string>
 #include <ctime>
@@ -619,7 +620,8 @@ vector<int>  greedy_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_set<int>
 
     vector <pair <double, vector <int> > > best_beam;
     priority_queue <pair <double, vector <int> > > candidates;
-    map <set <int>, bool> present_set;
+    boost::hash <set <int> > hashfn;
+    set <set <int> > present_set;
     F.clear();
     for (auto &f: Phi)
     {
@@ -678,7 +680,7 @@ vector<int>  greedy_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_set<int>
                         F.pop_back();
                         continue;
                     }
-                    present_set.insert(make_pair(set <int> (F.begin(), F.end()), true));
+                    present_set.insert(set <int> (F.begin(), F.end()));
                     changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
                     spread = calculate_spread(G, B, Q, Nf, S, F, Ef, I);
                     candidates.push(make_pair(spread, F));
@@ -741,7 +743,7 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_s
     // Initialize beam data structures
     vector <pair<double, vector<int> > > best_beam;
     priority_queue <pair<double, vector<int> > > candidates;
-    map <set <int>, bool> present_set;
+    set <set <int> > present_set;
     
     int count = 0;
     F.clear();
@@ -844,7 +846,7 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_s
                             F.pop_back();
                             continue;
                         }
-                        present_set.insert(make_pair(set <int> (F.begin(), F.end()), true));
+                        present_set.insert(set <int> (F.begin(), F.end()));
                         changed = increase_probabilities(G, B, Q, Nf, F, Ef[f], P);
                         Ain_edges = explore(G, P, S, theta);
                         spread = update(Ain_edges, S, P);
