@@ -278,7 +278,7 @@ void decrease_probabilities(edge_prob changed, edge_prob &P) {
 }
 
 
-double calculate_spread (DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > Nf, unordered_set<int> S,
+double calculate_spread(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > Nf, unordered_set<int> S,
                         vector<int> F, unordered_map<int, vector<pair<int, int> > > Ef, int I) {
 
     edge_prob Prob;
@@ -367,7 +367,7 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob B, e
         }
         F.push_back(max_feature);
         selected[max_feature] = true;
-        printf("f = %i; spread = %.2f\n", max_feature, max_spread);
+        printf("f = %i; spread = %.4f\n", max_feature, max_spread);
         increase_probabilities(G, B, Q, Nf, F, Ef[max_feature], P);
         influence[F.size()] = max_spread;
     }
@@ -798,7 +798,7 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_s
 
     while (t < K)
     {
-        candidates = priority_queue <pair<double, vector<int> > > (); // redeclare for fresh start
+        candidates = priority_queue <pair<double, vector<int> > > (); // reset for fresh start at each t
         F.clear();
         present_set.clear();
         for (int z = 0; z < beam_width; z++)
@@ -807,7 +807,7 @@ vector<int> explore_update_beam(DiGraph G, edge_prob B, edge_prob Q, unordered_s
             P.insert(B.begin(), B.end()); // equivalent of B.copy()
             // Now set the prob to that of using the set F.
             F = best_beam[z].second; // base F
-            increase_prob_set(G, B, Q, Nf, best_beam[z].second, Ef, P); 
+            increase_prob_set(G, B, Q, Nf, F, Ef, P); 
             unordered_map<int, bool> selected; // reset for every set in every iteration
             
             for (auto &f: F)
@@ -1166,19 +1166,22 @@ int main(int argc, char const *argv[])
     finish = clock();
 
     results_f = fopen(save_result.c_str(), "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
-    fprintf(results_f, "%f\n", (double) (finish - start)/CLOCKS_PER_SEC);
+    fprintf(results_f, "Execution time  = %f\n", (double) (finish - start)/CLOCKS_PER_SEC);
     cout << (double) (finish - start)/CLOCKS_PER_SEC << " sec." << endl;
-    for (int num = 1; num <= K; num+=5) {
-        vector<int> subv(F.begin(), F.begin()+num);
-        spread = calculate_spread(G, B, Q, Nf, S, subv, Ef, I);
-        fprintf(results_f, "%f\n", spread);
-        cout << num << ": " << spread << endl;
-    }
-    fclose(results_f);
+    
+    // NONSENSE
+    // for (int num = 1; num <= K; num+=5) {
+    //     vector<int> subv(F.begin(), F.begin()+num);
+    //     spread = calculate_spread(G, B, Q, Nf, S, subv, Ef, I);
+    //     fprintf(results_f, "%f\n", spread);
+    //     cout << num << ": " << spread << endl;
+    // }
+   
     spread = calculate_spread(G, B, Q, Nf, S, F, Ef, I);
     cout<<"Final spread value: "<<spread<<endl;
     cout << endl;
-
+    fprintf(results_f, "The final spread value = %f\n", spread);
+    fclose(results_f);
 
     sort(F.begin(), F.end());
     outfile = fopen(save_features.c_str(), "w"); // SPECIFY OUTPUT FILE FOR FEATURES
