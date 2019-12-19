@@ -38,3 +38,4 @@ void read_features(string feature_filename, DiGraph G, unordered_map<int, vector
 void read_probabilities(string prob_filename, edge_prob &P);
 void read_probabilities2(string prob_filename, vector<pair<int, int> > &order, vector<double> &P);
 void read_groups(string group_filename, unordered_map<int, unordered_set<int> > &groups);
+void read_seeds(string seeds_filename, unordered_set<int> &S, int length);
