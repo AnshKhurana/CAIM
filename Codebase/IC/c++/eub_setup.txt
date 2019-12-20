@@ -1,0 +1,9 @@
+../datasets/vk/vk.txt
+../datasets/vk/vk_wc.txt
+../datasets/vk/vk_mem.txt
+../datasets/vk/vk_com.txt
+eub
+300241
+5
+10000
+4

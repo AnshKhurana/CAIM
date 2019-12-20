@@ -12,6 +12,7 @@
 #include <map>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 #include <sstream>
 #include <climits>
 #include "anyoption.h"
