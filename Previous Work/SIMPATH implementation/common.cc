@@ -2,7 +2,8 @@
 
 float getCurrentMemoryUsage() {
 
-	string pid = intToStr(unsigned(getpid()));
+	// string pid = intToStr(unsigned(getpid()));
+	string pid = 0;
 	string outfile = "temp/tmp_" + pid + ".txt";
 	string command = "pmap " + pid + " | grep -i Total | awk '{print $2}' > " + outfile;
 	system(command.c_str());

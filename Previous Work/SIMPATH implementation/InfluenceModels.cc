@@ -4,7 +4,7 @@ InfluenceModels::InfluenceModels() {
 }
 
 InfluenceModels::~InfluenceModels() {
-	string pid = intToStr(unsigned(getpid()));
+	string pid = 0; //intToStr(unsigned(getpid()));
 	string outfile = "temp/tmp_" + pid + ".txt";
 	
 	string command = string("rm -f ") + outfile ;
@@ -26,7 +26,7 @@ void InfluenceModels::doAll(int argc, char* argv[])
 
 	cout << "In function InfluenceModels::doAll " << endl;
 
-	cout << "PID of the program: " << getpid() << endl;
+	cout << "PID of the program: " << 0 << endl;
 
 	string command = string("mkdir -p ") + outdir ;
 	system(command.c_str());
