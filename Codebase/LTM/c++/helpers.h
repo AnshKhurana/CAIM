@@ -1,6 +1,7 @@
 #include <iostream>
 #include <boost/graph/adjacency_list.hpp>
 #include <fstream>
+#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <unordered_set>
 #include <time.h>
@@ -9,7 +10,9 @@
 #include <boost/graph/topological_sort.hpp>
 #include <unordered_map>
 #include <ctime>
-#include <tuple>
+// #include <tuple> 
+#include <queue>
+#include <math.h>
 
 using namespace std;
 
@@ -39,3 +42,11 @@ void read_probabilities(string prob_filename, edge_prob &P);
 void read_probabilities2(string prob_filename, vector<pair<int, int> > &order, vector<double> &P);
 void read_groups(string group_filename, unordered_map<int, unordered_set<int> > &groups);
 void read_seeds(string seeds_filename, unordered_set<int> &S, int length);
+
+
+struct NodeParams{
+    
+    double threshold;
+    double in_weight_sum;
+    bool active;
+};

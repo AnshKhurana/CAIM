@@ -12,7 +12,7 @@
 namespace _MC {
 
 typedef map<UID, float> FriendsMap;
-typedef HashTreeMap<UID, FriendsMap*> HashTreeCube;
+typedef HashTreeMap<UID, FriendsMap*> HashTreeCube; // node to pointer to the neighbours "map"
 typedef HashTreeMap<UID, multimap<float, UID>*> HashTreeCube2;
 typedef map<int, unsigned int> RadiusCovMap;
 

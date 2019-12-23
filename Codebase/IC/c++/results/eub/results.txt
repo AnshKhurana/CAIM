@@ -1,2 +1,2 @@
-101349.927626
-5176.555100
+Execution time  = 123345.274783
+The final spread value = 5180.097000

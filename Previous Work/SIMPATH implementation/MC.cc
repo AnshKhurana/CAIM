@@ -947,7 +947,7 @@ bool MC::LTCovPlus(MGStruct *pMG, MGStruct *pBestMG, UserList &S) {
 
 } // end of function
 
-
+// Code for LT coverage using the MC simulations method	
 float MC::LTCov(UserList& S) {
 //    cout << "In LTCov" << endl;
     float tol = 0.00001;
