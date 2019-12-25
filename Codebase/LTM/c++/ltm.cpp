@@ -154,17 +154,17 @@ int main(int argc, char const *argv[])
         boost::tie(result_feature_set, influence) = greedy(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I, in_degrees);
     }
     finish = clock();
-    cout<<"No seg fault yet!0\n";
+    
     results_file = fopen(save_result.c_str(), "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
     double exec_time = (double) (finish - start)/CLOCKS_PER_SEC;
-    cout<<"No seg fault yet!1\n";
-    fprintf(results_file, "Execution time  = %f\n secs.", exec_time);
-    cout << "Execution time = " << exec_time << " secs.";
+    
+    fprintf(results_file, "Execution time  = %lf\n secs.", exec_time);
+    cout << "Execution time = " << exec_time << " secs.\n";
     
     // final_spread = calculate_MC_spread(result_feature_set); // ... for LTM 
 
     for (int num = 1; num <= K; ++num) {
-      fprintf(results_file, "%f\n", influence[num]);
+      fprintf(results_file, "%d %f\n", num, influence[num]);
       cout << num << ": " << influence[num]  << " spread" << endl;
     }
     final_spread = influence[K];
@@ -225,6 +225,8 @@ void gen_q(edge_prob B, unordered_map<int, vector<int> > node_to_feat, edge_prob
     double b, d_in; 
     int v, f;
     pair <int, int> edge;
+    double c = 2;
+    int inf_count = 0, overall_count = 0; 
     for (auto &it : B)
     {
 
@@ -233,16 +235,20 @@ void gen_q(edge_prob B, unordered_map<int, vector<int> > node_to_feat, edge_prob
         v = edge.second;
         d_in = in_degrees[v];
         f = node_to_feat[edge.second].size();
-        if ((2-2*b*d_in)/(1-2*b*d_in) < 0)
+        if ((c-c*b*d_in)/(1-c*b*d_in) < 0)
         {
             Q[edge] = inf;
+            inf_count++;
+            overall_count++;
         }
         else
         {
-            Q[edge] = (1/f) * log((2-2*b*d_in)/(1-2*b*d_in));
+            Q[edge] = (1.0/f) * log((c-c*b*d_in)/(1-c*b*d_in));
+            overall_count++;
         }
         
     }
+    cout<<"gen Q inf_count/overall_count :"<<inf_count<<"/"<<overall_count<<endl;
 }
 
 double calculate_MC_spread(DiGraph G, edge_prob P, unordered_set <int> S, int I)
@@ -475,8 +481,8 @@ unordered_map<int, double> save_degrees(DiGraph G)
     unordered_map<int, double> in_degrees;
     vertex_iter vi, v_end;
     int in_d;
-    // FILE* deg_file; - can load instead of recomputing
-    // deg_file = fopen("toy_degrees.txt", "w"); 
+    // FILE* deg_file;// - can load instead of recomputing
+    // deg_file = fopen("small_degrees.txt", "w"); 
 
     for (boost::tie(vi, v_end) = boost::vertices(G); vi != v_end; ++vi)
     {

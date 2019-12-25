@@ -1,7 +1,7 @@
 import sys, os
 # delete and rename for correctness
 
-c =0.1 
+c =0.2
 
 def replace_weights(dataset_dir):
     in_degrees = dict()
@@ -10,8 +10,8 @@ def replace_weights(dataset_dir):
             x = line.strip().split()
             in_degrees[int(x[0])] = int(x[1])
 
-    with open(os.path.join(dataset_dir, "edge_weights.txt")) as fin:
-        with open(os.path.join(dataset_dir, "edge_weights_1.txt"), 'w') as fout:
+    with open(os.path.join(dataset_dir, "edge_weights_old.txt")) as fin:
+        with open(os.path.join(dataset_dir, "edge_weights_aug.txt"), 'w') as fout:
             line = fin.readline()
             while line:
                 wt = float(line.strip().split()[2])
