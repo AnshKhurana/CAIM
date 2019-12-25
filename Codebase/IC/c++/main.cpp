@@ -609,8 +609,10 @@ vector<int> explore_update(DiGraph G, edge_prob B, edge_prob Q, edge_prob P, uno
             count++;
             if (not selected[f]) {
                 intersected = false;
-                for (auto &edge: Ef[f]) {
-                    if (Pi.find(edge) != Pi.end()) {
+                for (auto &edge: Ef[f]) 
+                {
+                    if (Pi.find(edge) != Pi.end()) 
+                    {
                         intersected = true;
                         break;
                     }

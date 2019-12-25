@@ -1,0 +1,10 @@
+../datasets/toy/edge_list.txt
+../datasets/toy/edge_weights.txt
+-
+../datasets/toy/mem.txt
+../datasets/toy/com.txt
+-
+g
+22736114
+5
+10000

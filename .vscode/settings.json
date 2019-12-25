@@ -1,3 +1,6 @@
 {
-    "python.pythonPath": "/home/konstantinost/anaconda3/envs/caimpy2/bin/python"
+    "python.pythonPath": "/usr/bin/python3",
+    "files.associations": {
+        "iosfwd": "cpp"
+    }
 }

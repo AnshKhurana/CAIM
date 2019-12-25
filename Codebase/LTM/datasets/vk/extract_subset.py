@@ -4,6 +4,7 @@ import os
 src = "./"
 dst = "../small_greedy/"
 N = 500
+c=1./10
 
 def gen_mem():
     with open(os.path.join(src, "vk_mem.txt"), 'r') as fin:

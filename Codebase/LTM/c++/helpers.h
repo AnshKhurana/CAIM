@@ -10,7 +10,7 @@
 #include <boost/graph/topological_sort.hpp>
 #include <unordered_map>
 #include <ctime>
-// #include <tuple> 
+#include <tuple> 
 #include <queue>
 #include <math.h>
 
@@ -36,6 +36,8 @@ void print_edges(DiGraph G);
 void print_degree(DiGraph G);
 void print_node_edges(DiGraph G);
 void print_size(DiGraph G);
+unordered_map<int, double> save_degrees(DiGraph G);
+double sigmoid(double x);
 DiGraph read_graph(string graph_filename);
 void read_features(string feature_filename, DiGraph G, unordered_map<int, vector<int> > &Nf, unordered_map<int, vector<pair<int, int> > > &Ef);
 void read_probabilities(string prob_filename, edge_prob &P);
@@ -50,3 +52,4 @@ struct NodeParams{
     double in_weight_sum;
     bool active;
 };
+
