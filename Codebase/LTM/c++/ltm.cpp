@@ -11,59 +11,10 @@ edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_
 void decrease_probabilities(edge_prob changed, edge_prob &P);
 edge_prob init_probs(DiGraph, edge_prob, unordered_map <int, double> &in_degrees);
 double backtrack(DiGraph, int, edge_prob, double);
+double simpath_spread(DiGraph, unordered_set <int>, edge_prob, double);
+double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  double eta);
 
 
-double simpath_spread(DiGraph G, unordered_set <int> S, edge_prob P, double eta=0.0000001)
-{
-    double spread = 0.0;
-    // unordered_set <int> ignored_vertices(S);
-
-    for (auto &s: S)
-    {
-        // ignored_vertices.erase(s);
-        spread += backtrack(G, s, P, eta); 
-        // no need to create an induced subgraph since incoming edges for the
-        // current seed elements have already been removed
-        // ignored_vertices.insert(s);
-    }
-    
-    return spread;
-    
-}
-// ok wow
-// struct xNode { 
-//     UID id;         // user id
-//     bool flag;      // on current path?
-//     double cov;      // cov^{V-x}(w), for non-VC neighbors of w only 
-//     double tol;      // tolerance on current path
-//     double prob;     // incoming edge probability on current path
-//     double pp;  // propagation prob. of the current path from starting point to exact this node
-
-//     multimap<double, xNode *> *N_in;
-//     multimap<double, xNode *> *N_out;
-
-//     int out_deg; 
-//     int in_deg;
-//     int leafs; // number of in-neighbors whose out-deg is 1
-
-//     xNode *next;    // to use in the linked-list in the buffer
-
-//     xNode() : id(0), flag(false), cov(0), tol(0), prob(0), pp(0), N_in(NULL), N_out(NULL), next(NULL) {}
-
-//     xNode(UID id1, bool flag1, double cov1, double tol1, double prob1, double pp1) : id(id1), flag(flag1), cov(cov1), tol(tol1), prob(prob1), pp(pp1), N_in(NULL), N_out(NULL), next(NULL) {}
-
-// };  
-
-
-// double backtrack(DiGraph G, int s, edge_prob, double eta, &best_phi) 
-// - give best Phi to use in the next iteration of feature selection
-
-double backtrack(DiGraph G, int s, edge_prob, double eta)
-{
-    double spd = 1.0, pp = 1.0;
-    // need xNode DS for the node?
-    return spd;
-}
 
 int main(int argc, char const *argv[])
 {
@@ -138,7 +89,7 @@ int main(int argc, char const *argv[])
     DiGraph G = read_graph(dataset_file);
     read_features(mem_file, G, node_to_feat, feat_to_edges);
     read_probabilities(b_file, B);
-    in_degrees = save_degrees(G);
+    in_degrees = save_in_degrees(G);
     edge_prob Bt =  transform_probabilties(node_to_feat, B, in_degrees);
     
     if (q_file == "-")
@@ -212,11 +163,11 @@ int main(int argc, char const *argv[])
     results_file = fopen(save_result.c_str(), "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
     double exec_time = (double) (finish - start)/CLOCKS_PER_SEC;
     
-    fprintf(results_file, "Execution time  = %lf\n secs.", exec_time);
+    fprintf(results_file, "Execution time  = %lf secs.\n", exec_time);
     cout << "Execution time = " << exec_time << " secs.\n";
     
     // final_spread = calculate_MC_spread(result_feature_set); // ... for LTM 
-
+    fprintf(results_file, "k spread\n");
     for (int num = 0; num <= K; ++num) {
       fprintf(results_file, "%d %f\n", num, influence[num]);
       cout << num << ": " << influence[num]  << " spread" << endl;
@@ -238,6 +189,159 @@ int main(int argc, char const *argv[])
     cout << endl;
     return 0;
 }
+
+
+double simpath_spread(DiGraph G, unordered_set <int> S, edge_prob P, double eta=1e-6)
+{
+    double spread = 0.0;
+    // unordered_set <int> ignored_vertices(S);
+
+    for (auto &s: S)
+    {
+        // ignored_vertices.erase(s);
+        spread += forward_backward(G, s, P, S, eta); 
+        // no need to create an induced subgraph since incoming edges for the
+        // current seed elements have already been removed
+        // ignored_vertices.insert(s);
+    }
+    
+    return spread;
+    
+}
+// ok wow
+// struct xNode { 
+//     UID id;         // user id
+//     bool flag;      // on current path?
+//     double cov;      // cov^{V-x}(w), for non-VC neighbors of w only 
+//     double tol;      // tolerance on current path
+//     double prob;     // incoming edge probability on current path
+//     double pp;  // propagation prob. of the current path from starting point to exact this node
+
+//     multimap<double, xNode *> *N_in;
+//     multimap<double, xNode *> *N_out;
+
+//     int out_deg; 
+//     int in_deg;
+//     int leafs; // number of in-neighbors whose out-deg is 1
+
+//     xNode *next;    // to use in the linked-list in the buffer
+
+//     xNode() : id(0), flag(false), cov(0), tol(0), prob(0), pp(0), N_in(NULL), N_out(NULL), next(NULL) {}
+
+//     xNode(UID id1, bool flag1, double cov1, double tol1, double prob1, double pp1) : id(id1), flag(flag1), cov(cov1), tol(tol1), prob(prob1), pp(pp1), N_in(NULL), N_out(NULL), next(NULL) {}
+
+// };  
+
+
+// double backtrack(DiGraph G, int s, edge_prob, double eta, &best_phi) 
+// - give best Phi to use in the next iteration of feature selection
+
+double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  double eta)
+{
+    double spd = 1.0, pp = 1.0;
+    // need xNode DS for the node?
+    // get xNode DS for s
+    // whatever
+
+    vector <int> Q; // Q using vector - in place for xNode queue
+    set <int> Q1; //why not unordered?
+    map <int, set <int> > D;
+    
+    Q.push_back(v); 
+    Q1.insert(v);
+
+    unordered_map <int, double> PrPtill;
+
+    PrPtill.insert(make_pair(v, pp));
+
+    while (! Q.empty()) // main_loop
+    {
+        int last_v = -1;
+
+        // FORWARD pass
+        while(true)
+        {
+            int x = Q.back(); // ID of curr Node
+            if (x == last_v)
+            {
+                cout<<"Notice when this happens\n";
+                break;
+            }
+
+            pp =  PrPtill[x];
+
+            // loop through out-neighbours now
+            out_edge_iter ei, e_end;
+            for (boost::tie(ei, e_end) = out_edges(x, G); ei!=e_end; ++ei) 
+            {
+                int y = target(*ei, G);
+                if (y == v) // y is just v, dataset might have self loops?
+                {
+                    D[x].insert(y);
+                    cout<<"should never happen, no in_edges for v\n"; 
+                    continue; // will never happen tho, no in_edges for v but don't know if boost updated
+                }
+                if (Q1.find(y) != Q1.end()) // no cycles
+                {
+                    continue;
+                }
+                if (D[x].find(y) != D[x].end()) // y is an already-explored neighbor of x
+                {
+                    continue;
+                }
+                if (S.find(y) != S.end()) 
+                { // y is a seed, induced subgraph check
+                    D[x].insert(y);
+                    continue;
+                }
+
+                double ppnext = pp*P[make_pair(x, y)];
+                
+                if (ppnext < eta) // time to prune
+                {
+                    spd += ppnext;
+                    // PrPtill[y] = ppnext; - no need to store since this will not be used in the future
+                    D[x].insert(y);
+                    // nextPhi.append(node_to_feat[y])
+                    continue;
+                }
+
+                spd+= ppnext;
+                PrPtill[y] = ppnext;
+
+                Q.push_back(y);
+                Q1.insert(y);
+                D[x].insert(y); //explored
+                break;
+            } //endfor
+        } //endForward
+    
+        // BACKWARD pass
+
+        int pop_id = Q.back(); // ID of xNode u
+
+        if (Q.size() == 1) // copy-paste
+        {
+            if (pop_id != v) 
+            { // in the end one should get back to current s
+                cout << "The only remaining node in Q is: " << pop_id << ", but not: " << v << endl;
+                exit(1);
+            } //endif
+
+            if (D[pop_id].size() < out_degree(v, G)) { // I have degrees :)
+                cout<<"have not explored all out neighbors of the start node, continue!!\n";
+                continue;
+            } //endif
+        }
+
+
+        Q1.erase(pop_id);
+        D.erase(pop_id);
+        Q.pop_back();
+    }
+    return spd;
+}
+
 
 
 
@@ -534,7 +638,7 @@ void decrease_probabilities(edge_prob changed, edge_prob &P) {
     }
 }
 
-unordered_map<int, double> save_degrees(DiGraph G)
+unordered_map<int, double> save_in_degrees(DiGraph G)
 {
     unordered_map<int, double> in_degrees;
     vertex_iter vi, v_end;
@@ -552,7 +656,25 @@ unordered_map<int, double> save_degrees(DiGraph G)
     return in_degrees;
 }
 
+unordered_map<int, double> save_out_degrees(DiGraph G)
+{
+    unordered_map<int, double> out_degrees;
+    vertex_iter vi, v_end;
+    int out_d;
+    // FILE* deg_file;// - can load instead of recomputing
+    // deg_file = fopen("out_degrees.txt", "w"); 
 
-// calculate_MCPlus()
-// calculate_simpath()
-// calculate_rrset()
+    for (boost::tie(vi, v_end) = boost::vertices(G); vi != v_end; ++vi)
+    {
+        out_d = boost::out_degree(*vi, G);
+        out_degrees.insert(make_pair(*vi, out_d));
+        // fprintf(deg_file, "%d %d\n", *vi, out_d);
+    }
+    // fclose(deg_file);
+    return out_degrees;
+}
+
+
+// calculate_MCPlus() - x
+// calculate_simpath() - yes!
+// calculate_rrset() - future work

@@ -1011,6 +1011,7 @@ double LTSimplePath::backtrackBasic(UID v, UserList &S) {
     while (Q.empty() == false) {
         UID last_v = 0;
 
+        // forward fills the queue 
         while (true) {
             // FORWARD starts here!!!
             xNode *currentNode = Q.back(); // get the latest node on the path
@@ -1067,17 +1068,18 @@ double LTSimplePath::backtrackBasic(UID v, UserList &S) {
 
         } // endwhile
 
+        // backtrack takes elements out form the queue
         // BACKTRACK starts here!!!
         xNode *u = Q.back(); // pick the last node in the current path
         UID pop_id = u->id;
         if (Q.size() == 1) {
             // when you are backtracking to the start node now        
-            if (pop_id != v) {
+            if (pop_id != v) { // in the end one should get back to current s
                 cout << "The only remaining node in Q is: " << pop_id << ", but not: " << v << endl;
                 exit(1);
             } //endif
 
-            if (D[pop_id].size() < numOutNeighbors) {
+            if (D[pop_id].size() < numOutNeighbors) { // I have degrees :)
                 // have not explored all out neighbors of the start node, continue!!
                 //cout << "AMIT AMIT AMIT" << endl;
                 continue;
@@ -1091,7 +1093,7 @@ double LTSimplePath::backtrackBasic(UID v, UserList &S) {
         //cout << "## Q.pop() = " << pop_id << ", Q.size() =" << Q.size() << endl;
     } //endwhile
 
-    return cov;
+    return cov; // YES!
 
 }
 
