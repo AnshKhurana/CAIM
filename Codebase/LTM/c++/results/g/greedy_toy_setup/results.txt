@@ -1,7 +1,9 @@
-Execution time  = 445.687981
- secs.1 9.917200
-2 9.929700
-3 9.927500
-4 9.929100
-5 9.932000
-The final spread value = 9.932000
+Execution time  = 539.544926 secs.
+k spread
+0 9.755100
+1 10.910200
+2 10.939400
+3 10.940900
+4 10.936800
+5 10.948300
+The final spread value = 10.948300

@@ -389,7 +389,7 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
             } //endif
 
             if (D[pop_id].size() < out_degree(v, G)) { // I have degrees :)
-                cout<<"have not explored all out neighbors of the start node, continue!!\n";
+                // cout<<"have not explored all out neighbors of the start node, continue!!\n";
                 continue;
             } //endif
         }

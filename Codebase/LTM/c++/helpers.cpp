@@ -212,9 +212,6 @@ void increase_prob_set(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, v
                                  unordered_map<int, vector<pair<int, int> > > feat_to_edges, edge_prob &P, unordered_map <int, double> &in_degrees)
 {
     
-    P.clear(); // precaution
-    P.insert(B.begin(), B.end());
-
     vector<pair<int, int> > E;
     for (int i =0; i<F.size(); ++i) {
         for (int j=0; j < feat_to_edges[F[i]].size(); ++j) {
