@@ -207,3 +207,126 @@ void read_seeds(string seeds_filename, unordered_set<int> &S, int length) {
         i++;
     }
 }
+
+void increase_prob_set(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > node_to_feat, vector<int> F,
+                                 unordered_map<int, vector<pair<int, int> > > feat_to_edges, edge_prob &P, unordered_map <int, double> &in_degrees)
+{
+    
+    P.clear(); // precaution
+    P.insert(B.begin(), B.end());
+
+    vector<pair<int, int> > E;
+    for (int i =0; i<F.size(); ++i) {
+        for (int j=0; j < feat_to_edges[F[i]].size(); ++j) {
+            E.push_back(feat_to_edges[F[i]][j]); // basically all edges for the feature set
+        }
+    }
+
+    increase_probabilities(G, B, Q, node_to_feat, F, E, P, in_degrees); 
+}
+
+
+edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > node_to_feat, vector<int> F,
+                                 vector<pair<int, int> > E, edge_prob &P, unordered_map <int, double> &in_degrees) 
+{
+    // specify E as an argument to speed up 
+    edge_prob changed;
+    double q, b, h;
+    int target;
+    double intersection;
+    vector <int> F_target;
+    int edge_count=0, inc_count=0;
+
+    for (auto &edge: E) {
+        changed[edge] = P[edge]; // store old value
+        // cout<<"old value: "<<P[edge]<< " ";
+        q = Q[edge]; b = B[edge];
+        target = edge.second;
+        F_target = node_to_feat[target]; // Fv
+        sort(F_target.begin(), F_target.end());
+        sort(F.begin(), F.end());
+        unordered_set<int> s(F_target.begin(), F_target.end());
+        intersection = count_if(F.begin(), F.end(), [&](int k) {return s.find(k) != s.end();});
+        // assume that set intersection method is implemented correctly in Explore-Update
+        h = intersection; // intersection only. Q is calculated approp
+        P[edge] = (double) (1./in_degrees[target]) * sigmoid(h*q + b);
+        edge_count++;
+        if (P[edge] - changed[edge] > 0)
+        {
+            inc_count++;
+        }
+        // cout<<"b: "<<b<<"q: "<<q<<"h: "<<h<<" ";
+        // cout <<"New value: "<<P[edge]<<endl;
+    }
+    // cout<<inc_count<<" out of "<<edge_count<<" edges had an increase in weight\n";
+    return changed;
+}
+
+edge_prob init_probs(DiGraph G, edge_prob Btransformed, unordered_map <int, double> &in_degrees)
+{
+    edge_iter ei, edge_end;
+    pair <int, int> edge;
+    int v;
+    edge_prob P;
+    for (boost::tie(ei, edge_end) = edges(G); ei != edge_end; ++ei) 
+    {
+        // cout << source(*ei, G) << " " << target(*ei, G) << endl;
+        edge = make_pair(source(*ei, G), target(*ei, G));
+        v = edge.second;
+        double d_in = in_degrees[v];
+        P[edge] = 1.0/d_in * sigmoid(Btransformed[edge]);
+    }
+    return P;
+}
+
+// copy-paste
+void decrease_probabilities(edge_prob changed, edge_prob &P) {
+    for (auto &item: changed) {
+        pair<int, int> edge = item.first;
+        double p = item.second;
+        P[edge] = p;
+    }
+}
+
+
+unordered_map<int, double> save_in_degrees(DiGraph G)
+{
+    unordered_map<int, double> in_degrees;
+    vertex_iter vi, v_end;
+    int in_d;
+    // FILE* deg_file;// - can load instead of recomputing
+    // deg_file = fopen("degrees.txt", "w"); 
+
+    for (boost::tie(vi, v_end) = boost::vertices(G); vi != v_end; ++vi)
+    {
+        in_d = boost::in_degree(*vi, G);
+        in_degrees.insert(make_pair(*vi, in_d));
+        // fprintf(deg_file, "%d %d\n", *vi, in_d);
+    }
+    // fclose(deg_file);
+    return in_degrees;
+}
+
+unordered_map<int, double> save_out_degrees(DiGraph G)
+{
+    unordered_map<int, double> out_degrees;
+    vertex_iter vi, v_end;
+    int out_d;
+    // FILE* deg_file;// - can load instead of recomputing
+    // deg_file = fopen("out_degrees.txt", "w"); 
+
+    for (boost::tie(vi, v_end) = boost::vertices(G); vi != v_end; ++vi)
+    {
+        out_d = boost::out_degree(*vi, G);
+        out_degrees.insert(make_pair(*vi, out_d));
+        // fprintf(deg_file, "%d %d\n", *vi, out_d);
+    }
+    // fclose(deg_file);
+    return out_degrees;
+}
+
+
+double sigmoid(double x) // scalar. No need to vectorize?
+{
+    return (double) 1./(1.0 + exp(-x));
+}

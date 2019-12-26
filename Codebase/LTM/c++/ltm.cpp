@@ -7,12 +7,21 @@ edge_prob transform_probabilties (unordered_map<int, vector<int> > node_to_feat,
 void gen_q(edge_prob B, unordered_map<int, vector<int> > node_to_feat, edge_prob &Q, unordered_map<int, double> &in_degrees); // or B?
 double calculate_MC_spread(DiGraph G, edge_prob P, unordered_map <int, vector<int> > node_to_feat);
 pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base, edge_prob Btransformed, edge_prob Q, unordered_set<int> S, unordered_map<int, vector<int> > node_to_feat, unordered_map<int, vector<pair<int, int> > > feat_to_edges, vector<int> Phi, int K, int I, unordered_map <int, double> &in_degrees);
-edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > node_to_feat, vector<int> F, vector<pair<int, int> > E, edge_prob &P, unordered_map <int, double> &in_degrees);
-void decrease_probabilities(edge_prob changed, edge_prob &P);
-edge_prob init_probs(DiGraph, edge_prob, unordered_map <int, double> &in_degrees);
-double backtrack(DiGraph, int, edge_prob, double);
 double simpath_spread(DiGraph, unordered_set <int>, edge_prob, double);
 double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  double eta);
+
+
+pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob base,
+ edge_prob Btransformed, edge_prob Q, unordered_set<int> S,
+  unordered_map<int, vector<int> > node_to_feat,
+  unordered_map<int, vector<pair<int, int> > > feat_to_edges,
+  vector<int> Phi, int K, int I, unordered_map <int, double> &in_degrees, double eta);
+
+pair<vector<int>, unordered_map<int, double> >  simpathPlus(DiGraph G, edge_prob base,
+ edge_prob Btransformed, edge_prob Q, unordered_set<int> S,
+  unordered_map<int, vector<int> > node_to_feat,
+  unordered_map<int, vector<pair<int, int> > > feat_to_edges,
+  vector<int> Phi, int K, int I, unordered_map <int, double> &in_degrees, double eta);
 
 
 
@@ -146,7 +155,7 @@ int main(int argc, char const *argv[])
     // sets up result_feature_set
     if (strcmp(algo_name.c_str(), "simpath") == 0)
     {
-        //...
+        boost::tie(result_feature_set, influence) = simpath(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I, in_degrees, 1e-7);
     }
     else if (strcmp(algo_name.c_str(), "rr") == 0)
     {
@@ -190,6 +199,80 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
+pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob base,
+ edge_prob Btransformed, edge_prob Q, unordered_set<int> S,
+  unordered_map<int, vector<int> > node_to_feat,
+  unordered_map<int, vector<pair<int, int> > > feat_to_edges,
+  vector<int> Phi, int K, int I, unordered_map <int, double> &in_degrees, double eta=1e-7)
+
+{
+    vector <int> F;
+    edge_prob P;
+    unordered_map<int, bool> selected;
+    edge_prob changed;
+    double spread, max_spread;
+    int max_feature;
+    unordered_map<int, double> influence;
+    vector <int> no_selected_features = {-1}; 
+    P = init_probs(G, Btransformed, in_degrees);
+    cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
+    cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
+    cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
+    // wrong. should be 1/Fv sigmoid of Bt, let's just say it's B.copy
+    // however, does not limit the values to 1/fv
+
+    printf("it = 0; ");
+    double first_spread = simpath_spread(G, S, P, eta);
+    cout<<"first done\n";
+    cout<<"spread = "<<first_spread<<endl;
+    influence[0] = first_spread;
+
+    while (F.size() < K) 
+    {
+        max_spread = -1;
+        printf("it = %i; ", (int)F.size() + 1);
+        fflush(stdout);
+        for (auto &f: Phi) {
+            // cout << f << " ";
+            fflush(stdout);
+            if (not selected[f]) {
+                F.push_back(f);
+                changed = increase_probabilities(G, Btransformed, Q, node_to_feat, F, feat_to_edges[f], P, in_degrees);
+                spread = simpath_spread(G, S, P, eta);
+                if (spread > max_spread) {
+                    max_spread = spread;
+                    max_feature = f;
+                }
+                decrease_probabilities(changed, P);
+                F.pop_back();
+            }
+        }
+        F.push_back(max_feature);
+        selected[max_feature] = true;
+        printf("f = %i; spread = %.4f\n", max_feature, max_spread);
+        increase_probabilities(G, Btransformed, Q, node_to_feat, F, feat_to_edges[max_feature], P, in_degrees);
+        // monitor the value of one edge
+        cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
+        cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
+        cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
+        influence[F.size()] = max_spread;
+}
+    return make_pair(F, influence);
+
+}
+
+
+// pair<vector<int>, unordered_map<int, double> >  simpathPlus(DiGraph G, edge_prob base,
+//  edge_prob Btransformed, edge_prob Q, unordered_set<int> S,
+//   unordered_map<int, vector<int> > node_to_feat,
+//   unordered_map<int, vector<pair<int, int> > > feat_to_edges,
+//   vector<int> Phi, int K, int I, unordered_map <int, double> &in_degrees, double eta=1e-7)
+
+// {
+    
+// }
+
+
 
 double simpath_spread(DiGraph G, unordered_set <int> S, edge_prob P, double eta=1e-6)
 {
@@ -199,7 +282,9 @@ double simpath_spread(DiGraph G, unordered_set <int> S, edge_prob P, double eta=
     for (auto &s: S)
     {
         // ignored_vertices.erase(s);
+        // cout<<"before fb\n";
         spread += forward_backward(G, s, P, S, eta); 
+        // cout<<"iterating\n";
         // no need to create an induced subgraph since incoming edges for the
         // current seed elements have already been removed
         // ignored_vertices.insert(s);
@@ -208,34 +293,6 @@ double simpath_spread(DiGraph G, unordered_set <int> S, edge_prob P, double eta=
     return spread;
     
 }
-// ok wow
-// struct xNode { 
-//     UID id;         // user id
-//     bool flag;      // on current path?
-//     double cov;      // cov^{V-x}(w), for non-VC neighbors of w only 
-//     double tol;      // tolerance on current path
-//     double prob;     // incoming edge probability on current path
-//     double pp;  // propagation prob. of the current path from starting point to exact this node
-
-//     multimap<double, xNode *> *N_in;
-//     multimap<double, xNode *> *N_out;
-
-//     int out_deg; 
-//     int in_deg;
-//     int leafs; // number of in-neighbors whose out-deg is 1
-
-//     xNode *next;    // to use in the linked-list in the buffer
-
-//     xNode() : id(0), flag(false), cov(0), tol(0), prob(0), pp(0), N_in(NULL), N_out(NULL), next(NULL) {}
-
-//     xNode(UID id1, bool flag1, double cov1, double tol1, double prob1, double pp1) : id(id1), flag(flag1), cov(cov1), tol(tol1), prob(prob1), pp(pp1), N_in(NULL), N_out(NULL), next(NULL) {}
-
-// };  
-
-
-// double backtrack(DiGraph G, int s, edge_prob, double eta, &best_phi) 
-// - give best Phi to use in the next iteration of feature selection
-
 double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  double eta)
 {
     double spd = 1.0, pp = 1.0;
@@ -264,9 +321,11 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
             int x = Q.back(); // ID of curr Node
             if (x == last_v)
             {
-                cout<<"Notice when this happens\n";
+                // cout<<"Notice when this happens\n"; only 1 iteration? what depth first?
                 break;
             }
+
+            last_v = x;
 
             pp =  PrPtill[x];
 
@@ -294,11 +353,12 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
                     D[x].insert(y);
                     continue;
                 }
-
-                double ppnext = pp*P[make_pair(x, y)];
+                // cout<<"Ok, not ignored\n";
+                double ppnext = pp * P[make_pair(x, y)];
                 
                 if (ppnext < eta) // time to prune
                 {
+                    // cout<<"Pruned\n";
                     spd += ppnext;
                     // PrPtill[y] = ppnext; - no need to store since this will not be used in the future
                     D[x].insert(y);
@@ -569,110 +629,6 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base
 }
 
 
-double sigmoid(double x) // scalar. No need to vectorize?
-{
-    return (double) 1./(1.0 + exp(-x));
-}
-
-
-
-edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > node_to_feat, vector<int> F,
-                                 vector<pair<int, int> > E, edge_prob &P, unordered_map <int, double> &in_degrees) 
-{
-    // specify E as an argument to speed up 
-    edge_prob changed;
-    double q, b, h;
-    int target;
-    double intersection;
-    vector <int> F_target;
-    int edge_count=0, inc_count=0;
-
-    for (auto &edge: E) {
-        changed[edge] = P[edge]; // store old value
-        // cout<<"old value: "<<P[edge]<< " ";
-        q = Q[edge]; b = B[edge];
-        target = edge.second;
-        F_target = node_to_feat[target]; // Fv
-        sort(F_target.begin(), F_target.end());
-        sort(F.begin(), F.end());
-        unordered_set<int> s(F_target.begin(), F_target.end());
-        intersection = count_if(F.begin(), F.end(), [&](int k) {return s.find(k) != s.end();});
-        // assume that set intersection method is implemented correctly in Explore-Update
-        h = intersection; // intersection only. Q is calculated approp
-        P[edge] = (double) (1./in_degrees[target]) * sigmoid(h*q + b);
-        edge_count++;
-        if (P[edge] - changed[edge] > 0)
-        {
-            inc_count++;
-        }
-        // cout<<"b: "<<b<<"q: "<<q<<"h: "<<h<<" ";
-        // cout <<"New value: "<<P[edge]<<endl;
-    }
-    // cout<<inc_count<<" out of "<<edge_count<<" edges had an increase in weight\n";
-    return changed;
-}
-
-edge_prob init_probs(DiGraph G, edge_prob Btransformed, unordered_map <int, double> &in_degrees)
-{
-    edge_iter ei, edge_end;
-    pair <int, int> edge;
-    int v;
-    edge_prob P;
-    for (boost::tie(ei, edge_end) = edges(G); ei != edge_end; ++ei) 
-    {
-        // cout << source(*ei, G) << " " << target(*ei, G) << endl;
-        edge = make_pair(source(*ei, G), target(*ei, G));
-        v = edge.second;
-        double d_in = in_degrees[v];
-        P[edge] = 1.0/d_in * sigmoid(Btransformed[edge]);
-    }
-    return P;
-}
-
-// copy-paste
-void decrease_probabilities(edge_prob changed, edge_prob &P) {
-    for (auto &item: changed) {
-        pair<int, int> edge = item.first;
-        double p = item.second;
-        P[edge] = p;
-    }
-}
-
-unordered_map<int, double> save_in_degrees(DiGraph G)
-{
-    unordered_map<int, double> in_degrees;
-    vertex_iter vi, v_end;
-    int in_d;
-    // FILE* deg_file;// - can load instead of recomputing
-    // deg_file = fopen("degrees.txt", "w"); 
-
-    for (boost::tie(vi, v_end) = boost::vertices(G); vi != v_end; ++vi)
-    {
-        in_d = boost::in_degree(*vi, G);
-        in_degrees.insert(make_pair(*vi, in_d));
-        // fprintf(deg_file, "%d %d\n", *vi, in_d);
-    }
-    // fclose(deg_file);
-    return in_degrees;
-}
-
-unordered_map<int, double> save_out_degrees(DiGraph G)
-{
-    unordered_map<int, double> out_degrees;
-    vertex_iter vi, v_end;
-    int out_d;
-    // FILE* deg_file;// - can load instead of recomputing
-    // deg_file = fopen("out_degrees.txt", "w"); 
-
-    for (boost::tie(vi, v_end) = boost::vertices(G); vi != v_end; ++vi)
-    {
-        out_d = boost::out_degree(*vi, G);
-        out_degrees.insert(make_pair(*vi, out_d));
-        // fprintf(deg_file, "%d %d\n", *vi, out_d);
-    }
-    // fclose(deg_file);
-    return out_degrees;
-}
 
 
 // calculate_MCPlus() - x
