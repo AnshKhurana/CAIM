@@ -255,7 +255,7 @@ edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_
         // cout<<"b: "<<b<<"q: "<<q<<"h: "<<h<<" ";
         // cout <<"New value: "<<P[edge]<<endl;
     }
-    // cout<<inc_count<<" out of "<<edge_count<<" edges had an increase in weight\n";
+    cout<<inc_count<<" out of "<<edge_count<<" edges had an increase in weight\n";
     return changed;
 }
 
