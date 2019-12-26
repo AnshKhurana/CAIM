@@ -10,6 +10,60 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base
 edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > node_to_feat, vector<int> F, vector<pair<int, int> > E, edge_prob &P, unordered_map <int, double> &in_degrees);
 void decrease_probabilities(edge_prob changed, edge_prob &P);
 edge_prob init_probs(DiGraph, edge_prob, unordered_map <int, double> &in_degrees);
+double backtrack(DiGraph, int, edge_prob, double);
+
+
+double simpath_spread(DiGraph G, unordered_set <int> S, edge_prob P, double eta=0.0000001)
+{
+    double spread = 0.0;
+    // unordered_set <int> ignored_vertices(S);
+
+    for (auto &s: S)
+    {
+        // ignored_vertices.erase(s);
+        spread += backtrack(G, s, P, eta); 
+        // no need to create an induced subgraph since incoming edges for the
+        // current seed elements have already been removed
+        // ignored_vertices.insert(s);
+    }
+    
+    return spread;
+    
+}
+// ok wow
+// struct xNode { 
+//     UID id;         // user id
+//     bool flag;      // on current path?
+//     double cov;      // cov^{V-x}(w), for non-VC neighbors of w only 
+//     double tol;      // tolerance on current path
+//     double prob;     // incoming edge probability on current path
+//     double pp;  // propagation prob. of the current path from starting point to exact this node
+
+//     multimap<double, xNode *> *N_in;
+//     multimap<double, xNode *> *N_out;
+
+//     int out_deg; 
+//     int in_deg;
+//     int leafs; // number of in-neighbors whose out-deg is 1
+
+//     xNode *next;    // to use in the linked-list in the buffer
+
+//     xNode() : id(0), flag(false), cov(0), tol(0), prob(0), pp(0), N_in(NULL), N_out(NULL), next(NULL) {}
+
+//     xNode(UID id1, bool flag1, double cov1, double tol1, double prob1, double pp1) : id(id1), flag(flag1), cov(cov1), tol(tol1), prob(prob1), pp(pp1), N_in(NULL), N_out(NULL), next(NULL) {}
+
+// };  
+
+
+// double backtrack(DiGraph G, int s, edge_prob, double eta, &best_phi) 
+// - give best Phi to use in the next iteration of feature selection
+
+double backtrack(DiGraph G, int s, edge_prob, double eta)
+{
+    double spd = 1.0, pp = 1.0;
+    // need xNode DS for the node?
+    return spd;
+}
 
 int main(int argc, char const *argv[])
 {
@@ -163,7 +217,7 @@ int main(int argc, char const *argv[])
     
     // final_spread = calculate_MC_spread(result_feature_set); // ... for LTM 
 
-    for (int num = 1; num <= K; ++num) {
+    for (int num = 0; num <= K; ++num) {
       fprintf(results_file, "%d %f\n", num, influence[num]);
       cout << num << ": " << influence[num]  << " spread" << endl;
     }
@@ -225,7 +279,7 @@ void gen_q(edge_prob B, unordered_map<int, vector<int> > node_to_feat, edge_prob
     double b, d_in; 
     int v, f;
     pair <int, int> edge;
-    double c = 2;
+    double c = 5;
     int inf_count = 0, overall_count = 0; 
     for (auto &it : B)
     {
@@ -372,6 +426,10 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base
     // wrong. should be 1/Fv sigmoid of Bt, let's just say it's B.copy
     // however, does not limit the values to 1/fv
 
+    printf("it = 0; ");
+    double first_spread = calculate_MC_spread(G, P, S, I);
+    cout<<"spread = "<<first_spread<<endl;
+    influence[0] = first_spread;
     while (F.size() < K) 
     {
         max_spread = -1;
@@ -482,7 +540,7 @@ unordered_map<int, double> save_degrees(DiGraph G)
     vertex_iter vi, v_end;
     int in_d;
     // FILE* deg_file;// - can load instead of recomputing
-    // deg_file = fopen("small_degrees.txt", "w"); 
+    // deg_file = fopen("degrees.txt", "w"); 
 
     for (boost::tie(vi, v_end) = boost::vertices(G); vi != v_end; ++vi)
     {

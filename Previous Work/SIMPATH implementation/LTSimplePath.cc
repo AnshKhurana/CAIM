@@ -166,7 +166,7 @@ double LTSimplePath::mineSeedSet() {
         }
     }
     
-    // $$$$$$$ END OF 1ST ITERATION $$$$$$$$//
+    // $$$$$$$ END OF 1ST ITERATION $$$$$$$$// NOW comes the important more generic algo
     cout << "1st iteration done... time: " << getTime() << endl;
 
     if (curSeedSet.size() != 1) {
@@ -1033,7 +1033,7 @@ double LTSimplePath::backtrackBasic(UID v, UserList &S) {
                 xNode *nextNode = k->second; 
                 UID y = nextNode->id;
            
-                if (y == v) { // y is just v
+                if (y == v) { // y is just v, dataset might have self loops?
                     D[x].insert(y);
                     continue;
                 } else if (Q1.find(y) != Q1.end()) { // y already on path before, would create cycle
