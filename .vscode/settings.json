@@ -1,6 +1,7 @@
 {
     "python.pythonPath": "/usr/bin/python3",
     "files.associations": {
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "iostream": "cpp"
     }
 }

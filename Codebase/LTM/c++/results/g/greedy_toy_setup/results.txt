@@ -1,4 +1,4 @@
-Execution time  = 539.544926 secs.
+Execution time  = 422.831254 secs.
 k spread
 0 9.755100
 1 10.910200
@@ -6,4 +6,4 @@ k spread
 3 10.940900
 4 10.936800
 5 10.948300
-The final spread value = 10.948300
+The final spread value (MC calculated) = 10.885800

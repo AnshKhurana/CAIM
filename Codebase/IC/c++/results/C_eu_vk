@@ -1,0 +1,55 @@
+(base) konstantinost@dbserver1:~/CAIM/Codebase/c++$ ./exe eu_setup.txt
+Got parameters...
+eu_setup.txt
+Input:
+../datasets/vk/vk.txt ../datasets/vk/vk_wc.txt ../datasets/vk/vk_mem.txt ../datasets/vk/vk_com.txt
+group_number K I
+300241 5 10000
+beam with: 3
+save dir: ./results/eu/                                                                                                     [3/12]
+../datasets/vk/vk.txt
+S: 674 2282 506 14 9 11 4 102 114 5035 5185 523 1781 2016 3121 5856 2230 787 2398 6925
+I: 10000
+K: 5
+Starting algo: eu
+In correct algo
+Starting Explore-Update.
+Initializing...
+Finished initializiation.
+Start selecting features...
+0: 0 100 200 300 400 500 600 700 800 900 1000 ^C
+(base) konstantinost@dbserver1:~/CAIM/Codebase/c++$ ./exe eu_setup.txt
+Got parameters...
+eu_setup.txt
+Input:
+../datasets/vk/vk.txt ../datasets/vk/vk_wc.txt ../datasets/vk/vk_mem.txt ../datasets/vk/vk_com.txt
+group_number K I
+300241 5 10000
+beam with: 3
+save dir: ./results/eu/
+../datasets/vk/vk.txt
+S: 674 2282 506 14 9 11 4 102 114 5035 5185 523 1781 2016 3121 5856 2230 787 2398 6925
+I: 10000
+K: 5
+Starting algo: eu
+In correct algo
+Starting Explore-Update.
+Initializing...
+Finished initializiation.
+Start selecting features...
+0: 0 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 270$ 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 Time: 6757.79
+max feature & spread: 13704358 & 58.5196
+1: 0 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 270$ 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 Time: 7959.09
+max feature & spread: 704617 & 59.5241
+2: 0 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600   2$02900 3000 3100 3200 3300 3400 3500 3600 3700 3800 Time: 7514.05
+max feature & spread: 41199309 & 59.7464
+3: 0 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 270$ 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 Time: 6901.36
+max feature & spread: 1944 & 60.0568
+4: 0 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 270$ 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 Time: 6823.69
+max feature & spread: 60308 & 60.2716
+Total number of omissions: 15
+35956.6 sec.
+1: 5175.63
+Final spread value: 5181.3
+
+Features: 1944 60308 704617 13704358 41199309

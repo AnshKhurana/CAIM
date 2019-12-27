@@ -1,9 +1,13 @@
-Execution time  = 653.900588 secs.
+Setup file: ð­N=þ
+group_number K I
+22736114 5 10000
+algo_name: ð­N=þ93 89 75 43 64 10 22 73 70 
+Execution time  = 21.944939 secs.
 k spread
-0 9.393547
-1 10.264794
-2 10.323843
-3 10.326589
-4 10.331030
-5 10.335974
-The final spread value = 10.335974
+0 9.391716
+1 10.221120
+2 10.275823
+3 10.277798
+4 10.281114
+5 10.287317
+The final spread value (MC calculated) = 10.923700
