@@ -1,8 +1,8 @@
-Setup file: Ð¾flÿ
+Setup file: „@ý
 group_number K I
 22736114 5 10000
-algo_name: Ð¾flÿ93 89 75 43 64 10 22 73 70 
-Execution time  = 265.266133 secs.
+algo_name: „@ý93 89 75 43 64 10 22 73 70 
+Execution time  = 264.741553 secs.
 k spread
 0 9.392888
 1 10.295808

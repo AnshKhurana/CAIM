@@ -105,6 +105,8 @@ int main(int argc, char const *argv[])
     if (q_file == "-")
     {
         gen_q(B, node_to_feat, Q, in_degrees); // or B?
+        //  Use same as B, no constraints at all
+        // Q.insert(B.begin(), B.end());
     }
     else
     {
@@ -157,7 +159,7 @@ int main(int argc, char const *argv[])
     if (strcmp(algo_name.c_str(), "simpath") == 0)
     {
         cout << "Starting algo: " <<"simpath"<< endl;
-        boost::tie(result_feature_set, influence) = simpath(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  1e-3, in_degrees, P);
+        boost::tie(result_feature_set, influence) = simpath(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  1e-5, in_degrees, P);
     }
     else if (strcmp(algo_name.c_str(), "rr") == 0)
     {
@@ -174,10 +176,14 @@ int main(int argc, char const *argv[])
         boost::tie(result_feature_set, influence) = greedy(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I, in_degrees, P);
     }
     finish = clock();
-    
-    results_file = fopen(save_result.c_str(), "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
     double exec_time = (double) (finish - start)/CLOCKS_PER_SEC;
+    cout << "Execution time = " << exec_time << " secs.\n";
 
+    final_spread = calculate_MC_spread(G, P, S, I);
+    cout<<"Final spread value: "<<final_spread<<endl;
+
+    results_file = fopen(save_result.c_str(), "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
+   
     // save parameters too! 
     fprintf(results_file, "Setup file: %s\n", setup_file);
     fprintf(results_file, "group_number K I\n");
@@ -190,7 +196,6 @@ int main(int argc, char const *argv[])
     fprintf(results_file, "\n");
 
     fprintf(results_file, "Execution time  = %lf secs.\n", exec_time);
-    cout << "Execution time = " << exec_time << " secs.\n";
     
     // final_spread = calculate_MC_spread(result_feature_set); // ... for LTM 
     fprintf(results_file, "k spread\n");
@@ -198,8 +203,6 @@ int main(int argc, char const *argv[])
       fprintf(results_file, "%d %f\n", num, influence[num]);
       cout << num << ": " << influence[num]  << " spread" << endl;
     }
-    final_spread = calculate_MC_spread(G, P, S, I);
-    cout<<"Final spread value: "<<final_spread<<endl;
 
     fprintf(results_file, "The final spread value (MC calculated) = %f\n", final_spread);
     
@@ -232,6 +235,7 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
     unordered_map<int, double> influence;
     vector <int> no_selected_features = {-1}; 
     P = init_probs(G, Btransformed, in_degrees);
+    int choice_index = 0;
     cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
     cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
     cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
@@ -256,9 +260,11 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
                 F.push_back(f);
                 changed = increase_probabilities(G, Btransformed, Q, node_to_feat, F, feat_to_edges[f], P, in_degrees);
                 spread = simpath_spread(G, S, P, eta);
+                
                 if (spread > max_spread) {
                     max_spread = spread;
                     max_feature = f;
+                    choice_index++;
                 }
                 decrease_probabilities(changed, P);
                 F.pop_back();
@@ -272,6 +278,8 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
         cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
         cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
         cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
+        cout<<"Number of times the choice changed: "<<choice_index<<endl;
+        choice_index = 0;
         influence[F.size()] = max_spread;
     }
     return make_pair(F, influence);
@@ -656,7 +664,6 @@ edge_prob transform_probabilties (unordered_map<int, vector<int> > node_to_feat,
     return Btransformed;
 }
 
-
 void gen_q(edge_prob B, unordered_map<int, vector<int> > node_to_feat, edge_prob &Q,  unordered_map<int, double> &in_degrees) // or B?
 {
     double b, d_in; 
@@ -800,6 +807,7 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base
     double spread, max_spread;
     int max_feature;
     unordered_map<int, double> influence;
+    int choice_index=0;
     vector <int> no_selected_features = {-1}; 
     P = init_probs(G, Btransformed, in_degrees);
     cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
@@ -828,6 +836,7 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base
                 if (spread > max_spread) {
                     max_spread = spread;
                     max_feature = f;
+                    choice_index++;
                 }
                 decrease_probabilities(changed, P);
                 F.pop_back();
@@ -841,6 +850,8 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base
         cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
         cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
         cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
+        cout<<"Number of times the choice changed: "<<choice_index<<endl;
+        choice_index = 0;
         influence[F.size()] = max_spread;
     }
     
@@ -851,5 +862,4 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base
 
 
 // calculate_MCPlus() - x
-// calculate_simpath() - yes!
 // calculate_rrset() - future work
