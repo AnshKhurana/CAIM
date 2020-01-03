@@ -131,13 +131,6 @@ int main(int argc, char const *argv[])
         read_seeds(seeds_file, S, 20); // only for VK network
     }
 
-    cout << "S: ";
-
-    for (auto &node: S) 
-    {
-        cout << node <<"w"<<boost::out_degree(node, G)<<" ";
-    }
-    cout << endl;
 
     // cout<<"Out degree of every seed: ";
 
@@ -153,6 +146,15 @@ int main(int argc, char const *argv[])
     {
         boost::clear_in_edges(node, G); // # smart move
     }
+
+
+    cout << "S: ";
+
+    for (auto &node: S) 
+    {
+        cout << node <<"w"<<boost::out_degree(node, G)<<" ";
+    }
+    cout << endl;
 
     cout << "I: " << I << endl;
     cout << "K: " << K << endl;
@@ -568,11 +570,12 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
             out_edge_iter ei, e_end;
             for (boost::tie(ei, e_end) = out_edges(x, G); ei!=e_end; ++ei) 
             {
+                int y = target(*ei, G);
                 if (x == v)
                 {
-                    cout<<"visiting neigh of seed\n";
+                    cout<<"visiting neigh of seed ("<<x<<", "<<y<<")"<<"\n";
                 }
-                int y = target(*ei, G);
+                
                 if (y == v) // y is just v, dataset might have self loops?
                 {
                     D[x].insert(y);
@@ -634,9 +637,16 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
             } //endfor
         } //endForward
     
+        cout<<"Entering backward\n";
         // BACKWARD pass
 
         int pop_id = Q.back(); // ID of xNode u
+
+        if (pop_id == v)
+        {
+            cout<<"how did this happen?\n";
+            /* code */
+        }
 
         if (Q.size() == 1) // copy-paste
         {
