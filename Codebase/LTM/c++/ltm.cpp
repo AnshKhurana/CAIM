@@ -441,8 +441,9 @@ double forward_backward_wPhi(DiGraph G, int v, edge_prob P, unordered_set <int> 
             int x = Q.back(); // ID of curr Node
             if (x == last_v)
             {
-                // cout<<"Notice when this happens\n"; only 1 iteration? what depth first?
+                cout<<"Notice when this happens\n"; //only 1 iteration? what depth first?
                 break;
+
             }
 
             last_v = x;
