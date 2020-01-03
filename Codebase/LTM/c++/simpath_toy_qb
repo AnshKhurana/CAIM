@@ -1,4 +1,4 @@
-../datasets/toy/edge_list.txt
+../datasets/toy/edge_list_cleaned.txt
 ../datasets/toy/edge_weights_aug.txt
 -
 ../datasets/toy/mem.txt

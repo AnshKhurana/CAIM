@@ -1,13 +1,13 @@
-Setup file: Ðñ¸	ÿ
+Setup file: simpath_toy_qb
 group_number K I
 22736114 5 10000
-algo_name: Ðñ¸	ÿ93 89 75 43 64 10 22 73 70 
-Execution time  = 65.507032 secs.
+algo_name: simpath89 73 93 64 75 10 43 70 22 
+Execution time  = 42.732920 secs.
 k spread
-0 9.614219
-1 9.965557
-2 9.971110
-3 9.995022
-4 10.026076
-5 10.058014
-The final spread value (MC calculated) = 10.701500
+0 9.609535
+1 9.779684
+2 9.887387
+3 9.967815
+4 10.051617
+5 10.122949
+The final spread value (MC calculated) = 10.026100

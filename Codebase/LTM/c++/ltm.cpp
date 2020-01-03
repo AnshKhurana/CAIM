@@ -254,7 +254,6 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
 
     printf("it = 0; ");
     double first_spread = simpath_spread(G, S, P, eta);
-    exit(2);
     // cout<<"first done\n";
     cout<<"spread = "<<first_spread<<endl;
     influence[0] = first_spread;
@@ -571,10 +570,10 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
             for (boost::tie(ei, e_end) = out_edges(x, G); ei!=e_end; ++ei) 
             {
                 int y = target(*ei, G);
-                if (x == v)
-                {
-                    cout<<"visiting neigh of seed ("<<x<<", "<<y<<")"<<"\n";
-                }
+                // if (x == v)
+                // {
+                //     cout<<"visiting neigh of seed ("<<x<<", "<<y<<")"<<"\n";
+                // }
                 
                 if (y == v) // y is just v, dataset might have self loops?
                 {
@@ -585,24 +584,15 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
                 if (Q1.find(y) != Q1.end()) // no cycles
                 {
 
-                    if (x == v)
-                    {
-                        cout<<"no insertion because in Q1\n";
-                    }   
                     continue;
                 }
                 if (D[x].find(y) != D[x].end()) // y is an already-explored neighbor of x
                 {
-                    if (x == v)
-                    {
-                        cout<<"no insertion because already in D\n";
-                        cout<<y<<endl;
-                    }
                     continue;
                 }
                 if (S.find(y) != S.end()) 
                 { // y is a seed, induced subgraph check
-                    cout<<"Should not have happened\n";
+                    cout<<"removing clear in-edges\n";
                     D[x].insert(y);
                     continue;
                 }
@@ -614,10 +604,7 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
                     // cout<<"Pruned\n";
                     spd += ppnext;
                     // PrPtill[y] = ppnext; - no need to store since this will not be used in the future
-                    if (x == v)
-                    {
-                        cout<<"Inserted prunely \n";
-                    }
+                    
                     D[x].insert(y);
                     // nextPhi.append(node_to_feat[y])
                     continue;
@@ -628,25 +615,22 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
 
                 Q.push_back(y);
                 Q1.insert(y);
-                if (x == v)
-                {
-                    cout<<"inserted normally\n";
-                }
+                
                 D[x].insert(y); //explored
                 break;
             } //endfor
         } //endForward
     
-        cout<<"Entering backward\n";
+        // cout<<"Entering backward\n";
         // BACKWARD pass
 
         int pop_id = Q.back(); // ID of xNode u
 
-        if (pop_id == v)
-        {
-            cout<<"how did this happen?\n";
-            /* code */
-        }
+        // if (pop_id == v)
+        // {
+        //     cout<<"how did this happen?\n";
+        //     /* code */
+        // }
 
         if (Q.size() == 1) // copy-paste
         {
@@ -660,16 +644,16 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
                 mysterious_case++;
                 
                 cout << "Seed being oberved: " << pop_id << " compare D[seed].size - "<<D[pop_id].size()<< " with "  <<boost::out_degree(pop_id, G)<<" have not explored all out neighbors of the start node, continue!!\n";
-                exit(1);
-                usleep(200000);
+                // exit(1);
+                // usleep(2000ß00);
                 continue;
             } 
-            else
-            {
+            // else
+            // {
 
-                cout<<"Not going into condition\n";
-                cout<<"Values: size - "<<D[pop_id].size() << " " <<D[v].size() <<" out_degree - "<< boost::out_degree(pop_id, G) << "  " << boost::out_degree(v, G)<<endl;
-            }
+            //     cout<<"Not going into condition\n";
+            //     cout<<"Values: size - "<<D[pop_id].size() << " " <<D[v].size() <<" out_degree - "<< boost::out_degree(pop_id, G) << "  " << boost::out_degree(v, G)<<endl;
+            // }
         }
 
 
