@@ -193,10 +193,10 @@ int main(int argc, char const *argv[])
     results_file = fopen(save_result.c_str(), "w"); // SPECIFY OUTPUT FILE FOR TIME AND INFLUENCE SPREAD
    
     // save parameters too! 
-    fprintf(results_file, "Setup file: %s\n", setup_file);
+    fprintf(results_file, "Setup file: %s\n", setup_file.c_str());
     fprintf(results_file, "group_number K I\n");
     fprintf(results_file, "%d %d %d\n", group_number, K, I);
-    fprintf(results_file, "algo_name: %s", algo_name);
+    fprintf(results_file, "algo_name: %s", algo_name.c_str());
     for (auto &node: S) 
     {
         fprintf(results_file, "%d ", node);
