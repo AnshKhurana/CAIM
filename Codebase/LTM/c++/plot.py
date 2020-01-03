@@ -7,8 +7,8 @@ def plot(xData, yData, xAxisLabel, yAxisLabel, plot_title):
     plt.xlabel(xAxisLabel)
     plt.ylabel(yAxisLabel)
     plt.title(plot_title)
-    plt.legend()
-    plt.show()
+    # plt.legend()
+    plt.savefig('tmp.png')
 
 
 def read_data(result_file):
@@ -17,14 +17,14 @@ def read_data(result_file):
     """
     with open(result_file, 'r') as f:
         lines = f.readlines()
-        print(lines)
-        lines = [x.strip().split() for x in lines]
+        # print(lines)
+        lines = [np.array(x.strip().split()) for x in lines[2:-1]]
+        # print(lines)
         
-        
-        matrix = np.array([lines])
+        matrix = np.array(lines)
         print(matrix.shape)
-        xData = matrix[2:, 0].astype(float)
-        yData = matrix[2:, 1].astype(float)
+        xData = matrix[2:-1, 0].astype(float)
+        yData = matrix[2:-1, 1].astype(float)
     return xData, yData
     
 
@@ -35,4 +35,5 @@ if __name__ == "__main__":
     yAxisLabel = "Spread"
     xAxisLabel = "K"
     xData, yData =  read_data(result_file)
-    plot(xData, yData, xData, yData, title)
+    plot(xData, yData, xAxisLabel, yAxisLabel, title)
+

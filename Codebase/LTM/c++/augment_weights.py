@@ -1,7 +1,7 @@
 import sys, os
 # delete and rename for correctness
 
-c =0.2
+c =0.3
 
 def replace_weights(dataset_dir):
     in_degrees = dict()

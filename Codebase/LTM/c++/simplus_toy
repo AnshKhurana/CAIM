@@ -1,5 +1,5 @@
 ../datasets/toy/edge_list.txt
-../datasets/toy/edge_weights.txt
+../datasets/toy/edge_weights_aug.txt
 -
 ../datasets/toy/mem.txt
 ../datasets/toy/com.txt

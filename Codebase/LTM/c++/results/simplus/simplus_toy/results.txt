@@ -1,13 +1,13 @@
-Setup file: „@ý
+Setup file: °pþ
 group_number K I
 22736114 5 10000
-algo_name: „@ý93 89 75 43 64 10 22 73 70 
-Execution time  = 264.741553 secs.
+algo_name: °pþ93 89 75 43 64 10 22 73 70 
+Execution time  = 34.663479 secs.
 k spread
-0 9.392888
-1 10.295808
-2 10.321008
-3 10.323947
-4 10.328329
-5 10.333177
-The final spread value (MC calculated) = 10.924700
+0 9.609535
+1 9.952453
+2 9.981717
+3 10.012172
+4 10.040385
+5 10.063177
+The final spread value (MC calculated) = 10.727500

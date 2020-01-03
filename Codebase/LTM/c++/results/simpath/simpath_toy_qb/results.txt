@@ -1,13 +1,13 @@
-Setup file: °BÈÇþ
+Setup file: Ðñ¸	ÿ
 group_number K I
 22736114 5 10000
-algo_name: °BÈÇþ93 89 75 43 64 10 22 73 70 
-Execution time  = 40.053703 secs.
+algo_name: Ðñ¸	ÿ93 89 75 43 64 10 22 73 70 
+Execution time  = 65.507032 secs.
 k spread
-0 9.392888
-1 9.395085
-2 9.395148
-3 9.395197
-4 9.395223
-5 9.395251
-The final spread value (MC calculated) = 9.757900
+0 9.614219
+1 9.965557
+2 9.971110
+3 9.995022
+4 10.026076
+5 10.058014
+The final spread value (MC calculated) = 10.701500

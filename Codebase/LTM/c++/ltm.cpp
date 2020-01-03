@@ -135,10 +135,18 @@ int main(int argc, char const *argv[])
 
     for (auto &node: S) 
     {
-        cout << node << " ";
+        cout << node <<"w"<<boost::out_degree(node, G)<<" ";
     }
-
     cout << endl;
+
+    // cout<<"Out degree of every seed: ";
+
+    // for (auto &node: S) 
+    // {
+    //     cout << boost::out_degree(node, G) << " ";
+    // }
+
+    // cout << endl;
 
     // One cannot activate a seed node, remove incoming edges
     for (auto &node: S)
@@ -159,7 +167,7 @@ int main(int argc, char const *argv[])
     if (strcmp(algo_name.c_str(), "simpath") == 0)
     {
         cout << "Starting algo: " <<"simpath"<< endl;
-        boost::tie(result_feature_set, influence) = simpath(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  1e-5, in_degrees, P);
+        boost::tie(result_feature_set, influence) = simpath(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  1e-3, in_degrees, P);
     }
     else if (strcmp(algo_name.c_str(), "rr") == 0)
     {
@@ -244,6 +252,7 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
 
     printf("it = 0; ");
     double first_spread = simpath_spread(G, S, P, eta);
+    exit(2);
     // cout<<"first done\n";
     cout<<"spread = "<<first_spread<<endl;
     influence[0] = first_spread;
@@ -558,6 +567,10 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
             out_edge_iter ei, e_end;
             for (boost::tie(ei, e_end) = out_edges(x, G); ei!=e_end; ++ei) 
             {
+                if (x == v)
+                {
+                    cout<<"visiting neigh of seed\n";
+                }
                 int y = target(*ei, G);
                 if (y == v) // y is just v, dataset might have self loops?
                 {
@@ -567,14 +580,25 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
                 }
                 if (Q1.find(y) != Q1.end()) // no cycles
                 {
+
+                    if (x == v)
+                    {
+                        cout<<"no insertion because in Q1\n";
+                    }   
                     continue;
                 }
                 if (D[x].find(y) != D[x].end()) // y is an already-explored neighbor of x
                 {
+                    if (x == v)
+                    {
+                        cout<<"no insertion because already in D\n";
+                        cout<<y<<endl;
+                    }
                     continue;
                 }
                 if (S.find(y) != S.end()) 
                 { // y is a seed, induced subgraph check
+                    cout<<"Should not have happened\n";
                     D[x].insert(y);
                     continue;
                 }
@@ -586,16 +610,24 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
                     // cout<<"Pruned\n";
                     spd += ppnext;
                     // PrPtill[y] = ppnext; - no need to store since this will not be used in the future
+                    if (x == v)
+                    {
+                        cout<<"Inserted prunely \n";
+                    }
                     D[x].insert(y);
                     // nextPhi.append(node_to_feat[y])
                     continue;
                 }
-
+                
                 spd+= ppnext;
                 PrPtill[y] = ppnext;
 
                 Q.push_back(y);
                 Q1.insert(y);
+                if (x == v)
+                {
+                    cout<<"inserted normally\n";
+                }
                 D[x].insert(y); //explored
                 break;
             } //endfor
@@ -613,11 +645,20 @@ double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  d
                 exit(1);
             } //endif
 
-            // if (D[pop_id].size() < out_degree(v, G)) { // I have degrees :)
-            //     mysterious_case++;
-            //     // cout<<"have not explored all out neighbors of the start node, continue!!\n";
-            //     continue;
-            // } //endif
+            if (D[pop_id].size() < boost::out_degree(pop_id, G)) { // I have degrees :)
+                mysterious_case++;
+                
+                cout << "Seed being oberved: " << pop_id << " compare D[seed].size - "<<D[pop_id].size()<< " with "  <<boost::out_degree(pop_id, G)<<" have not explored all out neighbors of the start node, continue!!\n";
+                exit(1);
+                usleep(200000);
+                continue;
+            } 
+            else
+            {
+
+                cout<<"Not going into condition\n";
+                cout<<"Values: size - "<<D[pop_id].size() << " " <<D[v].size() <<" out_degree - "<< boost::out_degree(pop_id, G) << "  " << boost::out_degree(v, G)<<endl;
+            }
         }
 
 
