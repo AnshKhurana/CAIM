@@ -57,4 +57,24 @@ Prob (0, 1): 0.02
 Prob (0, 2): 0.02
 Prob (0, 3): 0.02
 Number of times the choice changed: 5
-it = 9; 
+it = 9; f = 3; spread = 32.9228
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 5
+it = 10; f = 97; spread = 33.3605
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 4
+it = 11; f = 7; spread = 33.8739
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 8
+it = 12; f = 35; spread = 34.2637
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 7
+it = 13; 

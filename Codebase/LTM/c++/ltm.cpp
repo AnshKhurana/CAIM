@@ -241,7 +241,7 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
 {
 
     // plotting parameters
-    int mode = 2; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
+    int mode = 1; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
     clock_t start, finish;
     int report_interval = 2;
 

@@ -1,0 +1,5 @@
+Spread vs |F|
+
+macOS 10.15.2
+Intel i7 8750H @3.90GHz, 6C12T
+

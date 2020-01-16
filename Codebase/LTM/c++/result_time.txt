@@ -1,0 +1,426 @@
+
+Reading parameters...
+Setup file: full_sim_gnu_qb
+dataset_file b_file q_file mem_file groups_file
+../datasets/gnutella/edge_list.txt ../datasets/gnutella/edge_weights.txt - ../datasets/gnutella/mem.txt ../datasets/gnutella/com.txt
+group_number K I
+10 50 10000
+save dir: ./results/simpath/full_sim_gnu_qb/
+../datasets/gnutella/edge_list.txt
+high count: 0
+overall_count: 39994
+gen Q inf_count/overall_count :3877/39994
+S: 5862w10 10299w9 5124w10 2850w10 2554w10 2623w10 1629w10 2411w9 525w10 1958w4 3795w9 1426w10 1164w10 8386w1 4676w10 306w10 2445w10 163w10 126w9 10w10 516w10
+I: 10000
+K: 50
+Init MC spread = 21
+Starting algo: simpath
+Running to report results according to mode: 2
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+it = 0; spread = 25.1893
+it = 1; 2
+F.size() 1Time elapsed: 78.8032
+f = 31; spread = 28.0392
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 4
+it = 2; 2
+F.size() 2Time elapsed: 157.192
+f = 17; spread = 29.2992
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 4
+it = 3; 2
+F.size() 3Time elapsed: 237.593
+f = 116; spread = 29.8983
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 3
+it = 4; 2
+F.size() 4Time elapsed: 315.394
+f = 114; spread = 30.4520
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 6
+it = 5; 2
+F.size() 5Time elapsed: 395.288
+f = 46; spread = 30.9909
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 6
+it = 6; 2
+F.size() 6Time elapsed: 471.706
+f = 34; spread = 31.5188
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 6
+it = 7; 2
+F.size() 7Time elapsed: 546.774
+f = 139; spread = 32.0228
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 5
+it = 8; 2
+F.size() 8Time elapsed: 628.814
+f = 132; spread = 32.4830
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 5
+it = 9; 2
+F.size() 9Time elapsed: 705.891
+f = 3; spread = 32.9228
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 5
+it = 10; 2
+F.size() 10Time elapsed: 782.273
+f = 97; spread = 33.3605
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 4
+it = 11; 2
+F.size() 11Time elapsed: 855.578
+f = 7; spread = 33.8739
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 8
+it = 12; 2
+F.size() 12Time elapsed: 923.585
+f = 35; spread = 34.2637
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 7
+it = 13; 2
+F.size() 13Time elapsed: 1002.36
+f = 43; spread = 34.6938
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 10
+it = 14; 2
+F.size() 14Time elapsed: 1077.75
+f = 37; spread = 35.0845
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 9
+it = 15; 2
+F.size() 15Time elapsed: 1153.33
+f = 104; spread = 35.4462
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 9
+it = 16; 2
+F.size() 16Time elapsed: 1226.34
+f = 76; spread = 35.8025
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 8
+it = 17; 2
+F.size() 17Time elapsed: 1298.98
+f = 32; spread = 36.1471
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 9
+it = 18; 2
+F.size() 18Time elapsed: 1375.04
+f = 69; spread = 36.4768
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 8
+it = 19; 2
+F.size() 19Time elapsed: 1447.08
+f = 74; spread = 36.7689
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 7
+it = 20; 2
+F.size() 20Time elapsed: 1519.07
+f = 67; spread = 37.0740
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 9
+it = 21; 2
+F.size() 21Time elapsed: 1588.93
+f = 52; spread = 37.3490
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 9
+it = 22; 2
+F.size() 22Time elapsed: 1656
+f = 89; spread = 37.6243
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 8
+it = 23; 2
+F.size() 23Time elapsed: 1719.73
+f = 36; spread = 37.9082
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 9
+it = 24; 2
+F.size() 24Time elapsed: 1780.73
+f = 33; spread = 38.1798
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 6
+it = 25; 2
+F.size() 25Time elapsed: 1849.02
+f = 138; spread = 38.4547
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 5
+it = 26; 2
+F.size() 26Time elapsed: 1914.2
+f = 73; spread = 38.7248
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 6
+it = 27; 2
+F.size() 27Time elapsed: 1973.62
+f = 38; spread = 38.9883
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 6
+it = 28; 2
+F.size() 28Time elapsed: 2032.47
+f = 92; spread = 39.2493
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 5
+it = 29; 2
+F.size() 29Time elapsed: 2091.18
+f = 144; spread = 39.4973
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 4
+it = 30; 2
+F.size() 30Time elapsed: 2149.15
+f = 115; spread = 39.7419
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 6
+it = 31; 2
+F.size() 31Time elapsed: 2206.96
+f = 110; spread = 39.9792
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 6
+it = 32; 2
+F.size() 32Time elapsed: 2264.19
+f = 51; spread = 40.2041
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 7
+it = 33; 2
+F.size() 33Time elapsed: 2321.22
+f = 50; spread = 40.4310
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 7
+it = 34; 2
+F.size() 34Time elapsed: 2380.59
+f = 112; spread = 40.6494
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 6
+it = 35; 2
+F.size() 35Time elapsed: 2442.1
+f = 136; spread = 40.8673
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 5
+it = 36; 2
+F.size() 36Time elapsed: 2501.36
+f = 26; spread = 41.0850
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 5
+it = 37; 2
+F.size() 37Time elapsed: 2558.08
+f = 16; spread = 41.3032
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 5
+it = 38; 2
+F.size() 38Time elapsed: 2614.94
+f = 143; spread = 41.5148
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 4
+it = 39; 2
+F.size() 39Time elapsed: 2673.82
+f = 127; spread = 41.7175
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 6
+it = 40; 2
+F.size() 40Time elapsed: 2732.33
+f = 0; spread = 41.9199
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 9
+it = 41; 2
+F.size() 41Time elapsed: 2791.09
+f = 24; spread = 42.1216
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 8
+it = 42; 2
+F.size() 42Time elapsed: 2846.97
+f = 58; spread = 42.3233
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 7
+it = 43; 2
+F.size() 43Time elapsed: 2903.3
+f = 20; spread = 42.5299
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 7
+it = 44; 2
+F.size() 44Time elapsed: 2958.28
+f = 102; spread = 42.7484
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 6
+it = 45; 2
+F.size() 45Time elapsed: 3012.99
+f = 130; spread = 42.9504
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 5
+it = 46; 2
+F.size() 46Time elapsed: 3067.3
+f = 68; spread = 43.1522
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 5
+it = 47; 2
+F.size() 47Time elapsed: 3121.31
+f = 22; spread = 43.3555
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 5
+it = 48; 2
+F.size() 48Time elapsed: 3174.46
+f = 142; spread = 43.5542
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 4
+it = 49; 2
+F.size() 49Time elapsed: 3225.44
+f = 56; spread = 43.7470
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 7
+it = 50; 2
+F.size() 50Time elapsed: 3277.11
+f = 13; spread = 43.9376
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.1
+Number of times the choice changed: 7
+Execution time = 3277.18 secs.
+Final spread value: 38.872
+0: 25.1893 spread
+1: 28.0392 spread
+2: 29.2992 spread
+3: 29.8983 spread
+4: 30.452 spread
+5: 30.9909 spread
+6: 31.5188 spread
+7: 32.0228 spread
+8: 32.483 spread
+9: 32.9228 spread
+10: 33.3605 spread
+11: 33.8739 spread
+12: 34.2637 spread
+13: 34.6938 spread
+14: 35.0845 spread
+15: 35.4462 spread
+16: 35.8025 spread
+17: 36.1471 spread
+18: 36.4768 spread
+19: 36.7689 spread
+20: 37.074 spread
+21: 37.349 spread
+22: 37.6243 spread
+23: 37.9082 spread
+24: 38.1798 spread
+25: 38.4547 spread
+26: 38.7248 spread
+27: 38.9883 spread
+28: 39.2493 spread
+29: 39.4973 spread
+30: 39.7419 spread
+31: 39.9792 spread
+32: 40.2041 spread
+33: 40.431 spread
+34: 40.6494 spread
+35: 40.8673 spread
+36: 41.085 spread
+37: 41.3032 spread
+38: 41.5148 spread
+39: 41.7175 spread
+40: 41.9199 spread
+41: 42.1216 spread
+42: 42.3233 spread
+43: 42.5299 spread
+44: 42.7484 spread
+45: 42.9504 spread
+46: 43.1522 spread
+47: 43.3555 spread
+48: 43.5542 spread
+49: 43.747 spread
+50: 43.9376 spread
+Features: 0 3 7 13 16 17 20 22 24 26 31 32 33 34 35 36 37 38 43 46 50 51 52 56 58 67 68 69 73 74 76 89 92 97 102 104 110 112 114 115 116 127 130 132 136 138 139 142 143 144
