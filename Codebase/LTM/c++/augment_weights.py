@@ -1,7 +1,7 @@
 import sys, os
 # delete and rename for correctness
 
-c =0.3
+c =0.2
 
 def replace_weights(dataset_dir):
     in_degrees = dict()
@@ -16,7 +16,7 @@ def replace_weights(dataset_dir):
             while line:
                 wt = float(line.strip().split()[2])
                 v = int(line.strip().split()[1]) 
-                aug_wt = c * min(1/in_degrees[v], wt)
+                aug_wt = c * min(1.0/in_degrees[v], wt)
                 array_text = line.strip().split()
                 array_text[2] = str(aug_wt)
                 fout.write(" ".join(array_text) + '\n')

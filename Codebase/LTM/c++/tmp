@@ -1,0 +1,60 @@
+Reading parameters...
+Setup file: full_sim_gnu_qb
+dataset_file b_file q_file mem_file groups_file
+../datasets/gnutella/edge_list.txt ../datasets/gnutella/edge_weights.txt - ../datasets/gnutella/mem.txt ../datasets/gnutella/com.txt
+group_number K I
+10 50 10000
+save dir: ./results/simpath/full_sim_gnu_qb/
+../datasets/gnutella/edge_list.txt
+high count: 0
+overall_count: 39994
+gen Q inf_count/overall_count :3877/39994
+S: 5862w10 10299w9 5124w10 2850w10 2554w10 2623w10 1629w10 2411w9 525w10 1958w4 3795w9 1426w10 1164w10 8386w1 4676w10 306w10 2445w10 163w10 126w9 10w10 516w10 
+I: 10000
+K: 50
+Starting algo: simpath
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+it = 0; spread = 25.1893
+it = 1; f = 31; spread = 28.0392
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 4
+it = 2; f = 17; spread = 29.2992
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 4
+it = 3; f = 116; spread = 29.8983
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 3
+it = 4; f = 114; spread = 30.4520
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 6
+it = 5; f = 46; spread = 30.9909
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 6
+it = 6; f = 34; spread = 31.5188
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 6
+it = 7; f = 139; spread = 32.0228
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 5
+it = 8; f = 132; spread = 32.4830
+Prob (0, 1): 0.02
+Prob (0, 2): 0.02
+Prob (0, 3): 0.02
+Number of times the choice changed: 5
+it = 9; 

@@ -162,14 +162,16 @@ int main(int argc, char const *argv[])
 
 
     // Time to estimate the spread
-    
+    double init_mc_spread = calculate_MC_spread(G, P, S, I);
+    cout<<"Init MC spread = "<<init_mc_spread<<endl;
+
     start = clock();
 
     // sets up result_feature_set
     if (strcmp(algo_name.c_str(), "simpath") == 0)
     {
         cout << "Starting algo: " <<"simpath"<< endl;
-        boost::tie(result_feature_set, influence) = simpath(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  1e-3, in_degrees, P);
+        boost::tie(result_feature_set, influence) = simpath(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  1e-5, in_degrees, P);
     }
     else if (strcmp(algo_name.c_str(), "rr") == 0)
     {
@@ -237,6 +239,22 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
   vector<int> Phi, int K, int I, double eta, unordered_map <int, double> &in_degrees, edge_prob &P)
 
 {
+
+    // plotting parameters
+    int mode = 2; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
+    clock_t start, finish;
+    int report_interval = 2;
+
+    if (mode != 0)
+    {
+        cout<<"Running to report results according to mode: "<<mode<<endl;
+    }
+
+    if (mode == 2)
+    {
+        start = clock();
+    }
+
     vector <int> F;
     unordered_map<int, bool> selected;
     edge_prob changed;
@@ -282,8 +300,26 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
         }
         F.push_back(max_feature);
         selected[max_feature] = true;
+        // cout<<mode<<endl;
+        if (mode == 2)
+        {
+            finish = clock();
+            double exec_time = (double) (finish - start)/CLOCKS_PER_SEC;
+            cout<<"F.size() "<<F.size()<<"; Time elapsed: "<<exec_time<<endl;
+        }
         printf("f = %i; spread = %.4f\n", max_feature, max_spread);
         increase_probabilities(G, Btransformed, Q, node_to_feat, F, feat_to_edges[max_feature], P, in_degrees);
+
+        if (mode == 1)
+        {
+            // calc mc spread after the permanent increase. Slows down the algorithm
+            if (F.size()%report_interval == 0)
+            {
+                double mc_spread = calculate_MC_spread(G, P, S, I);   
+                printf("|F| = %lu; mc_spread = %.4f\n", F.size(), mc_spread);
+            }
+        }
+
         // monitor the value of one edge
         cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
         cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing

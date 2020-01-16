@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/konstantinost/anaconda3/envs/caimpy3/bin/python",
+    "python.pythonPath": "/Users/ansh/anaconda3/envs/aiml/bin/python",
     "files.associations": {
         "iosfwd": "cpp",
         "iostream": "cpp"
