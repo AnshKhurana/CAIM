@@ -2,7 +2,7 @@ Setup file: gnutella_simpath
 group_number K I
 10 50 10000
 algo_name: simpath10299 8386 5862 5124 4676 516 306 10 525 1426 163 126 1164 2411 2445 1958 3795 2623 1629 2554 2850 
-Execution time  = 1143.275468 secs.
+Execution time  = 1117.701528 secs.
 k spread
 0 25.189303
 1 28.039234
@@ -55,4 +55,4 @@ k spread
 48 43.554181
 49 43.746978
 50 43.937572
-The final spread value (MC calculated) = 38.881100
+The final spread value (MC calculated) = 38.855500

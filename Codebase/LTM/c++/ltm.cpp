@@ -75,7 +75,7 @@ int main(int argc, char const *argv[])
         eta = stof(line);
 
         printf("eta: %f", eta);
-
+        
         // Print
         cout << "dataset_file" << " " << "b_file" << " "  << "q_file" << " " <<
                 "mem_file" << " " << "groups_file" << endl;
@@ -165,9 +165,11 @@ int main(int argc, char const *argv[])
     cout << "K: " << K << endl;
     FILE *results_file; // variables for files
 
-
+    FILE* eta_file;
+    eta_file = fopen("simpath_eta", "a");
+    fprintf(eta_file, "eta: %lf\n", eta);
     // Time to estimate the spread
-    double init_mc_spread = calculate_MC_spread(G, P, S, I);
+    double init_mc_spread = calculate_MC_spread(G, B, S, I);
     cout<<"Init MC spread = "<<init_mc_spread<<endl;
 
     start = clock();
@@ -176,7 +178,7 @@ int main(int argc, char const *argv[])
     if (strcmp(algo_name.c_str(), "simpath") == 0)
     {
         cout << "Starting algo: " <<"simpath"<< endl;
-        boost::tie(result_feature_set, influence) = simpath(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  1e-5, in_degrees, P);
+        boost::tie(result_feature_set, influence) = simpath(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  eta, in_degrees, P);
     }
     else if (strcmp(algo_name.c_str(), "rr") == 0)
     {
@@ -195,6 +197,8 @@ int main(int argc, char const *argv[])
     finish = clock();
     double exec_time = (double) (finish - start)/CLOCKS_PER_SEC;
     cout << "Execution time = " << exec_time << " secs.\n";
+
+    fprintf(eta_file, "Execution time  = %lf secs.\n", exec_time);
 
     final_spread = calculate_MC_spread(G, P, S, I);
     cout<<"Final spread value: "<<final_spread<<endl;
@@ -245,8 +249,9 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
 
 {
 
+    cout<<"using eta: "<<eta<<endl;
     // plotting parameters
-    int mode = 2; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
+    int mode = 0; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
     clock_t start, finish;
     int report_interval = 2;
 
