@@ -74,7 +74,7 @@ int main(int argc, char const *argv[])
         getline(infile, line);
         eta = stof(line);
 
-        printf("eta: %f", eta);
+        printf("eta: %lf\n", eta);
         
         // Print
         cout << "dataset_file" << " " << "b_file" << " "  << "q_file" << " " <<
@@ -167,7 +167,7 @@ int main(int argc, char const *argv[])
 
     FILE* eta_file;
     eta_file = fopen("simpath_eta", "a");
-    fprintf(eta_file, "eta: %lf\n", eta);
+    
     // Time to estimate the spread
     double init_mc_spread = calculate_MC_spread(G, B, S, I);
     cout<<"Init MC spread = "<<init_mc_spread<<endl;
@@ -197,7 +197,8 @@ int main(int argc, char const *argv[])
     finish = clock();
     double exec_time = (double) (finish - start)/CLOCKS_PER_SEC;
     cout << "Execution time = " << exec_time << " secs.\n";
-
+    
+    fprintf(eta_file, "eta: %lf\n", eta);
     fprintf(eta_file, "Execution time  = %lf secs.\n", exec_time);
 
     final_spread = calculate_MC_spread(G, P, S, I);
