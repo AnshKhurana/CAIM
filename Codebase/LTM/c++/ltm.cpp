@@ -35,6 +35,7 @@ int main(int argc, char const *argv[])
     edge_prob B, Q, P; // P for by reference
     unordered_map<int, unordered_set<int> > groups; // feat to nodes
     unordered_set<int> S; // Seed set
+    double eta;
     int I, K, group_number; 
     clock_t start, finish;
     double final_spread;
@@ -70,7 +71,11 @@ int main(int argc, char const *argv[])
         K = stoi(line);
         getline(infile, line);
         I = stoi(line);
+        getline(infile, line);
+        eta = stof(line);
 
+        printf("eta: %f", eta);
+        
         // Print
         cout << "dataset_file" << " " << "b_file" << " "  << "q_file" << " " <<
                 "mem_file" << " " << "groups_file" << endl;
@@ -160,9 +165,11 @@ int main(int argc, char const *argv[])
     cout << "K: " << K << endl;
     FILE *results_file; // variables for files
 
-
+    FILE* eta_file;
+    eta_file = fopen("simpath_eta", "a");
+    fprintf(eta_file, "eta: %lf\n", eta);
     // Time to estimate the spread
-    double init_mc_spread = calculate_MC_spread(G, P, S, I);
+    double init_mc_spread = calculate_MC_spread(G, B, S, I);
     cout<<"Init MC spread = "<<init_mc_spread<<endl;
 
     start = clock();
@@ -171,7 +178,7 @@ int main(int argc, char const *argv[])
     if (strcmp(algo_name.c_str(), "simpath") == 0)
     {
         cout << "Starting algo: " <<"simpath"<< endl;
-        boost::tie(result_feature_set, influence) = simpath(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  1e-5, in_degrees, P);
+        boost::tie(result_feature_set, influence) = simpath(G, B, Bt, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  eta, in_degrees, P);
     }
     else if (strcmp(algo_name.c_str(), "rr") == 0)
     {
@@ -190,6 +197,8 @@ int main(int argc, char const *argv[])
     finish = clock();
     double exec_time = (double) (finish - start)/CLOCKS_PER_SEC;
     cout << "Execution time = " << exec_time << " secs.\n";
+
+    fprintf(eta_file, "Execution time  = %lf secs.\n", exec_time);
 
     final_spread = calculate_MC_spread(G, P, S, I);
     cout<<"Final spread value: "<<final_spread<<endl;
@@ -240,19 +249,28 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
 
 {
 
+    cout<<"using eta: "<<eta<<endl;
     // plotting parameters
-    int mode = 1; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
+    int mode = 0; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
     clock_t start, finish;
     int report_interval = 2;
+
+    FILE *time_file, *spread_file;
 
     if (mode != 0)
     {
         cout<<"Running to report results according to mode: "<<mode<<endl;
+
+        if (mode==1)
+        {
+            spread_file = fopen("simpath_spread", "w");
+        }
     }
 
     if (mode == 2)
     {
         start = clock();
+        time_file = fopen("simpath_time_eta", "a");
     }
 
     vector <int> F;
@@ -264,9 +282,7 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
     vector <int> no_selected_features = {-1}; 
     P = init_probs(G, Btransformed, in_degrees);
     int choice_index = 0;
-    cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
-    cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
-    cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
+    
     // wrong. should be 1/Fv sigmoid of Bt, let's just say it's B.copy
     // however, does not limit the values to 1/fv
 
@@ -306,6 +322,7 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
             finish = clock();
             double exec_time = (double) (finish - start)/CLOCKS_PER_SEC;
             cout<<"F.size() "<<F.size()<<"; Time elapsed: "<<exec_time<<endl;
+            fprintf(time_file, "F.size() %lu; Time elapsed: %0.4f\n", F.size(), exec_time);
         }
         printf("f = %i; spread = %.4f\n", max_feature, max_spread);
         increase_probabilities(G, Btransformed, Q, node_to_feat, F, feat_to_edges[max_feature], P, in_degrees);
@@ -317,13 +334,11 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
             {
                 double mc_spread = calculate_MC_spread(G, P, S, I);   
                 printf("|F| = %lu; mc_spread = %.4f\n", F.size(), mc_spread);
+                fprintf(spread_file, "|F| = %lu; mc_spread = %.4f\n", F.size(), mc_spread);
             }
         }
 
         // monitor the value of one edge
-        cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
-        cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
-        cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
         cout<<"Number of times the choice changed: "<<choice_index<<endl;
         choice_index = 0;
         influence[F.size()] = max_spread;
@@ -873,6 +888,30 @@ double calculate_MC_spread(DiGraph G, edge_prob P, unordered_set <int> S, int I)
 pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base, edge_prob Btransformed, edge_prob Q, unordered_set<int> S, unordered_map<int,
         vector<int> > node_to_feat, unordered_map<int, vector<pair<int, int> > > feat_to_edges, vector<int> Phi, int K, int I, unordered_map <int, double> &in_degrees, edge_prob &P)
 {
+
+    // plotting parameters
+    int mode = 2; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
+    clock_t start, finish;
+    int report_interval = 2;
+
+    FILE *time_file, *spread_file;
+
+    if (mode != 0)
+    {
+        cout<<"Running to report results according to mode: "<<mode<<endl;
+        if (mode == 1)
+        {
+            spread_file = fopen("greedy_spread", "w");
+        }
+    }
+
+    if (mode == 2)
+    {
+        start = clock();
+        time_file = fopen("greedy_time", "w");
+    }
+
+
     vector <int> F;
     unordered_map<int, bool> selected;
     edge_prob changed;
@@ -882,9 +921,9 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base
     int choice_index=0;
     vector <int> no_selected_features = {-1}; 
     P = init_probs(G, Btransformed, in_degrees);
-    cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
-    cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
-    cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
+    // cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
+    // cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
+    // cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
     // wrong. should be 1/Fv sigmoid of Bt, let's just say it's B.copy
     // however, does not limit the values to 1/fv
 
@@ -916,12 +955,32 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base
         }
         F.push_back(max_feature);
         selected[max_feature] = true;
+        // cout<<mode<<endl;
+        if (mode == 2)
+        {
+            finish = clock();
+            double exec_time = (double) (finish - start)/CLOCKS_PER_SEC;
+            cout<<"F.size() "<<F.size()<<"; Time elapsed: "<<exec_time<<endl;
+            fprintf(time_file, "F.size() %lu; Time elapsed: %0.4f", F.size(), exec_time);
+        }
         printf("f = %i; spread = %.4f\n", max_feature, max_spread);
-        increase_probabilities(G, Btransformed, Q, node_to_feat, F, feat_to_edges[max_feature], P, in_degrees); // P by ref
-        // monitor the value of one edge
-        cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
-        cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
-        cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
+        increase_probabilities(G, Btransformed, Q, node_to_feat, F, feat_to_edges[max_feature], P, in_degrees);
+
+        if (mode == 1)
+        {
+            fprintf(spread_file, "|F| = %lu; mc_spread = %.4f\n", F.size(), max_spread);    
+        }
+        
+        // if (mode == 1)
+        // {
+        //     // calc mc spread after the permanent increase. Slows down the algorithm
+        //     if (F.size()%report_interval == 0)
+        //     {
+        //         double mc_spread = calculate_MC_spread(G, P, S, I);   
+        //         printf("|F| = %lu; mc_spread = %.4f\n", F.size(), mc_spread);
+                
+        //     }
+        // }
         cout<<"Number of times the choice changed: "<<choice_index<<endl;
         choice_index = 0;
         influence[F.size()] = max_spread;
