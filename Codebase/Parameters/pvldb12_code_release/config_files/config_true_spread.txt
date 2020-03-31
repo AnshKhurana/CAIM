@@ -1,0 +1,14 @@
+# Config file for computing true spread under CD model. 
+
+phase : 14
+
+graphFile : sample_dataset/training/scan2/edgesCounts.txt
+actionsFile : sample_dataset/actionslog.txt
+userInflFile : sample_dataset/training/scan2/usersCounts.txt
+seedFileName : sample_dataset/maxinf_CD/PCCov_0_0.001.txt
+
+outdir : sample_dataset/maxinf_CD
+maxTuples : 0
+trainingActionsFile : sample_dataset/actions_in_training.txt
+propModel : PC
+testingActionsFile : sample_dataset/actions_in_testing.txt

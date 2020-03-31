@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/goyal/!svn/ver/658/experiments/pvldb12_code_release/sample_dataset/maxinf_CD
+END
+PCCov_0_0.001.txt
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/goyal/!svn/ver/658/experiments/pvldb12_code_release/sample_dataset/maxinf_CD/PCCov_0_0.001.txt
+END
+maxinf_IC_Greedy_0.txt
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/goyal/!svn/ver/658/experiments/pvldb12_code_release/sample_dataset/maxinf_CD/maxinf_IC_Greedy_0.txt
+END
+PCCov_0_0.001.txt_PCCov.txt
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/goyal/!svn/ver/658/experiments/pvldb12_code_release/sample_dataset/maxinf_CD/PCCov_0_0.001.txt_PCCov.txt
+END

@@ -1,0 +1,19 @@
+We give sample config files.
+
+config_maxinf_CD.txt : config file for influence maximization under Credit
+Distribution Model.
+
+config_maxinf_IC.txt : config file for influence maximization under IC/LT Model.
+
+config_true_spread.txt : for computing true spread of seeds under Credit
+Distribution Model.
+
+config_spread_prediction_CD.txt : for spread prediction experiment under CD
+model.
+
+config_spread_prediction_IC.txt : for spread prediction experiment under IC/LT
+model.
+
+config_training_scan1.txt : For generating input files (scan 1).
+
+config_training_scan2.txt : For generating input files (scan 2).

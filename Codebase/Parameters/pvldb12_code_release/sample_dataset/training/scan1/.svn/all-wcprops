@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/goyal/!svn/ver/658/experiments/pvldb12_code_release/sample_dataset/training/scan1
+END
+edgesCounts.txt
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/goyal/!svn/ver/658/experiments/pvldb12_code_release/sample_dataset/training/scan1/edgesCounts.txt
+END
+usersCounts.txt
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/goyal/!svn/ver/658/experiments/pvldb12_code_release/sample_dataset/training/scan1/usersCounts.txt
+END

@@ -1,0 +1,11 @@
+# Config file for learning paramters (Scan 2)
+
+phase : 1
+computeUserInf : 1
+
+training_dir : sample_dataset/training/scan1
+actionsFile : sample_dataset/actionslog.txt
+
+outdir : sample_dataset/training/outscan2
+maxTuples : 0
+trainingActionsFile : sample_dataset/actions_in_training.txt

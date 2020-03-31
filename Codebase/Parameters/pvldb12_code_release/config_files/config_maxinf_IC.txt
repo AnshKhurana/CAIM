@@ -1,0 +1,10 @@
+# Config file for seed selection for influence maximization under
+# Independent Cascade Model and Linear Threshold Model
+
+phase : 10
+
+probGraphFile : sample_dataset/IC.inf
+mcruns : 10000
+outdir : sample_dataset/maxinf_CD
+budget : 2
+propModel : IC
