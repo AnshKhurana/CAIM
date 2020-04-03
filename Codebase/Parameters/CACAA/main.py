@@ -1,7 +1,7 @@
 # Parameters 
 import os
 import argparse
-from learn_params import get_aux
+from learn_params import get_aux, learn_params
 from helpers import *
 import pprint
 
@@ -37,5 +37,8 @@ if __name__ == "__main__":
 
     print(args)
 
-    get_aux(args)
+    g, n, C1v, C2v, C1vu, C2vu = get_aux(args)
+
+    # Actually writes the final values to the output file
+    learn_params(args, g, n, C1v, C2v, C1vu, C2vu)
 

@@ -36,9 +36,10 @@ def get_aux(args):
     # split logfile on per action basis to speed things up
     current_table = dict()
     # map user, action to time
-
+    count = 1
     for log in logs:
-    
+        print("Log number: ", count)
+        count+=1
         # list
         # u_id, topic_id, timestamp
         [u, a, t_u] = [int(x) for x in log]
@@ -88,12 +89,21 @@ def get_aux(args):
     return g, n, C1v, C2v, C1vu, C2vu
 
 
-def learn_params(g, n, C1v, C2v, C1vu, C2vu):
+def learn_params(args, g, n, C1v, C2v, C1vu, C2vu):
 
+
+    base_file = open(os.path.join(args.data_dir, 'base_weights.csv'), 'w')
+    q_file = open(os.path.join(args.data_dir, "marg_weights.txt"), "w")
+    
     for edge in g.edges:
         u, v = edge # from u to v direction
 
+        q = (C1vu[(u, v)] - 1/n[v]*C1v[v]*C2vu[(u, v)]) / (C2v[v] - 1/n*(C1v[v]**2))
+        p = 1/n[v] * C2vu[(u, v)] - q/n[v]*C1v[v]
+
+        base_file.write("{} {} {}\n", u, v, p)
+        q_file.write("{} {} {}\n", u, v, q)
+
         # formula for p, q and then write to text file
 
-    
-    
+
