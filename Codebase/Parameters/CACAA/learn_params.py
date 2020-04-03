@@ -72,7 +72,7 @@ def get_aux(args):
             if t_u > current_table[(v, a)]:
                 # update params Cvu1, Cvu2
                 
-                C1vu[(v, u)] += get_alpha(args, a)/d
+                C1vu[(v, u)] += alpha/d
                 C2vu[(v, u)] += 1/d
             else:
                 # since in chrono order
