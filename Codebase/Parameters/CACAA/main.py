@@ -11,7 +11,10 @@ parser = argparse.ArgumentParser()
 # binary threshold for binary
 parser.add_argument("--topic_thr", default=0.034, type =float)
 
-parser.add_argument('--get_binary', action="store_true", default=False, help="specify this option to refresh the binary features")
+# one month
+parser.add_argument("--tau", default=2592000, type=int) 
+
+parser.add_argument('--skip_binary', action="store_true", default=False, help="specify this option to refresh the binary features")
 # input files
 
 parser.add_argument('--data_dir', default='../data')
@@ -29,7 +32,7 @@ if __name__ == "__main__":
     args.topic_features_input = os.path.join(args.data_dir, 'reduced_tf_idf.csv')
 
     
-    if not args.get_binary:
+    if not args.skip_binary:
         create_vecs(args)
     
     args.user_features = os.path.join(args.data_dir, 'user_features.npy')

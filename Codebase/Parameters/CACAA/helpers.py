@@ -96,3 +96,11 @@ def get_num_users(args):
     
     # return len(user_set)
 
+def check_sim(vec1, vec2, nbits=1):
+    diff = np.count_nonzero(vec1!=vec2)
+
+    # print("vector dif = ", diff)
+    if diff < nbits:
+        return True
+    else:
+        return False
