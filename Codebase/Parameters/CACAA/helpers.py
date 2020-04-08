@@ -84,17 +84,16 @@ def get_alpha(u_vec, t_vec):
 
 def get_num_users(args):
 
-    return 4300
-    # user_set = set()
-    # edge_list = open(args.edge_list, newline='')
-    # edges = csv.reader(edge_list, delimiter=' ')
+    user_set = set()
+    edge_list = open(args.edge_list, newline='')
+    edges = csv.reader(edge_list, delimiter=' ')
 
-    # for edge in edges:
-    #     [u, v] = edge
-    #     user_set.add(u)
-    #     user_set.add(v)
+    for edge in edges:
+        [u, v] = edge
+        user_set.add(u)
+        user_set.add(v)
     
-    # return len(user_set)
+    return len(user_set)
 
 def check_sim(vec1, vec2, nbits=1):
     diff = np.count_nonzero(vec1!=vec2)

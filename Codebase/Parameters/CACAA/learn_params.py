@@ -60,7 +60,7 @@ def get_aux(args):
             
             parents = []
             for u, act in current_table.keys():
-                if g.has_edge(u, v) and check_sim(topic_features[act], topic_features[a]) and (t_v > current_table[u, act]) and args.tau > (t_v - current_table[u, act]):
+                if g.has_edge(u, v) and check_sim(topic_features[act], topic_features[a], nbits=50) and (t_v > current_table[u, act]) and args.tau > (t_v - current_table[u, act]):
                     parents.append(u)
 
             d =  len(parents) 
@@ -96,6 +96,8 @@ def learn_params(args, g, n, C1, C2, C3, C4):
 
         q = (C1[(u, v)] - 1/n[u]*C2[(u, v)]*C3[(u, v)]) / (C4[(u, v)] - 1/n[u]*(C2[(u, v)]**2))
         p = 1/n[u] * C3[(u, v)] - q/n[u]*C2[(u, v)]
+
+        
 
         base_file.write("%d %d %f\n" % (u, v, p))
         q_file.write("%d %d %f\n" % (u, v, q))
