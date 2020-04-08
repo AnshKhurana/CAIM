@@ -36,10 +36,10 @@ def get_aux(args):
     # split logfile on per action basis to speed things up
     current_table = dict()
     # map user, action to time
-    count = 1
+    
     for log in logs:
-        print("Log number: ", count) # progress 
-        count+=1
+     
+        
         # list
         # u_id, topic_id, timestamp for v performing action a
         [v, a, t_v] = [int(x) for x in log]
@@ -59,15 +59,15 @@ def get_aux(args):
                 C4[(v, w)] += alpha_wa**2
             
             parents = []
+            count = 0
             for u, act in current_table.keys():
-                if g.has_edge(u, v) and check_sim(topic_features[act], topic_features[a], nbits=50) and (t_v > current_table[u, act]) and args.tau > (t_v - current_table[u, act]):
+                count += 1
+                if g.has_edge(u, v) and check_sim(topic_features[act], topic_features[a], nbits=100) and (t_v > current_table[(u, act)]) and args.tau > (t_v - current_table[(u, act)]):
                     parents.append(u)
 
             d =  len(parents) 
             
             print("Parents: ", end = " ")
-
-            
             for u in parents:
                 print(u, end=" ")
                 alpha_va = get_alpha(user_features[v], topic_features[a])
@@ -77,6 +77,7 @@ def get_aux(args):
 
             current_table[(v, a)] = t_v
             print()
+            print("Size of current log: ", count) # progress 
             # print(alpha)
             # Update single element coeffs first
 
@@ -96,9 +97,7 @@ def learn_params(args, g, n, C1, C2, C3, C4):
 
         q = (C1[(u, v)] - 1/n[u]*C2[(u, v)]*C3[(u, v)]) / (C4[(u, v)] - 1/n[u]*(C2[(u, v)]**2))
         p = 1/n[u] * C3[(u, v)] - q/n[u]*C2[(u, v)]
-
         
-
         base_file.write("%d %d %f\n" % (u, v, p))
         q_file.write("%d %d %f\n" % (u, v, q))
 
