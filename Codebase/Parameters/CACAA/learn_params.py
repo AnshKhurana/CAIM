@@ -3,7 +3,7 @@ import numpy as np
 
 from helpers import *
 
-def get_aux(args):
+def get_aux_vk(args):
 
     logfile =  open(args.log_file, newline='')
     logs = csv.reader(logfile, delimiter=' ')
@@ -38,8 +38,7 @@ def get_aux(args):
     # map user, action to time
     
     for log in logs:
-     
-        
+      
         # list
         # u_id, topic_id, timestamp for v performing action a
         [v, a, t_v] = [int(x) for x in log]
@@ -62,7 +61,7 @@ def get_aux(args):
             count = 0
             for u, act in current_table.keys():
                 count += 1
-                if g.has_edge(u, v) and check_sim(topic_features[act], topic_features[a], nbits=100) and (t_v > current_table[(u, act)]) and args.tau > (t_v - current_table[(u, act)]):
+                if g.has_edge(u, v) and check_sim(topic_features[act], topic_features[a], nbits=args.nbits) and (t_v > current_table[(u, act)]) and args.tau > (t_v - current_table[(u, act)]):
                     parents.append(u)
 
             d =  len(parents) 
@@ -102,5 +101,106 @@ def learn_params(args, g, n, C1, C2, C3, C4):
         q_file.write("%d %d %f\n" % (u, v, q))
 
         # formula for p, q and then write to text file
+        
+
+def get_aux_cit(args):
+
+    logfile =  open(args.log_file, newline='')
+    logs = csv.reader(logfile, delimiter=' ')
+    num_users = get_num_users(args)
+    g = read_graph(args.edge_list)  
+
+    # store and read all features, for ease of alpha?
+    topic_features = np.load(args.topic_features)
+    user_features = np.load(args.user_features)
+
+    # INIT
+    # using row vectors
+    n = np.zeros((num_users, 1))  # maps user ID to number of actions performed
+
+    # storing coefficients for each edge, 
+    # using dict because the data is sparse
+    C1 = dict()
+    C2 = dict()
+    C3 = dict()
+    C4 = dict()
+
+    # init edge parameters
+    for u, v in g.edges:
+        C1[(u, v)] = 0
+        C2[(u, v)] = 0
+        C3[(u, v)] = 0
+        C4[(u, v)] = 0
+
+    published = dict()
+    cited = dict()
+
+    for log in logs:
+        [u, v, c, p] = [int(x) for x in log]
+
+        if u in published.keys():
+            published[u].add(c)
+        else:
+            published[u] = set()
+            published[u].add(c)
+        
+        if v in published.keys():
+            published[v].add(p)
+        else:
+            published[v] = set()
+            published[v].add(p)
+
+        if v in cited.keys():
+            cited[v].add(c)
+        else:
+            cited[v] = set()
+            cited[v].add(c)
+        
+    for v in cited.keys():
+        # people who have cited a paper
+
+        for msg in cited[v]:
+            # for each action
+            for w in g.successors(v):
+                alpha_wa = get_alpha(user_features[w], topic_features[msg])
+                C2[(v, w)] += alpha_wa
+                C4[(v, w)] += alpha_wa**2
+
+            parents = []
+            for u in g.predecessors(v):
+                # check if similar cited
+                similar_cited = False
+                similar_published = False
+
+                for paper in cited[u]:
+                    if check_sim(topic_features[paper], topic_features[msg], args.nbits):
+                        similar_cited = True
+                        break
+                
+                if not similar_cited:
+                    for paper in published[u]:
+                        if check_sim(topic_features[paper], topic_features[msg], args.nbits):
+                            similar_published = True
+                            break
+                
+                if similar_cited or similar_published:
+                    parents.append(u)
+            
+            d = len(parents)
+            alpha_va = get_alpha(user_features[v], topic_features[msg])
+            for u in parents:
+                C1[(u, v)] += alpha_va * 1/d
+                C3[(u, v)] += 1/d
 
 
+    print(len(C1.keys()))
+    print(len(C2.keys()))
+    return g, n, C1, C2, C3, C4
+
+
+
+
+def get_roc():
+
+    # read base weights
+    pass
