@@ -52,7 +52,7 @@ def create_vecs(args):
 
     print("Shape of topic np", topic_list.shape, topic_list.dtype)
 
-    with open(os.path.join(args.data_dir, 'topic_features.npy'), 'wb') as f:
+    with open(os.path.join(args.data_dir, args.exp, 'topic_features.npy'), 'wb') as f:
         np.save(f, topic_list)
     
     print("creating vecs for user features")
@@ -65,14 +65,14 @@ def create_vecs(args):
 
     print(type(user_list), type(user_list[0]))
     
-    user_list = [thresh_one_user(x, args.topic_thr) for x in user_list]
+    user_list = [thresh_one(x, args.topic_thr) for x in user_list]
     
     user_list = np.array(user_list)
 
     print("Shape of user topic np", user_list.shape, user_list.dtype)
     
 
-    with open(os.path.join(args.data_dir, 'user_features.npy'), 'wb') as f:
+    with open(os.path.join(args.data_dir, args.exp, 'user_features.npy'), 'wb') as f:
         np.save(f, user_list)    
 
 

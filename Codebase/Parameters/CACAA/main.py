@@ -40,7 +40,7 @@ if __name__ == "__main__":
     
     args.edge_list = os.path.join(args.data_dir, args.exp, 'edge_list.csv')
     args.user_features_input = os.path.join(args.data_dir, args.exp, 'user_preferences.csv')
-    args.topic_features_input = os.path.join(args.data_dir, args.exp, 'reduced_tf_idf.csv')
+    args.topic_features_input = os.path.join(args.data_dir, args.exp, 'topic_features.csv')
 
     
     if not args.skip_binary:

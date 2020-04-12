@@ -88,8 +88,8 @@ def get_aux_vk(args):
 def learn_params(args, g, n, C1, C2, C3, C4):
 
 
-    base_file = open(os.path.join(args.data_dir, 'base_weights.txt'), 'w')
-    q_file = open(os.path.join(args.data_dir, "marg_weights.txt"), "w")
+    base_file = open(os.path.join(args.data_dir, args.exp, 'base_weights.txt'), 'w')
+    q_file = open(os.path.join(args.data_dir, args.exp, "marg_weights.txt"), "w")
     
     for edge in g.edges:
         u, v = edge # from u to v direction
@@ -100,6 +100,8 @@ def learn_params(args, g, n, C1, C2, C3, C4):
         base_file.write("%d %d %f\n" % (u, v, p))
         q_file.write("%d %d %f\n" % (u, v, q))
 
+    base_file.close()
+    q_file.close()
         # formula for p, q and then write to text file
         
 
@@ -169,23 +171,28 @@ def get_aux_cit(args):
             parents = []
             for u in g.predecessors(v):
                 # check if similar cited
-                similar_cited = False
+                # similar_cited = False
                 similar_published = False
 
-                for paper in cited[u]:
-                    if check_sim(topic_features[paper], topic_features[msg], args.nbits):
-                        similar_cited = True
-                        break
+                # for paper in cited[u]:
+                #     if check_sim(topic_features[paper], topic_features[msg], args.nbits):
+                #         similar_cited = True
+                #         break
                 
-                if not similar_cited:
-                    for paper in published[u]:
-                        if check_sim(topic_features[paper], topic_features[msg], args.nbits):
-                            similar_published = True
-                            break
-                
-                if similar_cited or similar_published:
-                    parents.append(u)
+                # if not similar_cited:
+                # for paper in published[u]:
+                #     if check_sim(topic_features[paper], topic_features[msg], args.nbits):
+                #         similar_published = True
+                #         break
             
+                # if similar_cited or similar_published:
+                #     parents.append(u)
+
+                # NON similarity based
+
+                if msg in published[u]:
+                    parents.append(u)
+
             d = len(parents)
             alpha_va = get_alpha(user_features[v], topic_features[msg])
             for u in parents:
