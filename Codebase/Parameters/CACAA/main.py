@@ -5,6 +5,57 @@ from learn_params import get_aux_vk, get_aux_cit, learn_params
 from helpers import *
 import pprint
 
+
+
+def get_qual(args, topic_thresh, sim_bits):
+
+    # calculate tp, fp, tn, fn
+    for mu in np.linspace(0, 1, 100):
+        pass
+    tpr = tp / (tp + fn)
+    fpr = fp / (fp + tn)
+
+    auc = np.trapz(tpr, fpr)
+
+    return auc
+
+def local_search(args, num_topics=1000, topic_thresh=0.034, sim_bits=100, delta_thres=0.01, delta_bits=1):
+
+    
+    current_val = get_qual(args, topic_thresh, sim_bits)
+    
+    # signs = [(-1,-1,-1), (-1,-1,0), (-1,-1,1), (-1,)]
+
+    while True:
+        success = False
+        for i in [-1,0,1]:
+            for j in [-1,0,1]:
+                    new_val = get_qual(args, topic_thresh + i*delta_thres, sim_bits +j*delta_bits)
+
+                    if new_val > current_val:
+                        current_val =  new_val
+                        topic_thresh += i*delta_thres
+                        sim_bits += j*delta_bits
+                        success = True
+                        break
+        if not success:
+            break
+    
+    return topic_thresh, sim_bits
+        
+
+
+        
+
+
+    
+
+
+
+
+
+
+
 parser = argparse.ArgumentParser()
 
 

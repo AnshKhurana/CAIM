@@ -196,6 +196,7 @@ def get_aux_cit(args):
 
             d = len(parents)
             alpha_va = get_alpha(user_features[v], topic_features[msg])
+            print("Alpha va: ", alpha_va)
             print("Parents: ", end = " ")
             for u in parents:
                 print(u, end=" ")
