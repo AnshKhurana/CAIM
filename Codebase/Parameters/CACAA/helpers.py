@@ -89,6 +89,7 @@ def get_num_users(args):
     edges = csv.reader(edge_list, delimiter=' ')
 
     for edge in edges:
+        # print(edge)
         [u, v] = edge
         user_set.add(u)
         user_set.add(v)

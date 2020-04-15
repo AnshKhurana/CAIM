@@ -52,13 +52,13 @@ if __name__ == "__main__":
     print(args)
 
     if args.exp == 'vk':
-        g, n, C1v, C2v, C1vu, C2vu = get_aux_vk(args)
+        g, n, C1, C2, C3, C4 = get_aux_vk(args)
     elif args.exp == 'citation':
-        g, n, C1v, C2v, C1vu, C2vu = get_aux_cit(args)
+        g, n, C1, C2, C3, C4 = get_aux_cit(args)
     else:
         raise ValueError("Dataset not available")
 
     # Actually writes the final values to the output file
     
-    learn_params(args, g, n, C1v, C2v, C1vu, C2vu)
+    learn_params(args, g, n, C1, C2, C3, C4)
 

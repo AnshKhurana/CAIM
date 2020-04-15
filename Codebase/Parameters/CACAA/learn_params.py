@@ -160,8 +160,9 @@ def get_aux_cit(args):
         
     for v in cited.keys():
         # people who have cited a paper
-
+        print("For node ", v)
         for msg in cited[v]:
+            print("who cited ", msg)
             # for each action
             for w in g.successors(v):
                 alpha_wa = get_alpha(user_features[w], topic_features[msg])
@@ -170,7 +171,8 @@ def get_aux_cit(args):
 
             parents = []
             for u in g.predecessors(v):
-                # check if similar cited
+                
+                # There must be at least one parent for each node.
                 # similar_cited = False
                 similar_published = False
 
@@ -189,16 +191,17 @@ def get_aux_cit(args):
                 #     parents.append(u)
 
                 # NON similarity based
-
-                if msg in published[u]:
+                if u in published.keys() and  msg in published[u]:
                     parents.append(u)
 
             d = len(parents)
             alpha_va = get_alpha(user_features[v], topic_features[msg])
+            print("Parents: ", end = " ")
             for u in parents:
+                print(u, end=" ")
                 C1[(u, v)] += alpha_va * 1/d
                 C3[(u, v)] += 1/d
-
+            print()
 
     print(len(C1.keys()))
     print(len(C2.keys()))
