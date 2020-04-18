@@ -104,3 +104,13 @@ def check_sim(vec1, vec2, nbits=1):
         return True
     else:
         return False
+
+
+def print_all(C1, C2, C3, C4):
+
+    print("--------------------------------------")
+    print()
+    for u, v in C1.keys():
+        print(u, v)
+        print(C1[(u, v)], C2[(u, v)], C3[(u, v)], C4[(u, v)])
+        print()

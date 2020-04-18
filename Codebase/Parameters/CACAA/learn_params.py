@@ -206,6 +206,10 @@ def get_aux_cit(args):
 
     print(len(C1.keys()))
     print(len(C2.keys()))
+
+    for i in range(num_users):
+        n[i] = len(published[i])
+
     return g, n, C1, C2, C3, C4
 
 
