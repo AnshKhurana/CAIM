@@ -49,7 +49,7 @@ def get_aux_vk(args):
         else:
              
             n[v] += 1
-            print("For node ", v)
+            # print("For node ", v)
             # print("Out nodes: ", end = " ")
             for w in g.successors(v):
                 # print(w, end=" ")
@@ -66,17 +66,17 @@ def get_aux_vk(args):
 
             d =  len(parents) 
             
-            print("Parents: ", end = " ")
+            # print("Parents: ", end = " ")
             for u in parents:
-                print(u, end=" ")
+                # print(u, end=" ")
                 alpha_va = get_alpha(user_features[v], topic_features[a])
                 C1[(u, v)] += alpha_va/d
                 C3[(u, v)] += 1/d
             
 
             current_table[(v, a)] = t_v
-            print()
-            print("Size of current log: ", count) # progress 
+            # print()
+            # print("Size of current log: ", count) # progress 
             # print(alpha)
             # Update single element coeffs first
 
@@ -96,7 +96,10 @@ def learn_params(args, g, n, C1, C2, C3, C4):
 
         q = (C1[(u, v)] - 1/n[u]*C2[(u, v)]*C3[(u, v)]) / (C4[(u, v)] - 1/n[u]*(C2[(u, v)]**2))
         p = 1/n[u] * C3[(u, v)] - q/n[u]*C2[(u, v)]
-        
+
+        q = min(1, max(0, q))
+        p = min(1, max(0, p))
+
         base_file.write("%d %d %f\n" % (u, v, p))
         q_file.write("%d %d %f\n" % (u, v, q))
 

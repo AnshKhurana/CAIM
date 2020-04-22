@@ -4,6 +4,39 @@ import numpy as np
 import csv
 import pickle
 
+
+def get_actions_from_logs(logs, byuser, tbefore, sim_bits):
+
+    """
+    Check actions that are performed by u, such that it can influence v
+    """
+
+    actionset = []
+
+    for u, au, tu in logs:
+
+        if byuser != u or  tu > tbefore:
+            continue            
+        # some post by u, check if au is suitable for addition
+        
+        for a in actionset:
+            if check_sim(a, au, nbits=sim_bits):
+                continue
+            else:
+                actionset.append(a)
+
+    return actionset
+
+
+def checklog(logs, u, a, t_v):
+    
+    for occurence_t in logs[np.where(logs[:, :2]==(u, a))][:, 2]:
+        if occurence_t < t_v:
+            return True
+
+    return False
+
+
 def read_graph(filename, directed=True):
     """
     Create networkx graph reading file.

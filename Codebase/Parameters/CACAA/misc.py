@@ -45,14 +45,14 @@ def fix_users_file(path="../data/vk/user_preferences_raw.csv"):
     fixed_prefs = dict()
 
     for pref in user_pref_list:
-        pref = [float(x) for x in pref]
-        fixed_prefs[int(pref[0])] = pref[1:]
+        # pref = [float(x) for x in pref]
+        fixed_prefs[int(float(pref[0]))] = pref[1:]
         
     newpath = os.path.join('/'.join(path.split('/')[:-1]), 'user_preferences.csv')
     print(newpath)
     with open(newpath, 'w') as f:
         for i in range(len(fixed_prefs.keys())):
-            f.write(str(fixed_prefs[i]))
+            f.write(" ".join(fixed_prefs[i]) + '\n')
 
 # NEED TO CHANGE CWD FIRST
 # convert sparse to dense vector notation
