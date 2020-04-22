@@ -23,15 +23,15 @@ def get_actions_from_logs(logs, byuser, tbefore, sim_bits):
             if check_sim(a, au, nbits=sim_bits):
                 continue
             else:
-                actionset.append(a)
+                actionset.append(au)
 
     return actionset
 
 
-def checklog(logs, u, a, t_v):
+def checklog(logs, u, a, t_v, sim_bits):
     
-    for occurence_t in logs[np.where(logs[:, :2]==(u, a))][:, 2]:
-        if occurence_t < t_v:
+    for log in logs:
+        if log[0] == u and check_sim(log[1], a, nbits=sim_bits) and log[2] < t_v:
             return True
 
     return False
