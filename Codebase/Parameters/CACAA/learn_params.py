@@ -105,10 +105,14 @@ def learn_params(args, g, n, C1, C2, C3, C4):
 
     base_file.close()
     q_file.close()
+
+    print("Weights saved in files.")
         # formula for p, q and then write to text file
         
 
 def get_aux_cit(args):
+
+    print("getting aux parameters...")
 
     logfile =  open(args.log_file, newline='')
     logs = csv.reader(logfile, delimiter=' ')
@@ -143,6 +147,9 @@ def get_aux_cit(args):
     for log in logs:
         [u, v, c, p] = [int(x) for x in log]
 
+        # if v == 1344:
+        #     print(c)
+
         if u in published.keys():
             published[u].add(c)
         else:
@@ -163,9 +170,10 @@ def get_aux_cit(args):
         
     for v in cited.keys():
         # people who have cited a paper
-        print("For node ", v)
+        # print("For node ", v)
+        
         for msg in cited[v]:
-            print("who cited ", msg)
+            # print("who cited ", msg)
             # for each action
             for w in g.successors(v):
                 alpha_wa = get_alpha(user_features[w], topic_features[msg])
@@ -199,13 +207,13 @@ def get_aux_cit(args):
 
             d = len(parents)
             alpha_va = get_alpha(user_features[v], topic_features[msg])
-            print("Alpha va: ", alpha_va)
-            print("Parents: ", end = " ")
+            # print("Alpha va: ", alpha_va)
+            # print("Parents: ", end = " ")
             for u in parents:
-                print(u, end=" ")
+                # print(u, end=" ")
                 C1[(u, v)] += alpha_va * 1/d
                 C3[(u, v)] += 1/d
-            print()
+            # print()
 
     print(len(C1.keys()))
     print(len(C2.keys()))
@@ -213,6 +221,7 @@ def get_aux_cit(args):
     for i in range(num_users):
         n[i] = len(published[i])
 
+    print("aux parameters learned.")
     return g, n, C1, C2, C3, C4
 
 

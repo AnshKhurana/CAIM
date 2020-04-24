@@ -1,5 +1,5 @@
-python main.py --exp vk \
+python main.py --exp citation  \
 --num_topics 1000 \
---nbits 200 \
 --topic_thr 0.034 
+
 

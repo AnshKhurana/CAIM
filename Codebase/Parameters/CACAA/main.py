@@ -2,7 +2,7 @@
 import os
 import argparse
 from learn_params import get_aux_vk, get_aux_cit, learn_params
-from tune import local_search
+from tune import local_search_1d, local_search_2d
 from helpers import *
 import pprint
 
@@ -72,7 +72,10 @@ if __name__ == "__main__":
     # learn_params(args, g, n, C1, C2, C3, C4)
     
     if args.tune:
-        local_search(args, num_topics=args.num_topics, topic_thresh=args.topic_thr, sim_bits=args.nbits, delta_thres=args.delta_thres, delta_bits=args.delta_bits)
+        if args.exp == 'vk':
+            local_search_2d(args, num_topics=args.num_topics, topic_thresh=args.topic_thr, sim_bits=args.nbits, delta_thres=args.delta_thres, delta_bits=args.delta_bits)
+        else:
+            local_search_1d(args, num_topics=args.num_topics, topic_thresh=args.topic_thr, delta_thres=args.delta_thres)
     else:
         if args.exp == 'vk':
             g, n, C1, C2, C3, C4 = get_aux_vk(args)
