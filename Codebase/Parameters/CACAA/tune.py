@@ -237,7 +237,7 @@ def get_qual_citation(args, topic_thresh, test_perc=0.4):
     for log in testlogs:
         [u, v, c, p] = [int(x) for x in log]
 
-        # if v == 1344:
+        # if v == 1344: 
         #     print(c)
         if u in published.keys():
             published[u].add(c)
@@ -259,7 +259,7 @@ def get_qual_citation(args, topic_thresh, test_perc=0.4):
         
     print("Preprocessed test log.")
     # to estimate auc, taking 100 points on the curve
-    for mu in np.linspace(0, 1, 100):    
+    for mu in np.linspace(0, 1, 4):    
         print(mu)
         tpx = 0
         fpx = 0
@@ -267,7 +267,6 @@ def get_qual_citation(args, topic_thresh, test_perc=0.4):
         fnx = 0 
 
         for v in cited.keys(): # per entry of the log
-            
             for msg in cited[v]:
                 
                 for u in g.predecessors(v):
@@ -297,10 +296,10 @@ def get_qual_citation(args, topic_thresh, test_perc=0.4):
                         else:
                             tnx+=1
 
-                tp.append(tpx)
-                fp.append(fpx)
-                tn.append(tnx)
-                fn.append(fnx)
+        tp.append(tpx)
+        fp.append(fpx)
+        tn.append(tnx)
+        fn.append(fnx)
 
     tp = np.array(tp)
     fp = np.array(fp)
