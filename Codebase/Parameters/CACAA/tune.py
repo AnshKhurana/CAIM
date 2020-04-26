@@ -104,10 +104,10 @@ def get_qual(args, topic_thresh, sim_bits, test_perc=0.4):
                     else:
                         tnx+=1
 
-            tp.append(tpx)
-            fp.append(fpx)
-            tn.append(tnx)
-            fn.append(fnx)
+        tp.append(tpx)
+        fp.append(fpx)
+        tn.append(tnx)
+        fn.append(fnx)
 
     tp = np.array(tp)
     fp = np.array(fp)
@@ -117,7 +117,7 @@ def get_qual(args, topic_thresh, sim_bits, test_perc=0.4):
     tpr = tp / (tp + fn)
     fpr = fp / (fp + tn)
 
-    auc = np.trapz(tpr, fpr)
+    auc = -1 * np.trapz(tpr, fpr)
     print(auc)
     return auc
 
@@ -271,8 +271,7 @@ def get_qual_citation(args, topic_thresh, test_perc=0.4):
                 
                 for u in g.predecessors(v):
                     if u in published.keys():
-                        action_set = set([p for p in published[u]])
-                    
+                        action_set = set([p for p in published[u]])    
                         
                 prob = 0.0
                 for a in action_set:   
@@ -309,6 +308,6 @@ def get_qual_citation(args, topic_thresh, test_perc=0.4):
     tpr = tp / (tp + fn)
     fpr = fp / (fp + tn)
 
-    auc = np.trapz(tpr, fpr)
+    auc = -1 * np.trapz(tpr, fpr)
     print(auc)
     return auc

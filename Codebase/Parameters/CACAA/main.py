@@ -60,16 +60,16 @@ if __name__ == "__main__":
 
     print(args)
 
-    # if args.exp == 'vk':
-    #     g, n, C1, C2, C3, C4 = get_aux_vk(args)
-    # elif args.exp == 'citation':
-    #     g, n, C1, C2, C3, C4 = get_aux_cit(args)
-    # else:
-    #     raise ValueError("Dataset not available")
+    if args.exp == 'vk':
+        g, n, C1, C2, C3, C4 = get_aux_vk(args)
+    elif args.exp == 'citation':
+        g, n, C1, C2, C3, C4 = get_aux_cit(args)
+    else:
+        raise ValueError("Dataset not available")
 
-    # # Actually writes the final values to the output file
-    # print_all(C1, C2, C3, C4)  
-    # learn_params(args, g, n, C1, C2, C3, C4)
+    # Actually writes the final values to the output file
+    print_all(C1, C2, C3, C4)  
+    learn_params(args, g, n, C1, C2, C3, C4)
     
     if args.tune:
         if args.exp == 'vk':
@@ -87,4 +87,4 @@ if __name__ == "__main__":
         # Actually writes the final values to the output file
         # print_all(C1, C2, C3, C4)  
         learn_params(args, g, n, C1, C2, C3, C4)
-        
+        transform_set(args)

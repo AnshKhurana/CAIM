@@ -147,3 +147,29 @@ def print_all(C1, C2, C3, C4):
         print(u, v)
         print(C1[(u, v)], C2[(u, v)], C3[(u, v)], C4[(u, v)])
         print()
+
+def transform_set(args):
+
+    user_features = np.load(args.user_features)
+
+    with open(os.path.join(args.data_dir, args.exp, 'mem.txt'), 'w') as f:
+
+        for i in range(user_features.shape[0]):
+            f.write(str(i) + " ")
+            for j in range(args.num_topics):
+
+                if user_features[i][j] == 1:
+                    f.write(str(j) + " ")
+            f.write("\n")
+
+    with open(os.path.join(args.data_dir, args.exp, 'com.txt'), 'w') as f:
+
+        for j in range(args.num_topics):
+            f.write(str(j) + " ")
+
+            for i in range(user_features.shape[0]):
+                if user_features[i][j] == 1:
+                    f.write(str(i) + " ")
+            f.write("\n")
+        
+    
