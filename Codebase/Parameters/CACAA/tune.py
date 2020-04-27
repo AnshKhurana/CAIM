@@ -181,9 +181,11 @@ def local_search_1d(args, num_topics=100, topic_thresh=0.034, delta_thres=0.01):
 
 def get_qual_citation(args, topic_thresh, test_perc=0.4):
 
+    args.topic_thresh = topic_thresh
     # get new values on test set based on current thresholds
     if args.exp == 'citation':
         g, n, C1, C2, C3, C4 = get_aux_cit(args)
+    
     
     learn_params(args, g, n, C1, C2, C3, C4)
 
@@ -259,7 +261,7 @@ def get_qual_citation(args, topic_thresh, test_perc=0.4):
         
     print("Preprocessed test log.")
     # to estimate auc, taking 100 points on the curve
-    for mu in np.linspace(0, 1, 4):    
+    for mu in np.linspace(0, 1, 2):    
         print(mu)
         tpx = 0
         fpx = 0
@@ -308,6 +310,6 @@ def get_qual_citation(args, topic_thresh, test_perc=0.4):
     tpr = tp / (tp + fn)
     fpr = fp / (fp + tn)
 
-    auc = -1 * np.trapz(tpr, fpr)
+    auc = np.trapz(tpr, fpr)
     print(auc)
     return auc
