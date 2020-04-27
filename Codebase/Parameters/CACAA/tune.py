@@ -7,6 +7,7 @@ def get_qual(args, topic_thresh, sim_bits, test_perc=0.4):
 
 
     # get new values on test set based on current thresholds
+    args.topic_thresh = topic_thresh
     if args.exp == 'vk':
         g, n, C1, C2, C3, C4 = get_aux_vk(args)
     
