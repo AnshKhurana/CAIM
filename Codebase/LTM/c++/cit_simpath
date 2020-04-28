@@ -1,0 +1,10 @@
+../datasets/citation/edge_list.txt
+../datasets/citation/base_weights.txt
+../datasets/citation/marg_weights.txt
+../datasets/citation/mem.txt
+../datasets/citation/com.txt
+-
+simpath
+6263996
+5
+10000

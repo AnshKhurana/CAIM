@@ -72,7 +72,7 @@ def thresh_one_user(vec, theta):
 def create_vecs(args):
 
     print("creating vecs for topics")
-
+    print("Topic threshold for creating vecs", args.topic_thr)
     with open(args.topic_features_input, 'r') as f:
         topic_list = f.readlines()
 

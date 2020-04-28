@@ -1,5 +1,5 @@
 python main.py --exp citation  \
 --num_topics 100 \
---topic_thr 0.034 
+--topic_thr 0.20
 
 

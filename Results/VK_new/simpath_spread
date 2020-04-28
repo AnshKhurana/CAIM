@@ -1,0 +1,114 @@
+Reading parameters...
+Setup file: vk_sim
+eta: 0.001000
+dataset_file b_file q_file mem_file groups_file
+../datasets/vk_new/edge_list_cleaned.txt ../datasets/vk_new/edge_weights.txt - ../datasets/vk_new/mem.txt ../datasets/vk_new/new_com.txt
+group_number K I
+898 50 10000
+save dir: ./results/simpath/vk_sim/
+../datasets/vk_new/edge_list_cleaned.txt
+high count: 0
+overall_count: 115276
+gen Q inf_count/overall_count :287/115276
+Reading seeds from group: 898
+S: 4528w8 2310w58 2837w25 2833w29 6501w12 1247w74 2253w18 2780w23 2773w17 4116w27 4523w8 4268w9 2276w39 1351w23 6416w13 2147w37 67w18 1399w47 2502w193 2275w47
+I: 10000
+K: 50
+Init MC spread = 23.7644
+Starting algo: simpath
+using eta: 0.001
+Running to report results according to mode: 1
+it = 0; spread = 23.8776
+it = 1; f = 870; spread = 24.2814
+Number of times the choice changed: 7
+it = 2; f = 34298922; spread = 24.4522
+|F| = 2; mc_spread = 24.3336
+Number of times the choice changed: 8
+it = 3; f = 8849498; spread = 24.6156
+Number of times the choice changed: 7
+it = 4; f = 1310957; spread = 24.8657
+|F| = 4; mc_spread = 24.7127
+Number of times the choice changed: 8
+it = 5; f = 397771; spread = 25.0040
+Number of times the choice changed: 7
+it = 6; f = 9514484; spread = 25.1352
+|F| = 6; mc_spread = 24.9904
+Number of times the choice changed: 11
+it = 7; f = 11267393; spread = 25.2616
+Number of times the choice changed: 10
+it = 8; f = 125; spread = 25.3810
+|F| = 8; mc_spread = 25.2006
+Number of times the choice changed: 9
+it = 9; f = 46074; spread = 25.4994
+Number of times the choice changed: 9
+it = 10; f = 11507831; spread = 25.6134
+|F| = 10; mc_spread = 25.4006
+Number of times the choice changed: 8
+it = 11; f = 589; spread = 25.7265
+Number of times the choice changed: 10
+it = 12; f = 2108398; spread = 25.8392
+|F| = 12; mc_spread = 25.6280
+Number of times the choice changed: 9
+it = 13; f = 7608696; spread = 25.9416
+Number of times the choice changed: 8
+it = 14; f = 30008385; spread = 26.0330
+|F| = 14; mc_spread = 25.7543
+Number of times the choice changed: 8
+it = 15; f = 5060205; spread = 26.1303
+Number of times the choice changed: 5
+it = 16; f = 67833987; spread = 26.2255
+|F| = 16; mc_spread = 25.9190
+Number of times the choice changed: 7
+it = 17; f = 9019120; spread = 26.3164
+Number of times the choice changed: 9
+it = 18; f = 13567381; spread = 26.4068
+|F| = 18; mc_spread = 26.0542
+Number of times the choice changed: 9
+it = 19; f = 70034991; spread = 26.4893
+Number of times the choice changed: 11
+it = 20; f = 51544; spread = 26.5617
+|F| = 20; mc_spread = 26.1639
+Number of times the choice changed: 10
+it = 21; f = 34072502; spread = 26.6283
+Number of times the choice changed: 10
+it = 22; f = 653545; spread = 26.6927
+|F| = 22; mc_spread = 26.2771
+Number of times the choice changed: 9
+it = 23; f = 40517430; spread = 26.7560
+Number of times the choice changed: 9
+it = 24; f = 2555; spread = 26.8149
+|F| = 24; mc_spread = 26.4312
+Number of times the choice changed: 8
+it = 25; f = 23669501; spread = 26.8650
+Number of times the choice changed: 10
+it = 26; f = 174209; spread = 26.9232
+|F| = 26; mc_spread = 26.5000
+Number of times the choice changed: 10
+it = 27; f = 27885374; spread = 26.9890
+Number of times the choice changed: 9
+it = 28; f = 1268946; spread = 27.0390
+|F| = 28; mc_spread = 26.6280
+Number of times the choice changed: 8
+it = 29; f = 95882; spread = 27.0870
+Number of times the choice changed: 8
+it = 30; f = 431171; spread = 27.1340
+|F| = 30; mc_spread = 26.6867
+Number of times the choice changed: 7
+it = 31; f = 45688121; spread = 27.1804
+Number of times the choice changed: 11
+it = 32; f = 42814984; spread = 27.2339
+|F| = 32; mc_spread = 26.7715
+Number of times the choice changed: 8
+it = 33; f = 944497; spread = 27.2775
+Number of times the choice changed: 10
+it = 34; f = 6048891; spread = 27.3201
+|F| = 34; mc_spread = 26.8144
+Number of times the choice changed: 9
+it = 35; f = 23038; spread = 27.3626
+Number of times the choice changed: 8
+it = 36; f = 20823951; spread = 27.4041
+|F| = 36; mc_spread = 26.9057
+Number of times the choice changed: 9
+it = 37; f = 16299647; spread = 27.4484
+Number of times the choice changed: 9
+it = 38;
