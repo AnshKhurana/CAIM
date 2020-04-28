@@ -173,3 +173,20 @@ def transform_set(args):
             f.write("\n")
         
     
+
+def save_weights(args, b, q):
+ 
+    base_file = open(os.path.join(args.data_dir, args.exp, 'base_weights.txt'), 'w')
+    q_file = open(os.path.join(args.data_dir, args.exp, "marg_weights.txt"), "w")
+   
+    for u, v in b.keys():
+        p = b[(u, v)]
+        q1 = q[(u, v)]
+
+        base_file.write("%d %d %f\n" % (u, v, p))
+        q_file.write("%d %d %f\n" % (u, v, q1))
+
+    base_file.close()
+    q_file.close()
+
+    print("Weights saved in files.")

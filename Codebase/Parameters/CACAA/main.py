@@ -2,7 +2,7 @@
 import os
 import argparse
 from learn_params import get_aux_vk, get_aux_cit, learn_params
-from tune import local_search_1d, local_search_2d
+from tune import local_search_1d, local_search_2d, tune_citation
 from helpers import *
 import pprint
 
@@ -60,22 +60,12 @@ if __name__ == "__main__":
 
     print(args)
 
-    if args.exp == 'vk':
-        g, n, C1, C2, C3, C4 = get_aux_vk(args)
-    elif args.exp == 'citation':
-        g, n, C1, C2, C3, C4 = get_aux_cit(args)
-    else:
-        raise ValueError("Dataset not available")
-
-    # Actually writes the final values to the output file
-    print_all(C1, C2, C3, C4)  
-    learn_params(args, g, n, C1, C2, C3, C4)
-    
     if args.tune:
         if args.exp == 'vk':
             local_search_2d(args, num_topics=args.num_topics, topic_thresh=args.topic_thr, sim_bits=args.nbits, delta_thres=args.delta_thres, delta_bits=args.delta_bits)
         else:
-            local_search_1d(args, num_topics=args.num_topics, topic_thresh=args.topic_thr, delta_thres=args.delta_thres)
+            tune_citation(args)
+            # local_search_1d(args, num_topics=args.num_topics, topic_thresh=args.topic_thr, delta_thres=args.delta_thres)
     else:
         if args.exp == 'vk':
             g, n, C1, C2, C3, C4 = get_aux_vk(args)
@@ -86,5 +76,6 @@ if __name__ == "__main__":
 
         # Actually writes the final values to the output file
         # print_all(C1, C2, C3, C4)  
-        learn_params(args, g, n, C1, C2, C3, C4)
+        b, q = learn_params(args, g, n, C1, C2, C3, C4)
+        save_weights(args, b, q)
         transform_set(args)

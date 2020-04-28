@@ -268,7 +268,7 @@ def get_qual_citation(args, topic_thresh, test_perc=0.4):
     print("Preprocessed test log.")
     # to estimate auc, taking 100 points on the curve
     for mu in tqdm(np.linspace(0, 1, 10)):    
-        print(mu)
+        
         tpx = 0
         fpx = 0
         tnx = 0
@@ -324,91 +324,76 @@ def get_qual_citation(args, topic_thresh, test_perc=0.4):
     return auc
 
 
-def tune_citation(args):
+def tune_citation(args, test_perc=0.4):
+
+    print("entering outer function")
+    logfile = open(args.log_file, newline='')
+    logs = list(csv.reader(logfile, delimiter=' '))
+    num_logs = sum(1 for row in logs)
+    testlogs = logs[:int(num_logs*test_perc)]
+    # testlogs = []
+    # for log in templogs: 
+    #     nplog = np.array(log, dtype=np.int)
+    #     testlogs.append(nplog)
+    
+    # testlogs = np.array(testlogs)
+
+    print("Size of Test log in consideration: ", len(testlogs))
+    # testlogs is now a numpy array
+    
+    published = dict()
+    cited = dict()
+
+    for log in testlogs:
+        [u, v, c, p] = [int(x) for x in log]
+
+        # if v == 1344: 
+        #     print(c)
+        if u in published.keys():
+            published[u].add(c)
+        else:
+            published[u] = set()
+            published[u].add(c)
+        
+        if v in published.keys():
+            published[v].add(p)
+        else:
+            published[v] = set()
+            published[v].add(p)
+
+        if v in cited.keys():
+            cited[v].add(c)
+        else:
+            cited[v] = set()
+            cited[v].add(c)
+        
+    print("Preprocessed test log.")
+
 
     def _get_qual_citation(args, topic_thresh, test_perc=0.4):
-    
+
+        print("Calling inner function")
+        
         create_vecs(args)    
         # get new values on test set based on current thresholds
         if args.exp == 'citation':
             g, n, C1, C2, C3, C4 = get_aux_cit(args)
         
-        learn_params(args, g, n, C1, C2, C3, C4)
+        b, q = learn_params(args, g, n, C1, C2, C3, C4)
 
-        
-
-        # read the learned parameters
-        basefile =  open(os.path.join(args.data_dir, args.exp, 'base_weights.txt'), newline='')
-        basefile = csv.reader(basefile, delimiter=' ')
-
-        qfile = open(os.path.join(args.data_dir, args.exp, 'marg_weights.txt'), newline='')
-        qfile = csv.reader(qfile, delimiter = ' ')
-
+        # need to reload since re-saved when creating the vectors
         topic_features = np.load(args.topic_features)
         user_features = np.load(args.user_features)
-
-        b = dict() 
-        q = dict()
-
-        for u, v, val in basefile:
-            b[int(u), int(v)] = float(val)
-
-        for u, v, val in qfile:
-            q[int(u), int(v)] = float(val)
 
         # calculate tp, fp, tn, fn
         tp = []
         fp = []
         tn = []
         fn = []
-
-
-        logfile = open(args.log_file, newline='')
-        logs = list(csv.reader(logfile, delimiter=' '))
-        num_logs = sum(1 for row in logs)
-        templogs = logs[:int(num_logs*test_perc)]
-        testlogs = []
-        for log in templogs: 
-            nplog = np.array(log, dtype=np.int)
-            testlogs.append(nplog)
         
-        testlogs = np.array(testlogs)
-
-        print("Size of Test log in consideration: ", testlogs.shape)
-        # testlogs is now a numpy array
-
-        
-        published = dict()
-        cited = dict()
-
-        
-        for log in testlogs:
-            [u, v, c, p] = [int(x) for x in log]
-
-            # if v == 1344: 
-            #     print(c)
-            if u in published.keys():
-                published[u].add(c)
-            else:
-                published[u] = set()
-                published[u].add(c)
-            
-            if v in published.keys():
-                published[v].add(p)
-            else:
-                published[v] = set()
-                published[v].add(p)
-
-            if v in cited.keys():
-                cited[v].add(c)
-            else:
-                cited[v] = set()
-                cited[v].add(c)
-            
-        print("Preprocessed test log.")
         # to estimate auc, taking 100 points on the curve
         for mu in tqdm(np.linspace(0, 1, 10)):    
-            print(mu)
+            # print(mu)
             tpx = 0
             fpx = 0
             tnx = 0
@@ -446,6 +431,7 @@ def tune_citation(args):
                             else:
                                 tnx+=1
 
+            print("Results for mu = ", mu, "(tp, fp, tn, fn)", tpx, fpx, tnx, fnx)
             tp.append(tpx)
             fp.append(fpx)
             tn.append(tnx)
@@ -462,8 +448,6 @@ def tune_citation(args):
         auc = -1 * np.trapz(tpr, fpr)
         print('auc: ', auc)
         return auc
-
-
 
     iter=0
     print("iter: ", iter)    

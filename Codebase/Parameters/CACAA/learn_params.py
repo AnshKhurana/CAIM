@@ -88,27 +88,33 @@ def get_aux_vk(args):
 def learn_params(args, g, n, C1, C2, C3, C4):
 
 
-    base_file = open(os.path.join(args.data_dir, args.exp, 'base_weights.txt'), 'w')
-    q_file = open(os.path.join(args.data_dir, args.exp, "marg_weights.txt"), "w")
+    # base_file = open(os.path.join(args.data_dir, args.exp, 'base_weights.txt'), 'w')
+    # q_file = open(os.path.join(args.data_dir, args.exp, "marg_weights.txt"), "w")
     
+    b = dict()
+    q = dict()
+
     for edge in g.edges:
         u, v = edge # from u to v direction
 
-        q = (C1[(u, v)] - 1/n[u]*C2[(u, v)]*C3[(u, v)]) / (C4[(u, v)] - 1/n[u]*(C2[(u, v)]**2))
-        p = 1/n[u] * C3[(u, v)] - q/n[u]*C2[(u, v)]
+        q1 = (C1[(u, v)] - 1/n[u]*C2[(u, v)]*C3[(u, v)]) / (C4[(u, v)] - 1/n[u]*(C2[(u, v)]**2))
+        p = 1/n[u] * C3[(u, v)] - q1/n[u]*C2[(u, v)]
 
-        q = min(1, max(0, q))
+        q1 = min(1, max(0, q1))
         p = min(1, max(0, p))
 
-        base_file.write("%d %d %f\n" % (u, v, p))
-        q_file.write("%d %d %f\n" % (u, v, q))
+        b[(u, v)] = p
+        q[(u, v)] = q1
+        # base_file.write("%d %d %f\n" % (u, v, p))
+        # q_file.write("%d %d %f\n" % (u, v, q))
 
-    base_file.close()
-    q_file.close()
+    # base_file.close()
+    # q_file.close()
 
-    print("Weights saved in files.")
+    print("Weights assigned to edges.")
         # formula for p, q and then write to text file
-        
+    return b, q 
+
 
 def get_aux_cit(args):
 
