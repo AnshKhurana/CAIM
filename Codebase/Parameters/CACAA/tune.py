@@ -57,7 +57,7 @@ def get_qual(args, topic_thresh, sim_bits, test_perc=0.4):
     # testlogs is now a numpy array
 
     # to estimate auc, taking 100 points on the curve
-    for mu in tqdm(np.linspace(0, 1, 10)):    
+    for mu in tqdm(np.linspace(0, 1, 100)):    
         print(mu)
         tpx = 0
         fpx = 0
@@ -267,7 +267,7 @@ def get_qual_citation(args, topic_thresh, test_perc=0.4):
         
     print("Preprocessed test log.")
     # to estimate auc, taking 100 points on the curve
-    for mu in tqdm(np.linspace(0, 1, 10)):    
+    for mu in tqdm(np.linspace(0, 1, 100)):    
         
         tpx = 0
         fpx = 0
@@ -392,7 +392,7 @@ def tune_citation(args, test_perc=0.4):
         fn = []
         
         # to estimate auc, taking 100 points on the curve
-        for mu in tqdm(np.linspace(0, 1, 10)):    
+        for mu in tqdm(np.linspace(0, 1, 100)):    
             # print(mu)
             tpx = 0
             fpx = 0
@@ -447,7 +447,7 @@ def tune_citation(args, test_perc=0.4):
 
         auc = -1 * np.trapz(tpr, fpr)
         print('auc: ', auc)
-        return auc
+        return auc   
 
     iter=0
     print("iter: ", iter)    
