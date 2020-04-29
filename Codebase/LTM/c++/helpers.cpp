@@ -70,8 +70,10 @@ DiGraph read_graph(string graph_filename) {
     int node_count=0;
     pair<DiGraph::edge_descriptor, bool> edge_insertion;
     DiGraph G;
-
+    int lineno=0;
     while (infile >> u >> v) {
+        lineno++;
+        cout<<"lineno "<<lineno<<endl;
         if (unordered_mapped.find(u) == unordered_mapped.end()) {
             unordered_mapped[u] = node_count;
             node_count++;
@@ -85,6 +87,7 @@ DiGraph read_graph(string graph_filename) {
             std::cout << "Unable to insert edge\n";
         }
     }
+    printf("graph read\n");
     return G;
 }
 

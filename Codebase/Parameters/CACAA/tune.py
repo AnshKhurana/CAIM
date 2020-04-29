@@ -476,7 +476,7 @@ def tune_citation(args, test_perc=0.4):
     return args.topic_thr
 
 
-def tune_vk(args, test_perc=0.4):
+def tune_vk(args, test_perc=0.2):
     
 
     logfile = open(args.log_file, newline='')
@@ -546,7 +546,8 @@ def tune_vk(args, test_perc=0.4):
                                 break
                             if not similar:
                                 action_set.append(a)
-
+                
+                print("Formed action set for node: ", v)
                 # now they are unique actions
                 prob = 0.0
                 for a in action_set:   

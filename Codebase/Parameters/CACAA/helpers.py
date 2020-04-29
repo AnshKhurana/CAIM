@@ -11,6 +11,7 @@ def get_actions_from_logs(logs, byuser, tbefore, sim_bits):
     Check actions that are performed by u, such that it can influence v
     """
 
+
     actionset = []
 
     for u, au, tu in logs:
@@ -25,6 +26,7 @@ def get_actions_from_logs(logs, byuser, tbefore, sim_bits):
             else:
                 actionset.append(au)
 
+    # print("Found action from user")
     return actionset
 
 
