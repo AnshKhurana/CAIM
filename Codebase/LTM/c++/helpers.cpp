@@ -73,7 +73,7 @@ DiGraph read_graph(string graph_filename) {
     int lineno=0;
     while (infile >> u >> v) {
         lineno++;
-        cout<<"lineno "<<lineno<<endl;
+        // cout<<"lineno "<<lineno<<endl;
         if (unordered_mapped.find(u) == unordered_mapped.end()) {
             unordered_mapped[u] = node_count;
             node_count++;
