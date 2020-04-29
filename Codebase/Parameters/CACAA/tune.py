@@ -445,6 +445,8 @@ def tune_citation(args, test_perc=0.4):
         tpr = tp / (tp + fn)
         fpr = fp / (fp + tn)
 
+        print("TPR: ", tpr)
+        print("FPR: ", fpr)
         auc = -1 * np.trapz(tpr, fpr)
         print('auc: ', auc)
         return auc   
@@ -472,3 +474,145 @@ def tune_citation(args, test_perc=0.4):
     
     print("best parameters: ", args.topic_thr)
     return args.topic_thr
+
+
+def tune_vk(args, test_perc=0.4):
+    
+
+    logfile = open(args.log_file, newline='')
+    logs = list(csv.reader(logfile, delimiter=' '))
+    num_logs = sum(1 for row in logs)
+    templogs = logs[:int(num_logs*test_perc)]
+    testlogs = []
+    for log in templogs: 
+        nplog = np.array(log, dtype=np.int)
+        testlogs.append(nplog)
+    
+    testlogs = np.array(testlogs)
+
+    print("Test log in consideration: ", testlogs.shape)
+
+    def _get_qual(args, topic_thresh, sim_bits):
+        # get new values on test set based on current thresholds
+        args.topic_thr = topic_thresh
+        args.nbits = sim_bits
+        create_vecs(args)
+        if args.exp == 'vk':
+            g, n, C1, C2, C3, C4 = get_aux_vk(args)
+        
+        b, q = learn_params(args, g, n, C1, C2, C3, C4)
+    
+        topic_features = np.load(args.topic_features)
+        user_features = np.load(args.user_features)
+
+    
+        # calculate tp, fp, tn, fn
+        tp = []
+        fp = []
+        tn = []
+        fn = []
+
+
+        # testlogs is now a numpy array
+
+        # to estimate auc, taking 100 points on the curve
+        for mu in tqdm(np.linspace(0, 1, 100)):    
+            
+            tpx = 0
+            fpx = 0
+            tnx = 0
+            fnx = 0 
+
+            for log in reversed(testlogs):
+                
+                # [v, a, t_v] = [int(x) for x in log], already converted into an integer
+                v, a_v, t_v = [x for x in log]
+                # v published a message in the test log
+
+                # set based on similarity
+                action_set = [] 
+                for u in g.predecessors(v):
+                    # list of permissible actions performed by u
+                    a_performed_by_u = get_actions_from_logs(testlogs, u, t_v, sim_bits)
+
+                    for au in a_performed_by_u:
+                        similar = False
+                        for a in action_set:
+                            if check_sim(topic_features[au], topic_features[a], nbits=sim_bits):
+                                similar = True
+                                break
+                            if not similar:
+                                action_set.append(a)
+
+                # now they are unique actions
+                prob = 0.0
+                for a in action_set:   
+                    for u in g.predecessors(v):
+                        # get valid predecessors for the actions
+                        if checklog(logs, u, a, t_v, sim_bits):
+                            prob += b[(u, v)] + q[(u, v)]*get_alpha(user_features[v], topic_features[a])
+                    
+                    prob = min(1, max(prob, 0))
+                    prediction = (prob > mu)
+                    
+                    gt = checklog(logs, v, a)
+                    if prediction == True:
+                        if gt == True:
+                            tpx+=1
+                        else:
+                            fpx+=1
+                    else:
+                        if gt == True:
+                            fnx+=1
+                        else:
+                            tnx+=1
+
+            tp.append(tpx)
+            fp.append(fpx)
+            tn.append(tnx)
+            fn.append(fnx)
+
+        tp = np.array(tp)
+        fp = np.array(fp)
+        tn = np.array(tn)
+        fn = np.array(fn)
+
+        tpr = tp / (tp + fn)
+        fpr = fp / (fp + tn)
+
+        print("TPR: ", tpr)
+        print("FPR: ", fpr)
+
+        auc = -1 * np.trapz(tpr, fpr)
+        print("auc: ", auc)
+        return auc
+
+
+    
+    iter=0
+    print("iter: ", iter)    
+    
+    current_val = 0.0
+    
+    # signs = [(-1,-1,-1), (-1,-1,0), (-1,-1,1), (-1,)]
+    while True:
+        iter+=1
+        print("iter: ", iter)    
+        print("Current choice: ", args.topic_thr, args.nbits)
+        
+        success = False
+        for i in [-1,0,1]:
+            for j in [-1,0,1]:
+                    new_val = get_qual(args, args.topic_thr + i*args.delta_thres, args.nbits +j*arsg.delta_bits)
+
+                    if new_val > current_val:
+                        current_val =  new_val
+                        args.topic_thr += i*args.delta_thres
+                        args.nbits += j*args.delta_bits
+                        success = True
+                        break
+        if not success:
+            break
+    
+    print("best parameters: ", args.topic_thr, args.nbits)
+    return args.topic_thr, args.nbits
