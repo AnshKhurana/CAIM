@@ -493,6 +493,9 @@ def tune_vk(args, test_perc=0.4):
     print("Test log in consideration: ", testlogs.shape)
 
     def _get_qual(args, topic_thresh, sim_bits):
+        
+        print("Inner qual function")
+
         # get new values on test set based on current thresholds
         args.topic_thr = topic_thresh
         args.nbits = sim_bits
@@ -603,7 +606,7 @@ def tune_vk(args, test_perc=0.4):
         success = False
         for i in [-1,0,1]:
             for j in [-1,0,1]:
-                    new_val = get_qual(args, args.topic_thr + i*args.delta_thres, args.nbits +j*arsg.delta_bits)
+                    new_val = _get_qual(args, args.topic_thr + i*args.delta_thres, args.nbits +j*args.delta_bits)
 
                     if new_val > current_val:
                         current_val =  new_val

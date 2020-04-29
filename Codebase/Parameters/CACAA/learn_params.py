@@ -5,6 +5,7 @@ from helpers import *
 
 def get_aux_vk(args):
 
+    print("learning aux parameters...")
     logfile =  open(args.log_file, newline='')
     logs = csv.reader(logfile, delimiter=' ')
     num_users = get_num_users(args)
@@ -82,6 +83,7 @@ def get_aux_vk(args):
 
     print(len(C1.keys()))
     print(len(C2.keys()))
+    print("aux parameters done")
     return g, n, C1, C2, C3, C4
 
 
