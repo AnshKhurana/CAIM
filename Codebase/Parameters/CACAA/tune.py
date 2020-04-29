@@ -519,7 +519,7 @@ def tune_vk(args, test_perc=0.4):
         # testlogs is now a numpy array
 
         # to estimate auc, taking 100 points on the curve
-        for mu in tqdm(np.linspace(0, 1, 100)):    
+        for mu in tqdm(np.linspace(0, 1, 10)):    
             
             tpx = 0
             fpx = 0
