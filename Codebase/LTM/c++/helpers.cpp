@@ -304,15 +304,16 @@ edge_prob init_probs(DiGraph G, edge_prob Btransformed, unordered_map <int, doub
     edge_prob P;
     for (boost::tie(ei, edge_end) = edges(G); ei != edge_end; ++ei) 
     {
-        cout<<"entered\n";
-        cout << source(*ei, G) << " " << target(*ei, G) << endl;
+        
+        // cout << source(*ei, G) << " " << target(*ei, G) << endl;
         edge = make_pair(source(*ei, G), target(*ei, G));
         v = edge.second;
         double d_in = in_degrees[v];
-        cout<<"degree found\n";
+        
         P[edge] = 1.0/d_in * sigmoid(Btransformed[edge]);
-        cout<<"base prob found\n";
+        
     }
+    
     return P;
 }
 

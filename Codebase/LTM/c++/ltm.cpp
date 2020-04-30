@@ -281,8 +281,9 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
     int max_feature;
     unordered_map<int, double> influence;
     vector <int> no_selected_features = {-1}; 
-    // cout<<"no seg fault\n";
+    
     P = init_probs(G, Btransformed, in_degrees);
+    cout<<"no seg fault\n";
     int choice_index = 0;
     
     // wrong. should be 1/Fv sigmoid of Bt, let's just say it's B.copy
@@ -365,9 +366,9 @@ pair<vector<int>, unordered_map<int, double> >  simpathPlus(DiGraph G, edge_prob
     unordered_map<int, double> influence;
     vector <int> no_selected_features = {-1}; 
     P = init_probs(G, Btransformed, in_degrees);
-    cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
-    cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
-    cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
+    // cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
+    // cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
+    // cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
     // wrong. should be 1/Fv sigmoid of Bt, let's just say it's B.copy
     // however, does not limit the values to 1/fv
 
@@ -447,11 +448,18 @@ double simpath_spreadPhi(DiGraph G, unordered_set <int> S, edge_prob P, double e
 
 double simpath_spread(DiGraph G, unordered_set <int> S, edge_prob P, double eta=1e-6)
 {
+
     double spread = 0.0;
     // unordered_set <int> ignored_vertices(S);
 
     for (auto &s: S)
     {
+
+        if (boost::out_degree(s, G) < 1)
+        {
+            spread += 1.0;
+            continue;
+        }
         // ignored_vertices.erase(s);
         // cout<<"before fb\n";
         spread += forward_backward(G, s, P, S, eta); 
