@@ -101,7 +101,7 @@ int main(int argc, char const *argv[])
 
     // Read files
 
-    DiGraph G = read_graph(dataset_file);
+    DiGraph G = simple_read_graph(dataset_file);
     read_features(mem_file, G, node_to_feat, feat_to_edges);
     read_probabilities(b_file, B);
     in_degrees = save_in_degrees(G);
@@ -281,6 +281,7 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
     int max_feature;
     unordered_map<int, double> influence;
     vector <int> no_selected_features = {-1}; 
+    // cout<<"no seg fault\n";
     P = init_probs(G, Btransformed, in_degrees);
     int choice_index = 0;
     

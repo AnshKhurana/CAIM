@@ -40,6 +40,7 @@ void print_size(DiGraph G);
 unordered_map<int, double> save_in_degrees(DiGraph G);
 double sigmoid(double x);
 DiGraph read_graph(string graph_filename);
+DiGraph simple_read_graph(string graph_filename);
 void read_features(string feature_filename, DiGraph G, unordered_map<int, vector<int> > &Nf, unordered_map<int, vector<pair<int, int> > > &Ef);
 void read_probabilities(string prob_filename, edge_prob &P);
 void read_probabilities2(string prob_filename, vector<pair<int, int> > &order, vector<double> &P);

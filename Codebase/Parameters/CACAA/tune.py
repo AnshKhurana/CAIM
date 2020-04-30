@@ -571,10 +571,13 @@ def tune_vk(args, test_perc=0.2):
                         else:
                             tnx+=1
 
+            
+            print("(tp, fp, tn, fn): " tpx, fpx, tnx, fnx)
             tp.append(tpx)
             fp.append(fpx)
             tn.append(tnx)
             fn.append(fnx)
+
 
         tp = np.array(tp)
         fp = np.array(fp)

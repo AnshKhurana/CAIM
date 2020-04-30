@@ -54,7 +54,7 @@ void print_size(DiGraph G) {
 
 DiGraph read_graph(string graph_filename) {
 
-    cout << graph_filename << endl;
+    cout <<"graph file: "<<graph_filename << endl;
     //ifstream infile(graph_filename);
     //if (infile==NULL){
         //cout << "Unable to open the input file\n";
@@ -73,6 +73,7 @@ DiGraph read_graph(string graph_filename) {
     int lineno=0;
     while (infile >> u >> v) {
         lineno++;
+        // cout << u << " "<< v <<endl;
         // cout<<"lineno "<<lineno<<endl;
         if (unordered_mapped.find(u) == unordered_mapped.end()) {
             unordered_mapped[u] = node_count;
@@ -90,6 +91,39 @@ DiGraph read_graph(string graph_filename) {
     printf("graph read\n");
     return G;
 }
+
+DiGraph simple_read_graph(string graph_filename) {
+
+    cout <<"graph file: "<<graph_filename << endl;
+    //ifstream infile(graph_filename);
+    //if (infile==NULL){
+        //cout << "Unable to open the input file\n";
+    //}
+    ifstream infile;
+    infile.open(graph_filename, ifstream::in);
+    if (!infile.is_open()) {
+        cout << "Unable to open the input file in 'read_graph' function\n";  exit(-1);
+    }
+
+    unordered_map<int, int> unordered_mapped;
+    int u, v;
+    int node_count=0;
+    pair<DiGraph::edge_descriptor, bool> edge_insertion;
+    DiGraph G;
+    int lineno=0;
+    while (infile >> u >> v) {
+        lineno++;
+        // cout << u << " "<< v <<endl;
+        // cout<<"lineno "<<lineno<<endl;
+        edge_insertion=boost::add_edge(u, v, G);
+        if (!edge_insertion.second) {
+            std::cout << "Unable to insert edge\n";
+        }
+    }
+    printf("graph read\n");
+    return G;
+}
+
 
 void read_features(string feature_filename, DiGraph G, unordered_map<int, vector<int> > &Nf, unordered_map<int, vector<pair<int, int> > > &Ef) {
 
@@ -270,11 +304,14 @@ edge_prob init_probs(DiGraph G, edge_prob Btransformed, unordered_map <int, doub
     edge_prob P;
     for (boost::tie(ei, edge_end) = edges(G); ei != edge_end; ++ei) 
     {
-        // cout << source(*ei, G) << " " << target(*ei, G) << endl;
+        cout<<"entered\n";
+        cout << source(*ei, G) << " " << target(*ei, G) << endl;
         edge = make_pair(source(*ei, G), target(*ei, G));
         v = edge.second;
         double d_in = in_degrees[v];
+        cout<<"degree found\n";
         P[edge] = 1.0/d_in * sigmoid(Btransformed[edge]);
+        cout<<"base prob found\n";
     }
     return P;
 }
