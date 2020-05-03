@@ -4,5 +4,5 @@ python main.py --exp vk \
 --topic_thr 0.2 \
 --tune \
 --delta_thres 0.05 \
---delta_bits 1
+--delta_bits 5
 
