@@ -552,7 +552,7 @@ def tune_vk(args, test_perc=0.2):
             for log in reversed(testlogs):
                 
                 # [v, a, t_v] = [int(x) for x in log], already converted into an integer
-                v, a_v, t_v = [x for x in log]
+                v, a_v, t_v = [int(x) for x in log]
                 # v published a message in the test log
 
                 # set based on similarity
