@@ -49,8 +49,10 @@ void read_seeds(string seeds_filename, unordered_set<int> &S, int length);
 
 
 edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > node_to_feat, vector<int> F, vector<pair<int, int> > E, edge_prob &P, unordered_map <int, double> &in_degrees);
+edge_prob increase_probabilities_no_transform(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > node_to_feat, vector<int> F, vector<pair<int, int> > E, edge_prob &P, unordered_map <int, double> &in_degrees);
 void decrease_probabilities(edge_prob changed, edge_prob &P);
 edge_prob init_probs(DiGraph, edge_prob, unordered_map <int, double> &in_degrees);
+edge_prob init_probs_no_transform(DiGraph, edge_prob, unordered_map <int, double> &in_degrees);
 void increase_prob_set(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > node_to_feat, vector<int> F,
                                  unordered_map<int, vector<pair<int, int> > > feat_to_edges, edge_prob &P, unordered_map <int, double> &in_degrees);
 

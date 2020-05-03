@@ -482,15 +482,38 @@ def tune_vk(args, test_perc=0.2):
     logfile = open(args.log_file, newline='')
     logs = list(csv.reader(logfile, delimiter=' '))
     num_logs = sum(1 for row in logs)
-    templogs = logs[:int(num_logs*test_perc)]
-    testlogs = []
-    for log in templogs: 
-        nplog = np.array(log, dtype=np.int)
-        testlogs.append(nplog)
+    testlogs = logs[:int(num_logs*test_perc)]
+    # testlogs = []
+    # for log in templogs: 
+    #     nplog = np.array(log, dtype=np.int)
+    #     testlogs.append(nplog)
     
-    testlogs = np.array(testlogs)
+    # testlogs = np.array(testlogs)
 
-    print("Test log in consideration: ", testlogs.shape)
+    print("Test log in consideration: ", len(testlogs))
+
+    actions_of = dict()
+    action_table = dict()
+    action_done_by = dict()
+
+    for log in testlogs:
+
+        u, au, tu = [int(x) for x in log]
+
+        if u in actions_of.keys():
+            actions_of[u].add(au)
+        else:
+            actions_of[u] = set()
+            actions_of[u].add(au)
+        
+        # if au in action_done_by.keys():
+        #     action_done_by[au].add(u)
+        # else:
+        #     action_done_by[au] = set()
+        #     action_done_by[au].add(u)
+        # action_table[(u, au)] = tu
+
+    print("Log preprocessing done.")
 
     def _get_qual(args, topic_thresh, sim_bits):
         
@@ -533,33 +556,47 @@ def tune_vk(args, test_perc=0.2):
                 # v published a message in the test log
 
                 # set based on similarity
-                action_set = [] 
+                action_list = [] 
                 for u in g.predecessors(v):
                     # list of permissible actions performed by u
-                    a_performed_by_u = get_actions_from_logs(testlogs, u, t_v, sim_bits)
+                    for au in actions_of[u]:
+                        if action_table[(u, au)] > t_v:
+                            continue                        
+                        action_list.append(au)  
 
-                    for au in a_performed_by_u:
+                    action_set = []
+
+                    for a1 in action_list:
                         similar = False
-                        for a in action_set:
-                            if check_sim(topic_features[au], topic_features[a], nbits=sim_bits):
+                        for a2 in action_set:
+                            if check_sim(topic_features[a1], topic_features[a2], nbits=sim_bits):
                                 similar = True
                                 break
-                            if not similar:
-                                action_set.append(a)
-                
+                        
+                        if not similar:
+                            action_set.append(a2)
+
                 print("Formed action set for node: ", v)
                 # now they are unique actions
                 prob = 0.0
                 for a in action_set:   
                     for u in g.predecessors(v):
                         # get valid predecessors for the actions
-                        if checklog(logs, u, a, t_v, sim_bits):
-                            prob += b[(u, v)] + q[(u, v)]*get_alpha(user_features[v], topic_features[a])
+                        for au in actions_of[u]:
+                            if action_table[(u, au)] > t_v:
+                                continue
+                            if check_sim(topic_features[au], topic_features[a], nbits=sim_bits):
+                                prob += b[(u, v)] + q[(u, v)]*get_alpha(user_features[v], topic_features[a])
                     
+                    # summed up prob for a by all users and through all their actions
+
                     prob = min(1, max(prob, 0))
                     prediction = (prob > mu)
                     
-                    gt = checklog(logs, v, a)
+                    # gt -> this log entry is similar to the action
+                    # gt = checklog(logs, v, a)
+                    gt = check_sim(topic_features[a_v], topic_features[a], nbits=sim_bits)
+
                     if prediction == True:
                         if gt == True:
                             tpx+=1
@@ -572,7 +609,7 @@ def tune_vk(args, test_perc=0.2):
                             tnx+=1
 
             
-            print("(tp, fp, tn, fn): " tpx, fpx, tnx, fnx)
+            print("(tp, fp, tn, fn): ", tpx, fpx, tnx, fnx)
             tp.append(tpx)
             fp.append(fpx)
             tn.append(tnx)
@@ -593,8 +630,6 @@ def tune_vk(args, test_perc=0.2):
         auc = -1 * np.trapz(tpr, fpr)
         print("auc: ", auc)
         return auc
-
-
     
     iter=0
     print("iter: ", iter)    
@@ -611,7 +646,6 @@ def tune_vk(args, test_perc=0.2):
         for i in [-1,0,1]:
             for j in [-1,0,1]:
                     new_val = _get_qual(args, args.topic_thr + i*args.delta_thres, args.nbits +j*args.delta_bits)
-
                     if new_val > current_val:
                         current_val =  new_val
                         args.topic_thr += i*args.delta_thres

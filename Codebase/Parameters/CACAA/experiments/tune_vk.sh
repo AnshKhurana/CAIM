@@ -1,8 +1,8 @@
 python main.py --exp vk \
 --num_topics 100 \
 --nbits 200 \
---topic_thr 0.034 \
+--topic_thr 0.2 \
 --tune \
---delta_thres 0.005 \
+--delta_thres 0.05 \
 --delta_bits 1
 

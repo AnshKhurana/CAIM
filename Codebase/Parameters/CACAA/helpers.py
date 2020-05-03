@@ -61,7 +61,7 @@ def thresh_one(vec, theta):
     
     vec = vec.strip().split(' ')
     vec = np.array(vec, dtype=np.float)
-    vec = np.where(vec < theta, False, True)
+    vec = np.where(vec > theta, True, False)
     return vec
 
 def thresh_one_user(vec, theta):
@@ -131,7 +131,7 @@ def get_num_users(args):
     
     return len(user_set)
 
-def check_sim(vec1, vec2, nbits=1):
+def check_sim(vec1, vec2, nbits):
     
     diff = np.count_nonzero(vec1!=vec2)
 

@@ -5,7 +5,7 @@
 ../datasets/citation/com.txt
 -
 simpath
-23
+35
 20
 10000
-1e-1
+1e-3

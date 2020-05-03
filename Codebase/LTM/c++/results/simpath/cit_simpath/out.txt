@@ -1,0 +1,94 @@
+❯ ./run.sh cit_simpath 
+g++ -O3 -std=c++11 -o exe ltm.cpp helpers.cpp
+helpers.cpp:342:38: warning: format specifies type 'int' but the argument has type
+      'boost::iterators::detail::iterator_facade_base<boost::range_detail::integer_iterator<unsigned long>,
+      unsigned long, boost::iterators::random_access_traversal_tag, unsigned long, long, false,
+      false>::reference' (aka 'unsigned long') [-Wformat]
+        fprintf(deg_file, "%d %d\n", *vi, in_d);
+                           ~~        ^~~
+                           %lu
+1 warning generated.
+Reading parameters...
+Setup file: cit_simpath
+eta: 0.001000
+dataset_file b_file q_file mem_file groups_file
+../datasets/citation/edge_list.txt ../datasets/citation/base_weights.txt ../datasets/citation/marg_weights.txt ../datasets/citation/mem.txt ../datasets/citation/com.txt
+group_number K I
+35 20 10000
+save dir: ./results/simpath/cit_simpath/
+graph file: ../datasets/citation/edge_list.txt
+graph read
+high count: 45845
+overall_count: 329405
+S: 7530w0 7630w0 7334w0 7510w0 4893w12 2637w13 1142w35 7158w0 7088w0 2529w17 6078w2 2600w3 5890w31 5476w11 5475w34 3037w14 5477w143 6558w0 918w37 5074w15 7283w0 1900w25 7006w0 7509w0 3326w3 2445w75 1009w18 4518w39 4633w10 
+I: 10000
+K: 20
+Init MC spread = 54.0709
+Starting algo: simpath
+using eta: 0.001
+no seg fault
+it = 0; spread = 30.1591
+it = 1; f = 37; spread = 30.1616
+Number of times the choice changed: 8
+it = 2; f = 44; spread = 30.1635
+Number of times the choice changed: 8
+it = 3; f = 29; spread = 30.1651
+Number of times the choice changed: 8
+it = 4; f = 42; spread = 30.1663
+Number of times the choice changed: 7
+it = 5; f = 69; spread = 30.1674
+Number of times the choice changed: 8
+it = 6; f = 98; spread = 30.1682
+Number of times the choice changed: 7
+it = 7; f = 36; spread = 30.1690
+Number of times the choice changed: 7
+it = 8; f = 28; spread = 30.1696
+Number of times the choice changed: 6
+it = 9; f = 46; spread = 30.1702
+Number of times the choice changed: 6
+it = 10; f = 81; spread = 30.1707
+Number of times the choice changed: 6
+it = 11; f = 13; spread = 30.1711
+Number of times the choice changed: 6
+it = 12; f = 71; spread = 30.1714
+Number of times the choice changed: 5
+it = 13; f = 60; spread = 30.1718
+Number of times the choice changed: 6
+it = 14; f = 30; spread = 30.1722
+Number of times the choice changed: 7
+it = 15; f = 92; spread = 30.1725
+Number of times the choice changed: 6
+it = 16; f = 67; spread = 30.1728
+Number of times the choice changed: 7
+it = 17; f = 22; spread = 30.1731
+Number of times the choice changed: 6
+it = 18; f = 43; spread = 30.1733
+Number of times the choice changed: 5
+it = 19; f = 96; spread = 30.1735
+Number of times the choice changed: 6
+it = 20; f = 6; spread = 30.1737
+Number of times the choice changed: 5
+Execution time = 5873.93 secs.
+Final spread value: 30.104
+0: 30.1591 spread
+1: 30.1616 spread
+2: 30.1635 spread
+3: 30.1651 spread
+4: 30.1663 spread
+5: 30.1674 spread
+6: 30.1682 spread
+7: 30.169 spread
+8: 30.1696 spread
+9: 30.1702 spread
+10: 30.1707 spread
+11: 30.1711 spread
+12: 30.1714 spread
+13: 30.1718 spread
+14: 30.1722 spread
+15: 30.1725 spread
+16: 30.1728 spread
+17: 30.1731 spread
+18: 30.1733 spread
+19: 30.1735 spread
+20: 30.1737 spread
+Features: 6 13 22 28 29 30 36 37 42 43 44 46 60 67 69 71 81 92 96 98 

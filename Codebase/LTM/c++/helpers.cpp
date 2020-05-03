@@ -296,6 +296,43 @@ edge_prob increase_probabilities(DiGraph G, edge_prob B, edge_prob Q, unordered_
     return changed;
 }
 
+edge_prob increase_probabilities_no_transform(DiGraph G, edge_prob B, edge_prob Q, unordered_map<int, vector<int> > node_to_feat, vector<int> F,
+                                 vector<pair<int, int> > E, edge_prob &P, unordered_map <int, double> &in_degrees) 
+{
+    // specify E as an argument to speed up 
+    edge_prob changed;
+    double q, b, h;
+    int target;
+    double intersection;
+    vector <int> F_target;
+    int edge_count=0, inc_count=0;
+
+    for (auto &edge: E) {
+        changed[edge] = P[edge]; // store old value
+        // cout<<"old value: "<<P[edge]<< " ";
+        q = Q[edge]; b = B[edge];
+        target = edge.second;
+        F_target = node_to_feat[target]; // Fv
+        sort(F_target.begin(), F_target.end());
+        sort(F.begin(), F.end());
+        unordered_set<int> s(F_target.begin(), F_target.end());
+        intersection = count_if(F.begin(), F.end(), [&](int k) {return s.find(k) != s.end();});
+        // assume that set intersection method is implemented correctly in Explore-Update
+        h = intersection; // intersection only. Q is calculated approp
+        
+        P[edge] =  (double)  (h*q + b > 1.0/in_degrees[target])? (1./in_degrees[target]) : h*q + b;
+        edge_count++;
+        if (P[edge] - changed[edge] > 0)
+        {
+            inc_count++;
+        }
+        // cout<<"b: "<<b<<"q: "<<q<<"h: "<<h<<" ";
+        // cout <<"New value: "<<P[edge]<<endl;
+    }
+    // cout<<inc_count<<" out of "<<edge_count<<" edges had an increase in weight\n";
+    return changed;
+}
+
 edge_prob init_probs(DiGraph G, edge_prob Btransformed, unordered_map <int, double> &in_degrees)
 {
     edge_iter ei, edge_end;
@@ -316,6 +353,33 @@ edge_prob init_probs(DiGraph G, edge_prob Btransformed, unordered_map <int, doub
     
     return P;
 }
+
+edge_prob init_probs_no_transform(DiGraph G, edge_prob B, unordered_map <int, double> &in_degrees)
+{
+    edge_iter ei, edge_end;
+    pair <int, int> edge;
+    int v;
+    edge_prob P;
+    for (boost::tie(ei, edge_end) = edges(G); ei != edge_end; ++ei) 
+    {
+        
+        // cout << source(*ei, G) << " " << target(*ei, G) << endl;
+        edge = make_pair(source(*ei, G), target(*ei, G));
+        v = edge.second;
+        double d_in = in_degrees[v];
+        if (1.0/d_in < B[edge])
+        {
+            P[edge] = 1.0/d_in;
+        }
+        else
+        {
+            P[edge] = B[edge];
+        }
+    }
+    
+    return P;
+}
+
 
 // copy-paste
 void decrease_probabilities(edge_prob changed, edge_prob &P) {
