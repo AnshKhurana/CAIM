@@ -392,7 +392,7 @@ def tune_citation(args, test_perc=0.4):
         fn = []
         
         # to estimate auc, taking 100 points on the curve
-        for mu in tqdm(np.linspace(0, 1, 100)):    
+        for mu in tqdm(np.linspace(0, 1, 10)):    
             # print(mu)
             tpx = 0
             fpx = 0
@@ -417,7 +417,7 @@ def tune_citation(args, test_perc=0.4):
                                 prob += b[(u, v)] + q[(u, v)]*get_alpha(user_features[v], topic_features[a])
                         
                         prob = min(1, max(prob, 0))
-                        prediction = (prob > mu)
+                        prediction = (prob >= mu)
 
                         gt = (a == msg)
                         if prediction == True:
