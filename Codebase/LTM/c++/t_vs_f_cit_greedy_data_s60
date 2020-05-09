@@ -1,0 +1,39 @@
+g++ -O3 -std=c++11 -o exe ltm_no_transform.cpp helpers.cpp
+Reading parameters...
+Setup file: cit_greedy
+eta: 0.100000
+dataset_file b_file q_file mem_file groups_file
+../datasets/citation/edge_list.txt ../datasets/citation/base_weights.txt ../datasets/citation/marg_weights.txt ../datasets/citation/mem.txt ../datasets/citation/com.txt
+group_number K I
+35 50 10000
+save dir: ./results/g/cit_greedy/
+graph file: ../datasets/citation/edge_list.txt
+graph read
+Q file specified
+S: 220w7 211w240 208w173 188w154 187w28 184w24 179w33 152w40 143w9 120w77 111w18 189w147 110w499 39w25 76w4 107w27 28w5 65w3 181w28 23w11 37w30 0w10 74w41 178w16 20w31 94w72 36w9 19w10 172w15 93w35 159w142 1w11 8w386 45w224 91w11 7w27 202w3 123w35 44w13 81w48 10w54 47w5 84w14 13w206 46w11 209w25 51w25 58w7 66w11 67w219 68w7 148w9 69w30 27w73 106w14 149w15 70w1 175w10 17w25 96w29 
+I: 10000
+K: 50
+SEED SET SIZE: 60
+Init MC spread = 65.8676
+Starting algo: greedy
+Running to report results according to mode: 2
+it = 0; spread = 65.8782
+it = 1; F.size() 1; Time elapsed: 2073.36
+f = 37; spread = 72.5405
+Number of times the choice changed: 5
+it = 2; F.size() 2; Time elapsed: 4208.24
+f = 13; spread = 76.6564
+Number of times the choice changed: 3
+it = 3; F.size() 3; Time elapsed: 6388.43
+f = 44; spread = 79.0595
+Number of times the choice changed: 2
+it = 4; F.size() 4; Time elapsed: 8562.1
+f = 46; spread = 80.8663
+Number of times the choice changed: 2
+it = 5; F.size() 5; Time elapsed: 10735.4
+f = 33; spread = 82.2287
+Number of times the choice changed: 4
+it = 6; F.size() 6; Time elapsed: 12908.4
+f = 66; spread = 83.3255
+Number of times the choice changed: 5
+it = 7; 

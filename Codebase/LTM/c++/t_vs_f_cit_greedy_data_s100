@@ -1,0 +1,27 @@
+g++ -O3 -std=c++11 -o exe ltm_no_transform.cpp helpers.cpp
+Reading parameters...
+Setup file: cit_greedy
+eta: 0.100000
+dataset_file b_file q_file mem_file groups_file
+../datasets/citation/edge_list.txt ../datasets/citation/base_weights.txt ../datasets/citation/marg_weights.txt ../datasets/citation/mem.txt ../datasets/citation/com.txt
+group_number K I
+35 50 10000
+save dir: ./results/g/cit_greedy/
+graph file: ../datasets/citation/edge_list.txt
+graph read
+Q file specified
+S: 336w21 333w2 332w21 331w30 330w63 311w10 309w18 308w12 301w38 297w17 296w6 292w33 291w26 96w28 70w1 149w15 106w13 27w72 148w9 68w7 225w14 58w7 51w25 209w25 46w11 13w203 84w14 47w5 284w41 344w6 10w54 290w10 123w35 202w3 281w7 7w27 91w11 45w223 175w10 8w383 245w84 1w11 326w6 159w141 93w35 172w15 353w3 19w10 256w2 36w9 94w72 178w16 257w2 74w41 334w10 0w10 37w30 23w11 181w27 232w20 65w3 223w109 28w5 274w33 107w27 76w4 67w217 234w19 39w24 110w498 356w13 189w145 111w18 120w77 143w9 152w39 346w16 179w33 17w25 184w24 354w33 20w31 187w28 355w37 188w154 267w13 208w172 44w13 211w239 220w7 230w8 66w11 233w950 69w30 236w5 81w48 248w6 279w8 280w42 285w188 
+I: 10000
+K: 50
+SEED SET SIZE: 100
+Init MC spread = 108.197
+Starting algo: greedy
+Running to report results according to mode: 2
+it = 0; spread = 108.223
+it = 1; F.size() 1; Time elapsed: 5023.14
+f = 13; spread = 120.2158
+Number of times the choice changed: 5
+it = 2; F.size() 2; Time elapsed: 10274.7
+f = 37; spread = 125.8134
+Number of times the choice changed: 3
+it = 3; 
