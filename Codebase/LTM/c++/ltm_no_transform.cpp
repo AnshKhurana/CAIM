@@ -6,7 +6,7 @@
 edge_prob transform_probabilties (unordered_map<int, vector<int> > node_to_feat, edge_prob B, unordered_map<int, double> &in_degrees);
 void gen_q(edge_prob B, unordered_map<int, vector<int> > node_to_feat, edge_prob &Q, unordered_map<int, double> &in_degrees); // or B?
 double calculate_MC_spread(DiGraph G, edge_prob P, unordered_set <int> S, int I);
-pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base, edge_prob Q, unordered_set<int> S, unordered_map<int, vector<int> > node_to_feat, unordered_map<int, vector<pair<int, int> > > feat_to_edges, vector<int> Phi, int K, int I, unordered_map <int, double> &in_degrees, edge_prob &P);
+pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base, edge_prob Q, unordered_set<int> S, unordered_map<int, vector<int> > node_to_feat, unordered_map<int, vector<pair<int, int> > > feat_to_edges, vector<int> Phi, int K, int I, unordered_map <int, double> &in_degrees, edge_prob &P, int mode);
 double simpath_spread(DiGraph, unordered_set <int>, edge_prob, double);
 double simpath_spreadPhi(DiGraph, unordered_set <int>, edge_prob, double, unordered_map<int, vector <int> > node_to_feat,  set <int> &);
 double forward_backward(DiGraph G, int v, edge_prob P, unordered_set <int> S,  double eta);
@@ -15,12 +15,12 @@ double forward_backward_wPhi(DiGraph G, int v, edge_prob P, unordered_set <int> 
 pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob base, edge_prob Q, unordered_set<int> S,
   unordered_map<int, vector<int> > node_to_feat,
   unordered_map<int, vector<pair<int, int> > > feat_to_edges,
-  vector<int> Phi, int K, int I, double eta, unordered_map <int, double> &in_degrees, edge_prob &P);
+  vector<int> Phi, int K, int I, double eta, unordered_map <int, double> &in_degrees, edge_prob &P, int mode);
 
 pair<vector<int>, unordered_map<int, double> >  simpathPlus(DiGraph G, edge_prob base, edge_prob Q, unordered_set<int> S,
   unordered_map<int, vector<int> > node_to_feat,
   unordered_map<int, vector<pair<int, int> > > feat_to_edges,
-  vector<int> Phi, int K, int I, double eta, unordered_map <int, double> &in_degrees, edge_prob &P);
+  vector<int> Phi, int K, int I, double eta, unordered_map <int, double> &in_degrees, edge_prob &P, int mode);
 
 
 
@@ -34,6 +34,7 @@ int main(int argc, char const *argv[])
     unordered_map<int, unordered_set<int> > groups; // feat to nodes
     unordered_set<int> S; // Seed set
     double eta;
+    int mode;
     int I, K, group_number; 
     clock_t start, finish;
     double final_spread;
@@ -71,6 +72,8 @@ int main(int argc, char const *argv[])
         I = stoi(line);
         getline(infile, line);
         eta = stof(line);
+        getline(infile, line);
+        mode = stoi(line);
 
         printf("eta: %lf\n", eta);
         
@@ -181,7 +184,7 @@ int main(int argc, char const *argv[])
     if (strcmp(algo_name.c_str(), "simpath") == 0)
     {
         cout << "Starting algo: " <<"simpath"<< endl;
-        boost::tie(result_feature_set, influence) = simpath(G, B, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  eta, in_degrees, P);
+        boost::tie(result_feature_set, influence) = simpath(G, B, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  eta, in_degrees, P, mode);
     }
     else if (strcmp(algo_name.c_str(), "rr") == 0)
     {
@@ -190,12 +193,12 @@ int main(int argc, char const *argv[])
     else if (strcmp(algo_name.c_str(), "simplus") == 0)
     {
         cout << "Starting algo: " <<"simplus"<< endl;
-        boost::tie(result_feature_set, influence) = simpathPlus(G, B, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  1e-3, in_degrees, P);
+        boost::tie(result_feature_set, influence) = simpathPlus(G, B, Q, S, node_to_feat, feat_to_edges, Phi, K, I,  1e-3, in_degrees, P, mode);
     }
     else
     {
         cout << "Starting algo: " <<"greedy"<< endl;
-        boost::tie(result_feature_set, influence) = greedy(G, B, Q, S, node_to_feat, feat_to_edges, Phi, K, I, in_degrees, P);
+        boost::tie(result_feature_set, influence) = greedy(G, B, Q, S, node_to_feat, feat_to_edges, Phi, K, I, in_degrees, P, mode);
     }
     finish = clock();
     double exec_time = (double) (finish - start)/CLOCKS_PER_SEC;
@@ -249,13 +252,12 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob B,
     edge_prob Q, unordered_set<int> S,
   unordered_map<int, vector<int> > node_to_feat,
   unordered_map<int, vector<pair<int, int> > > feat_to_edges,
-  vector<int> Phi, int K, int I, double eta, unordered_map <int, double> &in_degrees, edge_prob &P)
+  vector<int> Phi, int K, int I, double eta, unordered_map <int, double> &in_degrees, edge_prob &P, int mode=0)
 
 {
 
     cout<<"using eta: "<<eta<<endl;
     // plotting parameters
-    int mode = 0; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
     clock_t start, finish;
     int report_interval = 2;
 
@@ -274,7 +276,7 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob B,
     if (mode == 2)
     {
         start = clock();
-        time_file = fopen("simpath_time_eta", "a");
+        time_file = fopen("simpath_time", "w");
     }
 
     vector <int> F;
@@ -357,7 +359,7 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob B,
 pair<vector<int>, unordered_map<int, double> >  simpathPlus(DiGraph G, edge_prob base, edge_prob Q, unordered_set<int> S,
   unordered_map<int, vector<int> > node_to_feat,
   unordered_map<int, vector<pair<int, int> > > feat_to_edges,
-  vector<int> Phi, int K, int I, double eta, unordered_map <int, double> &in_degrees, edge_prob &P)
+  vector<int> Phi, int K, int I, double eta, unordered_map <int, double> &in_degrees, edge_prob &P, int mode=0)
 {
 
     // to remove later
@@ -370,7 +372,7 @@ pair<vector<int>, unordered_map<int, double> >  simpathPlus(DiGraph G, edge_prob
     int max_feature;
     unordered_map<int, double> influence;
     vector <int> no_selected_features = {-1}; 
-    P = init_probs(G, Btransformed, in_degrees);
+    P = init_probs_no_transform(G, Btransformed, in_degrees);
     // cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
     // cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
     // cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
@@ -399,7 +401,7 @@ pair<vector<int>, unordered_map<int, double> >  simpathPlus(DiGraph G, edge_prob
             fflush(stdout);
             if (not selected[f]) {
                 F.push_back(f);
-                changed = increase_probabilities(G, Btransformed, Q, node_to_feat, F, feat_to_edges[f], P, in_degrees);
+                changed = increase_probabilities_no_transform(G, Btransformed, Q, node_to_feat, F, feat_to_edges[f], P, in_degrees);
                 spread = simpath_spreadPhi(G, S, P, eta, node_to_feat, nextPhi);
                 if (spread > max_spread) {
                     max_spread = spread;
@@ -412,7 +414,7 @@ pair<vector<int>, unordered_map<int, double> >  simpathPlus(DiGraph G, edge_prob
         F.push_back(max_feature);
         selected[max_feature] = true;
         printf("f = %i; spread = %.4f\n", max_feature, max_spread);
-        increase_probabilities(G, Btransformed, Q, node_to_feat, F, feat_to_edges[max_feature], P, in_degrees);
+        increase_probabilities_no_transform(G, Btransformed, Q, node_to_feat, F, feat_to_edges[max_feature], P, in_degrees);
         
         // Time to update set Phi for next iteration
         curPhi.clear(); // unnecessary? remove to speed-up
@@ -901,11 +903,11 @@ double calculate_MC_spread(DiGraph G, edge_prob P, unordered_set <int> S, int I)
 }
 
 pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob B, edge_prob Q, unordered_set<int> S, unordered_map<int,
-        vector<int> > node_to_feat, unordered_map<int, vector<pair<int, int> > > feat_to_edges, vector<int> Phi, int K, int I, unordered_map <int, double> &in_degrees, edge_prob &P)
+        vector<int> > node_to_feat, unordered_map<int, vector<pair<int, int> > > feat_to_edges, vector<int> Phi, int K, int I, unordered_map <int, double> &in_degrees, edge_prob &P, int mode=0)
 {
 
     // plotting parameters
-    int mode = 2; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
+
     clock_t start, finish;
     int report_interval = 2;
 
@@ -935,7 +937,7 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob B, e
     unordered_map<int, double> influence;
     int choice_index=0;
     vector <int> no_selected_features = {-1}; 
-    P = init_probs(G, B, in_degrees);
+    P = init_probs_no_transform(G, B, in_degrees);
     // cout<<"Prob (0, 1): " << P[make_pair(0, 1)] << endl; // should be increasing
     // cout<<"Prob (0, 2): " << P[make_pair(0, 2)] << endl; // should be increasing
     // cout<<"Prob (0, 3): " << P[make_pair(0, 3)] << endl; // should be increasing
@@ -956,7 +958,7 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob B, e
             fflush(stdout);
             if (not selected[f]) {
                 F.push_back(f);
-                changed = increase_probabilities(G, B, Q, node_to_feat, F, feat_to_edges[f], P, in_degrees);
+                changed = increase_probabilities_no_transform(G, B, Q, node_to_feat, F, feat_to_edges[f], P, in_degrees);
     // double calculate_MC_spread(DiGraph G, edge_prob P, vector <int> S, unordered_map <int, vector<int> > node_to_feat, int I)
                 spread = calculate_MC_spread(G, P, S, I);
                 if (spread > max_spread) {
@@ -979,7 +981,7 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob B, e
             fprintf(time_file, "F.size() %lu; Time elapsed: %0.4f", F.size(), exec_time);
         }
         printf("f = %i; spread = %.4f\n", max_feature, max_spread);
-        increase_probabilities(G, B, Q, node_to_feat, F, feat_to_edges[max_feature], P, in_degrees);
+        increase_probabilities_no_transform(G, B, Q, node_to_feat, F, feat_to_edges[max_feature], P, in_degrees);
 
         if (mode == 1)
         {

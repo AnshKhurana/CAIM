@@ -3,9 +3,10 @@
 ../datasets/citation/marg_weights.txt
 ../datasets/citation/mem.txt
 ../datasets/citation/com.txt
--
+../datasets/citation/seeds.txt
 simpath
 35
-20
+50
 10000
-1e-3
+0.05
+2
