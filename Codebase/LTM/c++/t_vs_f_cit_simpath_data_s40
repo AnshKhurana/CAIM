@@ -134,4 +134,93 @@ Number of times the choice changed: 5
 it = 38; F.size() 38; Time elapsed: 14080.2
 f = 99; spread = 61.3619
 Number of times the choice changed: 5
-it = 39; 
+it = 39; F.size() 39; Time elapsed: 14366.6
+f = 40; spread = 61.3883
+Number of times the choice changed: 7
+it = 40; F.size() 40; Time elapsed: 14644.1
+f = 84; spread = 61.4122
+Number of times the choice changed: 6
+it = 41; F.size() 41; Time elapsed: 14916.9
+f = 64; spread = 61.4357
+Number of times the choice changed: 5
+it = 42; F.size() 42; Time elapsed: 15185.1
+f = 7; spread = 61.4591
+Number of times the choice changed: 6
+it = 43; F.size() 43; Time elapsed: 15448.5
+f = 0; spread = 61.4803
+Number of times the choice changed: 6
+it = 44; F.size() 44; Time elapsed: 15706.8
+f = 25; spread = 61.5014
+Number of times the choice changed: 6
+it = 45; F.size() 45; Time elapsed: 15961.2
+f = 79; spread = 61.5223
+Number of times the choice changed: 6
+it = 46; F.size() 46; Time elapsed: 16211.2
+f = 1; spread = 61.5424
+Number of times the choice changed: 6
+it = 47; F.size() 47; Time elapsed: 16456.6
+f = 3; spread = 61.5614
+Number of times the choice changed: 6
+it = 48; F.size() 48; Time elapsed: 16697.3
+f = 43; spread = 61.5803
+Number of times the choice changed: 5
+it = 49; F.size() 49; Time elapsed: 16933.6
+f = 65; spread = 61.6077
+Number of times the choice changed: 6
+it = 50; F.size() 50; Time elapsed: 17165.7
+f = 81; spread = 61.6263
+Number of times the choice changed: 5
+Execution time = 17166.3 secs.
+Final spread value: 60.8913
+0: 43.7005 spread
+1: 48.2225 spread
+2: 51.0774 spread
+3: 52.9882 spread
+4: 54.218 spread
+5: 55.2529 spread
+6: 56.1602 spread
+7: 56.9462 spread
+8: 57.5573 spread
+9: 58.1564 spread
+10: 58.5331 spread
+11: 58.913 spread
+12: 59.1932 spread
+13: 59.4586 spread
+14: 59.7061 spread
+15: 59.9278 spread
+16: 60.0971 spread
+17: 60.2345 spread
+18: 60.3597 spread
+19: 60.4668 spread
+20: 60.5521 spread
+21: 60.6319 spread
+22: 60.7056 spread
+23: 60.7755 spread
+24: 60.8504 spread
+25: 60.9132 spread
+26: 60.9625 spread
+27: 61.0092 spread
+28: 61.0543 spread
+29: 61.0962 spread
+30: 61.1329 spread
+31: 61.1663 spread
+32: 61.1976 spread
+33: 61.2277 spread
+34: 61.2559 spread
+35: 61.2836 spread
+36: 61.3108 spread
+37: 61.3368 spread
+38: 61.3619 spread
+39: 61.3883 spread
+40: 61.4122 spread
+41: 61.4357 spread
+42: 61.4591 spread
+43: 61.4803 spread
+44: 61.5014 spread
+45: 61.5223 spread
+46: 61.5424 spread
+47: 61.5614 spread
+48: 61.5803 spread
+49: 61.6077 spread
+50: 61.6263 spread
+Features: 0 1 3 6 7 9 11 13 16 17 18 19 22 24 25 26 27 29 30 33 34 36 37 40 43 44 46 49 50 51 53 57 62 64 65 66 69 76 77 79 80 81 84 86 87 90 94 96 97 99 
