@@ -1,5 +1,6 @@
 import csv
 import numpy as np
+from tqdm import tqdm
 
 from helpers import *
 
@@ -37,18 +38,24 @@ def get_aux_vk(args):
     # split logfile on per action basis to speed things up
     current_table = dict()
     # map user, action to time
-    
-    for log in logs:
+    action_ids = open('../data/vk/post_cluster_classification.csv', newline='')
+    action_ids = list(csv.reader(action_ids, delimiter = ','))
+    print(action_ids[0])
+    real_action = dict()
+
+    i = 0
+    for log in tqdm(logs):
       
         # list
         # u_id, topic_id, timestamp for v performing action a
         [v, a, t_v] = [int(x) for x in log]
+        ra = int(action_ids[i][1])
+        real_action[a] = ra
 
         if (v, a) in current_table.keys():
             print("same post performed again", v, a)
             current_table[(v, a)] = t_v
         else:
-             
             n[v] += 1
             # print("For node ", v)
             # print("Out nodes: ", end = " ")
@@ -62,7 +69,7 @@ def get_aux_vk(args):
             count = 0
             for u, act in current_table.keys():
                 count += 1
-                if g.has_edge(u, v) and check_sim(topic_features[act], topic_features[a], nbits=args.nbits) and (t_v > current_table[(u, act)]) and args.tau > (t_v - current_table[(u, act)]):
+                if g.has_edge(u, v) and real_action[act] == real_action[a] and (t_v > current_table[(u, act)]) and args.tau > (t_v - current_table[(u, act)]):
                     parents.append(u)
 
             d =  len(parents) 

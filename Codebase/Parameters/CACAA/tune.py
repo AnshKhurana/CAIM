@@ -392,7 +392,7 @@ def tune_citation(args, test_perc=0.4):
         fn = []
         
         # to estimate auc, taking 100 points on the curve
-        for mu in tqdm(np.linspace(0, 1, 10)):    
+        for mu in tqdm(np.linspace(0, 1, 100)):    
             # print(mu)
             tpx = 0
             fpx = 0
@@ -431,7 +431,7 @@ def tune_citation(args, test_perc=0.4):
                             else:
                                 tnx+=1
 
-            print("Results for mu = ", mu, "(tp, fp, tn, fn)", tpx, fpx, tnx, fnx)
+            # print("Results for mu = ", mu, "(tp, fp, tn, fn)", tpx, fpx, tnx, fnx)
             tp.append(tpx)
             fp.append(fpx)
             tn.append(tnx)
@@ -481,6 +481,8 @@ def tune_vk(args, test_perc=0.2):
 
     logfile = open(args.log_file, newline='')
     logs = list(csv.reader(logfile, delimiter=' '))
+    action_ids = open('../data/vk/post_cluster_classification.csv', newline='')
+    action_ids = list(csv.reader(action_ids, delimiter = ','))
     num_logs = sum(1 for row in logs)
     testlogs = logs[:int(num_logs*test_perc)]
     # testlogs = []
@@ -495,10 +497,15 @@ def tune_vk(args, test_perc=0.2):
     actions_of = dict()
     action_table = dict()
     action_done_by = dict()
+    real_action = dict()
 
+    i = 0
     for log in testlogs:
 
         u, au, tu = [int(x) for x in log]
+        aid = int(action_ids[i][1])
+        i+=1
+        real_action[au] = aid
 
         if u in actions_of.keys():
             actions_of[u].add(au)
@@ -515,13 +522,13 @@ def tune_vk(args, test_perc=0.2):
 
     print("Log preprocessing done.")
 
-    def _get_qual(args, topic_thresh, sim_bits):
+    def _get_qual(args, topic_thresh):
         
         print("Inner qual function")
 
         # get new values on test set based on current thresholds
         args.topic_thr = topic_thresh
-        args.nbits = sim_bits
+        
         create_vecs(args)
         if args.exp == 'vk':
             g, n, C1, C2, C3, C4 = get_aux_vk(args)
@@ -556,37 +563,38 @@ def tune_vk(args, test_perc=0.2):
                 # v published a message in the test log
 
                 # set based on similarity
-                action_list = [] 
+                real_action_set = set() 
                 for u in g.predecessors(v):
                     # list of permissible actions performed by u
                     for au in actions_of[u]:
                         if action_table[(u, au)] > t_v:
                             continue                        
-                        action_list.append(au)  
+                        real_action_set.append(real_action[au])  
 
-                    action_set = []
+                    # action_set = []
 
-                    for a1 in action_list:
-                        similar = False
-                        for a2 in action_set:
-                            if check_sim(topic_features[a1], topic_features[a2], nbits=sim_bits):
-                                similar = True
-                                break
+                    # for a1 in action_list:
+                    #     similar = False
+                    #     for a2 in action_set:
+                    #         if check_sim(topic_features[a1], topic_features[a2], nbits=sim_bits):
+                    #             similar = True
+                    #             break
                         
-                        if not similar:
-                            action_set.append(a2)
+                    #     if not similar:
+                    #         action_set.append(a2)
 
-                print("Formed action set for node: ", v)
+                # print("Formed action set for node: ", v)
                 # now they are unique actions
                 prob = 0.0
-                for a in action_set:   
+                for ra in real_action_set:   
                     for u in g.predecessors(v):
                         # get valid predecessors for the actions
                         for au in actions_of[u]:
                             if action_table[(u, au)] > t_v:
                                 continue
-                            if check_sim(topic_features[au], topic_features[a], nbits=sim_bits):
-                                prob += b[(u, v)] + q[(u, v)]*get_alpha(user_features[v], topic_features[a])
+                            if real_action[au] == ra:
+                                # using topic features of au since they are the same actions
+                                prob += b[(u, v)] + q[(u, v)]*get_alpha(user_features[v], topic_features[au])
                     
                     # summed up prob for a by all users and through all their actions
 
@@ -595,7 +603,7 @@ def tune_vk(args, test_perc=0.2):
                     
                     # gt -> this log entry is similar to the action
                     # gt = checklog(logs, v, a)
-                    gt = check_sim(topic_features[a_v], topic_features[a], nbits=sim_bits)
+                    gt = real_action[a_v] == ra
 
                     if prediction == True:
                         if gt == True:
@@ -640,18 +648,16 @@ def tune_vk(args, test_perc=0.2):
     while True:
         iter+=1
         print("iter: ", iter)    
-        print("Current choice: ", args.topic_thr, args.nbits)
+        print("Current choice: ", args.topic_thr)
         
         success = False
-        for i in [-1,0,1]:
-            for j in [-1,0,1]:
-                    new_val = _get_qual(args, args.topic_thr + i*args.delta_thres, args.nbits +j*args.delta_bits)
-                    if new_val > current_val:
-                        current_val =  new_val
-                        args.topic_thr += i*args.delta_thres
-                        args.nbits += j*args.delta_bits
-                        success = True
-                        break
+        for i in [-1,1]:
+            new_val = _get_qual(args, args.topic_thr + i*args.delta_thres)
+            if new_val > current_val:
+                current_val =  new_val
+                args.topic_thr += i*args.delta_thres
+                success = True
+                break
         if not success:
             break
     
