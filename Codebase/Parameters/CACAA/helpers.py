@@ -61,7 +61,7 @@ def thresh_one(vec, theta):
     
     vec = vec.strip().split(' ')
     vec = np.array(vec, dtype=np.float)
-    vec = np.where(vec > theta, True, False)
+    vec = np.where(vec >= theta, True, False)
     return vec
 
 def thresh_one_user(vec, theta):

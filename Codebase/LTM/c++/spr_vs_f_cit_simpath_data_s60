@@ -1,0 +1,67 @@
+Reading parameters...
+Setup file: cit_simpath
+eta: 0.050000
+dataset_file b_file q_file mem_file groups_file
+../datasets/citation/edge_list.txt ../datasets/citation/base_weights.txt ../datasets/citation/marg_weights.txt ../datasets/citation/mem.txt ../datasets/citation/com.txt
+group_number K I
+35 50 10000
+save dir: ./results/simpath/cit_simpath/
+graph file: ../datasets/citation/edge_list.txt
+graph read
+Q file specified
+S: 220w7 211w240 208w173 188w154 187w28 184w24 179w33 152w40 143w9 120w77 111w18 189w147 110w499 39w25 76w4 107w27 28w5 65w3 181w28 23w11 37w30 0w10 74w41 178w16 20w31 94w72 36w9 19w10 172w15 93w35 159w142 1w11 8w386 45w224 91w11 7w27 202w3 123w35 44w13 81w48 10w54 47w5 84w14 13w206 46w11 209w25 51w25 58w7 66w11 67w219 68w7 148w9 69w30 27w73 106w14 149w15 70w1 175w10 17w25 96w29 
+I: 10000
+K: 50
+SEED SET SIZE: 60
+Init MC spread = 65.8676
+it = 0; spread = 65.8782
+f = 13 spread: 72.5706
+f = 37 spread: 76.5483
+f = 44 spread: 79.0533
+f = 46 spread: 80.867
+f = 33 spread: 82.1612
+f = 66 spread: 83.361
+f = 49 spread: 84.3287
+f = 30 spread: 85.0477
+f = 36 spread: 85.821
+f = 53 spread: 86.2921
+f = 80 spread: 86.6185
+f = 69 spread: 87.0366
+f = 16 spread: 87.5139
+f = 6 spread: 87.7258
+f = 29 spread: 88.1387
+f = 22 spread: 88.1534
+f = 90 spread: 88.3654
+f = 40 spread: 88.563
+f = 96 spread: 88.7341
+f = 86 spread: 88.8482
+f = 76 spread: 89.028
+f = 57 spread: 89.0324
+f = 9 spread: 89.1792
+f = 18 spread: 89.3446
+f = 0 spread: 89.3584
+f = 26 spread: 89.4255
+f = 62 spread: 89.5711
+f = 34 spread: 89.6141
+f = 50 spread: 89.6744
+f = 27 spread: 89.6787
+f = 97 spread: 89.8386
+f = 12 spread: 89.8508
+f = 85 spread: 89.7861
+f = 21 spread: 89.946
+f = 99 spread: 90.0667
+f = 24 spread: 89.9623
+f = 41 spread: 90.0638
+f = 84 spread: 90.054
+f = 42 spread: 90.0449
+f = 17 spread: 90.1451
+f = 1 spread: 90.1676
+f = 64 spread: 90.1442
+f = 94 spread: 90.2454
+f = 51 spread: 90.3726
+f = 79 spread: 90.3147
+f = 19 spread: 90.2549
+f = 15 spread: 90.2755
+f = 11 spread: 90.2544
+f = 98 spread: 90.4011
+f = 87 spread: 90.4531

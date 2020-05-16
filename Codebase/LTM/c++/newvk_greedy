@@ -1,0 +1,12 @@
+../datasets/cluster_vk/edge_list.txt
+../datasets/cluster_vk/base_weights.txt
+../datasets/cluster_vk/marg_weights.txt
+../datasets/cluster_vk/mem.txt
+../datasets/cluster_vk/com.txt
+../datasets/cluster_vk/seeds.txt
+g
+35
+50
+10000
+1e-1
+2

@@ -1,0 +1,67 @@
+Reading parameters...
+Setup file: cit_simpath
+eta: 0.050000
+dataset_file b_file q_file mem_file groups_file
+../datasets/citation/edge_list.txt ../datasets/citation/base_weights.txt ../datasets/citation/marg_weights.txt ../datasets/citation/mem.txt ../datasets/citation/com.txt
+group_number K I
+35 50 10000
+save dir: ./results/simpath/cit_simpath/
+graph file: ../datasets/citation/edge_list.txt
+graph read
+Q file specified
+S: 291w26 96w28 70w1 149w15 106w13 27w73 148w9 68w7 225w14 58w7 51w25 209w25 46w11 13w204 84w14 47w5 284w41 10w54 290w10 123w35 202w3 281w7 7w27 91w11 45w223 175w10 8w383 245w84 1w11 159w141 93w35 172w15 19w10 256w2 36w9 94w72 178w16 257w2 74w41 0w10 37w30 23w11 181w28 232w20 65w3 223w109 28w5 274w33 107w27 76w4 67w218 234w19 39w25 110w498 189w145 111w18 120w77 143w9 152w40 179w33 17w25 184w24 20w31 187w28 188w154 267w13 208w172 44w13 211w240 220w7 230w8 66w11 233w950 69w30 236w5 81w48 248w6 279w8 280w42 285w188 
+I: 10000
+K: 50
+SEED SET SIZE: 80
+Init MC spread = 86.7721
+it = 0; spread = 86.7662
+f = 13 spread: 96.9446
+f = 37 spread: 102.119
+f = 44 spread: 105.124
+f = 46 spread: 107.169
+f = 33 spread: 109.035
+f = 66 spread: 110.315
+f = 30 spread: 111.492
+f = 49 spread: 112.483
+f = 36 spread: 113.27
+f = 53 spread: 114.064
+f = 69 spread: 114.524
+f = 80 spread: 115.15
+f = 16 spread: 115.479
+f = 6 spread: 115.934
+f = 86 spread: 116.307
+f = 96 spread: 116.545
+f = 22 spread: 116.88
+f = 40 spread: 117.221
+f = 29 spread: 117.287
+f = 90 spread: 117.689
+f = 10 spread: 117.749
+f = 77 spread: 117.944
+f = 99 spread: 118.121
+f = 57 spread: 118.182
+f = 9 spread: 118.499
+f = 34 spread: 118.607
+f = 18 spread: 118.498
+f = 76 spread: 118.78
+f = 84 spread: 118.752
+f = 51 spread: 118.998
+f = 26 spread: 119.033
+f = 21 spread: 119.093
+f = 97 spread: 119.255
+f = 85 spread: 119.28
+f = 24 spread: 119.321
+f = 19 spread: 119.562
+f = 87 spread: 119.47
+f = 11 spread: 119.586
+f = 1 spread: 119.626
+f = 27 spread: 119.77
+f = 50 spread: 119.764
+f = 12 spread: 119.949
+f = 42 spread: 119.918
+f = 15 spread: 120.009
+f = 62 spread: 119.969
+f = 63 spread: 120.201
+f = 17 spread: 120.127
+f = 25 spread: 120.178
+f = 41 spread: 120.359
+f = 3 spread: 120.28

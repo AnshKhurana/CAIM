@@ -3,9 +3,10 @@
 -
 ../datasets/gnutella/mem.txt
 ../datasets/gnutella/com.txt
--
+../datasets/gnutella/seeds.txt
 simpath
 10
 50
 10000
-1e-1
+1e-3
+2

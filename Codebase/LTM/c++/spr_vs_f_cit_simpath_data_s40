@@ -1,0 +1,67 @@
+Reading parameters...
+Setup file: cit_simpath
+eta: 0.050000
+dataset_file b_file q_file mem_file groups_file
+../datasets/citation/edge_list.txt ../datasets/citation/base_weights.txt ../datasets/citation/marg_weights.txt ../datasets/citation/mem.txt ../datasets/citation/com.txt
+group_number K I
+35 50 10000
+save dir: ./results/simpath/cit_simpath/
+graph file: ../datasets/citation/edge_list.txt
+graph read
+Q file specified
+S: 120w79 111w18 110w500 39w25 76w4 107w27 28w5 65w4 23w11 37w30 0w10 74w41 20w31 94w73 36w9 19w10 93w35 1w11 8w388 45w224 91w11 7w27 44w13 81w48 10w54 47w5 84w14 13w206 46w11 51w25 58w7 66w11 67w220 68w7 69w30 27w73 106w14 70w1 17w25 96w29 
+I: 10000
+K: 50
+SEED SET SIZE: 40
+Init MC spread = 43.8002
+it = 0; spread = 43.8114
+f = 13 spread: 48.33
+f = 37 spread: 51.0774
+f = 44 spread: 52.8675
+f = 46 spread: 54.1391
+f = 30 spread: 55.1302
+f = 49 spread: 56.0444
+f = 66 spread: 56.6201
+f = 36 spread: 57.2336
+f = 53 spread: 57.6936
+f = 69 spread: 58.0189
+f = 33 spread: 58.3338
+f = 16 spread: 58.6299
+f = 80 spread: 58.8699
+f = 11 spread: 59.0432
+f = 6 spread: 59.2333
+f = 96 spread: 59.362
+f = 86 spread: 59.5459
+f = 22 spread: 59.6081
+f = 29 spread: 59.7668
+f = 97 spread: 59.7843
+f = 9 spread: 59.987
+f = 24 spread: 60.0557
+f = 18 spread: 60.1481
+f = 77 spread: 60.1605
+f = 62 spread: 60.2099
+f = 57 spread: 60.2231
+f = 34 spread: 60.2985
+f = 26 spread: 60.3166
+f = 76 spread: 60.4137
+f = 87 spread: 60.4242
+f = 19 spread: 60.4868
+f = 27 spread: 60.5187
+f = 50 spread: 60.4953
+f = 90 spread: 60.5958
+f = 94 spread: 60.5352
+f = 17 spread: 60.5569
+f = 51 spread: 60.5896
+f = 99 spread: 60.6216
+f = 40 spread: 60.7546
+f = 84 spread: 60.7543
+f = 64 spread: 60.7079
+f = 7 spread: 60.7441
+f = 0 spread: 60.7891
+f = 25 spread: 60.7825
+f = 79 spread: 60.7235
+f = 1 spread: 60.7973
+f = 3 spread: 60.8109
+f = 43 spread: 60.8643
+f = 65 spread: 60.826
+f = 81 spread: 60.9789

@@ -1,0 +1,174 @@
+g++ -O3 -std=c++11 -o exe ltm_no_transform.cpp helpers.cpp
+Reading parameters...
+Setup file: newvk_simpath
+eta: 0.000100
+dataset_file b_file q_file mem_file groups_file
+../datasets/cluster_vk/edge_list.txt ../datasets/cluster_vk/base_weights.txt ../datasets/cluster_vk/marg_weights.txt ../datasets/cluster_vk/mem.txt ../datasets/cluster_vk/com.txt
+group_number K I
+35 50 10000
+save dir: ./results/simpath/newvk_simpath/
+graph file: ../datasets/cluster_vk/edge_list.txt
+graph read
+Q file specified
+S: 655w36 644w5 258w11 257w9 20w9 254w8 190w14 214w8 609w8 177w10 572w19 176w18 334w6 167w29 280w25 124w14 50w7 324w29 157w38 236w1 394w8 46w17 283w5 6w15 199w33 594w3 14w3 52w7 122w9 289w38 58w5 61w3 224w14 206w5 540w19 76w10 471w4 33w19 107w25 82w86 119w12 635w10 301w3 459w16 641w15 307w15 465w18 481w17 326w35 484w16 642w1 339w15 375w5 376w2 121w6 455w3 54w7 388w7 390w17 411w7 323w13 490w18 431w61 432w6 590w9 100w33 434w6 446w8 285w87 452w24 531w7 478w7 500w53 245w17 579w14 505w26 587w18 127w45 628w3 630w19 
+I: 10000
+K: 50
+SEED SET SIZE: 80
+Init MC spread = 101.847
+Starting algo: simpath
+using eta: 0.0001
+Running to report results according to mode: 2
+no seg fault
+it = 0; spread = 104.043
+it = 1; F.size() 1; Time elapsed: 35.8637
+f = 99; spread = 144.9992
+Number of times the choice changed: 8
+it = 2; F.size() 2; Time elapsed: 75.2208
+f = 36; spread = 164.3506
+Number of times the choice changed: 10
+it = 3; F.size() 3; Time elapsed: 117.417
+f = 81; spread = 181.9708
+Number of times the choice changed: 10
+it = 4; F.size() 4; Time elapsed: 161.696
+f = 12; spread = 194.0632
+Number of times the choice changed: 11
+it = 5; F.size() 5; Time elapsed: 208.883
+f = 66; spread = 204.3016
+Number of times the choice changed: 8
+it = 6; F.size() 6; Time elapsed: 257.909
+f = 39; spread = 212.2712
+Number of times the choice changed: 9
+it = 7; F.size() 7; Time elapsed: 306.12
+f = 13; spread = 217.5563
+Number of times the choice changed: 9
+it = 8; F.size() 8; Time elapsed: 355.645
+f = 23; spread = 222.2340
+Number of times the choice changed: 12
+it = 9; F.size() 9; Time elapsed: 403.945
+f = 4; spread = 226.6599
+Number of times the choice changed: 13
+it = 10; F.size() 10; Time elapsed: 453.051
+f = 73; spread = 230.4536
+Number of times the choice changed: 13
+it = 11; F.size() 11; Time elapsed: 502.719
+f = 24; spread = 233.9231
+Number of times the choice changed: 13
+it = 12; F.size() 12; Time elapsed: 552.171
+f = 97; spread = 237.1848
+Number of times the choice changed: 10
+it = 13; F.size() 13; Time elapsed: 601.686
+f = 80; spread = 240.1527
+Number of times the choice changed: 9
+it = 14; F.size() 14; Time elapsed: 651.241
+f = 57; spread = 242.4991
+Number of times the choice changed: 11
+it = 15; F.size() 15; Time elapsed: 700.722
+f = 20; spread = 244.6838
+Number of times the choice changed: 11
+it = 16; F.size() 16; Time elapsed: 749.971
+f = 25; spread = 246.6618
+Number of times the choice changed: 11
+it = 17; F.size() 17; Time elapsed: 798.799
+f = 71; spread = 248.4084
+Number of times the choice changed: 10
+it = 18; F.size() 18; Time elapsed: 847.32
+f = 52; spread = 249.9570
+Number of times the choice changed: 7
+it = 19; F.size() 19; Time elapsed: 895.601
+f = 16; spread = 251.3900
+Number of times the choice changed: 9
+it = 20; F.size() 20; Time elapsed: 943.621
+f = 49; spread = 252.6662
+Number of times the choice changed: 11
+it = 21; F.size() 21; Time elapsed: 991.205
+f = 60; spread = 253.8148
+Number of times the choice changed: 10
+it = 22; F.size() 22; Time elapsed: 1038.33
+f = 37; spread = 254.8925
+Number of times the choice changed: 9
+it = 23; F.size() 23; Time elapsed: 1085.06
+f = 17; spread = 255.8477
+Number of times the choice changed: 11
+it = 24; F.size() 24; Time elapsed: 1131.49
+f = 58; spread = 256.7206
+Number of times the choice changed: 10
+it = 25; F.size() 25; Time elapsed: 1177.21
+f = 48; spread = 257.5787
+Number of times the choice changed: 9
+it = 26; F.size() 26; Time elapsed: 1222.62
+f = 47; spread = 258.3616
+Number of times the choice changed: 8
+it = 27; F.size() 27; Time elapsed: 1267.44
+f = 91; spread = 259.1006
+Number of times the choice changed: 8
+it = 28; F.size() 28; Time elapsed: 1312.44
+f = 42; spread = 259.7674
+Number of times the choice changed: 10
+it = 29; F.size() 29; Time elapsed: 1356.1
+f = 18; spread = 260.4215
+Number of times the choice changed: 10
+it = 30; F.size() 30; Time elapsed: 1398.77
+f = 64; spread = 261.0349
+Number of times the choice changed: 9
+it = 31; F.size() 31; Time elapsed: 1440.69
+f = 85; spread = 261.6381
+Number of times the choice changed: 8
+it = 32; F.size() 32; Time elapsed: 1482
+f = 19; spread = 262.2357
+Number of times the choice changed: 13
+it = 33; F.size() 33; Time elapsed: 1522.78
+f = 51; spread = 262.7949
+Number of times the choice changed: 11
+it = 34; F.size() 34; Time elapsed: 1562.91
+f = 53; spread = 263.3080
+Number of times the choice changed: 12
+it = 35; F.size() 35; Time elapsed: 1602.65
+f = 65; spread = 263.8108
+Number of times the choice changed: 12
+it = 36; F.size() 36; Time elapsed: 1641.82
+f = 94; spread = 264.2459
+Number of times the choice changed: 12
+it = 37; F.size() 37; Time elapsed: 1680.53
+f = 40; spread = 264.6503
+Number of times the choice changed: 13
+it = 38; F.size() 38; Time elapsed: 1718.61
+f = 83; spread = 265.0478
+Number of times the choice changed: 12
+it = 39; F.size() 39; Time elapsed: 1756.1
+f = 54; spread = 265.4367
+Number of times the choice changed: 12
+it = 40; F.size() 40; Time elapsed: 1793.45
+f = 21; spread = 265.8079
+Number of times the choice changed: 12
+it = 41; F.size() 41; Time elapsed: 1830.48
+f = 2; spread = 266.1759
+Number of times the choice changed: 11
+it = 42; F.size() 42; Time elapsed: 1867.49
+f = 44; spread = 266.5276
+Number of times the choice changed: 12
+it = 43; F.size() 43; Time elapsed: 1904
+f = 9; spread = 266.8713
+Number of times the choice changed: 11
+it = 44; F.size() 44; Time elapsed: 1939.32
+f = 56; spread = 267.1851
+Number of times the choice changed: 11
+it = 45; F.size() 45; Time elapsed: 1973.95
+f = 93; spread = 267.4758
+Number of times the choice changed: 10
+it = 46; F.size() 46; Time elapsed: 2007.93
+f = 38; spread = 267.7637
+Number of times the choice changed: 11
+it = 47; F.size() 47; Time elapsed: 2041.38
+f = 98; spread = 268.0384
+Number of times the choice changed: 10
+it = 48; F.size() 48; Time elapsed: 2074.26
+f = 84; spread = 268.3063
+Number of times the choice changed: 10
+it = 49; F.size() 49; Time elapsed: 2106.56
+f = 82; spread = 268.5574
+Number of times the choice changed: 8
+it = 50; F.size() 50; Time elapsed: 2138.29
+f = 22; spread = 268.7917
+Number of times the choice changed: 8
+Execution time = 2138.3 secs.
+Final spread value: 153.113

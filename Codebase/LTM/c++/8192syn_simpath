@@ -1,0 +1,12 @@
+../datasets/syn_8192/edge_list.txt
+../datasets/syn_8192/base_weights.txt
+../datasets/syn_8192/marg_weights.txt
+../datasets/syn_8192/mem.txt
+../datasets/syn_8192/com.txt
+../datasets/syn_8192/seeds.txt
+simpath
+35
+50
+10000
+1e-5
+2

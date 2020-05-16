@@ -133,7 +133,7 @@ int main(int argc, char const *argv[])
     }
     else
     {
-        read_seeds(seeds_file, S, 20); // only for VK network
+        read_seeds(seeds_file, S, 100); // only for VK network
     }
 
 
@@ -163,6 +163,7 @@ int main(int argc, char const *argv[])
 
     cout << "I: " << I << endl;
     cout << "K: " << K << endl;
+    cout<<"SEED SET SIZE: "<<S.size()<<endl;
     FILE *results_file; // variables for files
 
     FILE* eta_file;
@@ -252,9 +253,9 @@ pair<vector<int>, unordered_map<int, double> >  simpath(DiGraph G, edge_prob bas
 
     cout<<"using eta: "<<eta<<endl;
     // plotting parameters
-    int mode = 0; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
+    int mode = 2; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
     clock_t start, finish;
-    int report_interval = 2;
+    int report_interval = 1;
 
     FILE *time_file, *spread_file;
 
@@ -902,7 +903,7 @@ pair<vector<int>, unordered_map<int, double> >  greedy(DiGraph G, edge_prob base
     // plotting parameters
     int mode = 2; // 0 for normal, 1 for reporting MC spread and 2 for reporting time
     clock_t start, finish;
-    int report_interval = 2;
+    int report_interval = 1;
 
     FILE *time_file, *spread_file;
 

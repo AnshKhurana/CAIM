@@ -70,10 +70,14 @@ if __name__ == '__main__':
 	# file_type = sys.argv[2]
 
 
-	auc_vals = np.array([ 0.5727698194988937, 0.5923203969882388, 0.5838123726437189, 0.5762415010285576, 0.5554355483357896, 0.5167516519011217, 0.4713535962063935 ])
-	plot_data(np.linspace(-0.02, 0.1, 7), auc_vals, r'$\theta$', 'AUC', '')
+	# auc_vals = np.array([ 0.5727698194988937, 0.5923203969882388, 0.5838123726437189, 0.5762415010285576, 0.5554355483357896, 0.5167516519011217, 0.4713535962063935 ])
+	# plot_data(np.linspace(-0.02, 0.1, 7), auc_vals, r'$\theta$', 'AUC', '')
 
-	spread_k_gnu()
+	# spread_k_gnu()
+
+	# spread_simpath
+	# plot_data()
+
 	# if file_type == 't':
 	# 	data = clean_time_file(filename)
 	# 	print_coordinates(np.array(range(1,51)), data)
@@ -88,3 +92,4 @@ if __name__ == '__main__':
 
 
 	
+	pass

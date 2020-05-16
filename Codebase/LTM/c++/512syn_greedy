@@ -1,0 +1,12 @@
+../datasets/syn_512/edge_list.txt
+../datasets/syn_512/base_weights.txt
+../datasets/syn_512/marg_weights.txt
+../datasets/syn_512/mem.txt
+../datasets/syn_512/com.txt
+../datasets/syn_512/seeds.txt
+g
+35
+50
+10000
+1e-1
+2

@@ -1,0 +1,67 @@
+Reading parameters...
+Setup file: newvk_simpath
+eta: 0.000010
+dataset_file b_file q_file mem_file groups_file
+../datasets/cluster_vk/edge_list.txt ../datasets/cluster_vk/base_weights.txt ../datasets/cluster_vk/marg_weights.txt ../datasets/cluster_vk/mem.txt ../datasets/cluster_vk/com.txt
+group_number K I
+35 50 10000
+save dir: ./results/simpath/newvk_simpath/
+graph file: ../datasets/cluster_vk/edge_list.txt
+graph read
+Q file specified
+S: 127w45 122w9 124w14 50w7 157w40 46w17 20w9 54w7 6w15 14w3 52w7 58w5 61w3 76w10 100w33 33w19 107w25 82w87 119w13 121w6 
+I: 10000
+K: 50
+SEED SET SIZE: 20
+Init MC spread = 24.6179
+it = 0; spread = 24.629
+f = 99 MC spread: 30.884
+f = 81 MC spread: 33.226
+f = 36 MC spread: 34.617
+f = 12 MC spread: 36.3964
+f = 66 MC spread: 36.9303
+f = 13 MC spread: 37.1566
+f = 39 MC spread: 37.3741
+f = 23 MC spread: 38.1464
+f = 97 MC spread: 38.4227
+f = 73 MC spread: 38.6792
+f = 80 MC spread: 38.8474
+f = 20 MC spread: 38.9948
+f = 24 MC spread: 39.0995
+f = 4 MC spread: 39.179
+f = 57 MC spread: 39.2396
+f = 25 MC spread: 39.3434
+f = 17 MC spread: 39.2366
+f = 49 MC spread: 39.4275
+f = 52 MC spread: 39.5
+f = 71 MC spread: 39.4553
+f = 37 MC spread: 39.5355
+f = 60 MC spread: 39.5855
+f = 16 MC spread: 39.5608
+f = 47 MC spread: 39.554
+f = 94 MC spread: 39.8022
+f = 64 MC spread: 39.7381
+f = 91 MC spread: 39.7486
+f = 18 MC spread: 39.7478
+f = 58 MC spread: 39.7558
+f = 48 MC spread: 39.7811
+f = 85 MC spread: 39.7369
+f = 53 MC spread: 39.8183
+f = 83 MC spread: 39.7956
+f = 19 MC spread: 39.8453
+f = 38 MC spread: 39.8877
+f = 51 MC spread: 39.8533
+f = 44 MC spread: 39.8252
+f = 65 MC spread: 39.8652
+f = 40 MC spread: 39.8868
+f = 42 MC spread: 39.9138
+f = 2 MC spread: 39.8838
+f = 21 MC spread: 39.8501
+f = 93 MC spread: 39.8906
+f = 74 MC spread: 40.0741
+f = 35 MC spread: 40.0455
+f = 9 MC spread: 39.9421
+f = 88 MC spread: 40.1096
+f = 54 MC spread: 40.0759
+f = 98 MC spread: 40.0965
+f = 56 MC spread: 40.0348

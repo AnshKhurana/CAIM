@@ -1,0 +1,2 @@
+g++ -O3 -std=c++11 -o exe ltm_no_transform.cpp helpers.cpp
+makefile:2: recipe for target 'all' failed

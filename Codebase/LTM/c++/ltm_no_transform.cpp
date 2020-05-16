@@ -135,7 +135,7 @@ int main(int argc, char const *argv[])
     }
     else
     {
-        read_seeds(seeds_file, S, 20); // only for VK network
+        read_seeds(seeds_file, S, 60); // only for VK network
     }
 
 

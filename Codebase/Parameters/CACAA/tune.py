@@ -476,7 +476,7 @@ def tune_citation(args, test_perc=0.4):
     return args.topic_thr
 
 
-def tune_vk(args, test_perc=0.2):
+def tune_vk(args, test_perc=0.4):
     
 
     logfile = open(args.log_file, newline='')
@@ -513,12 +513,13 @@ def tune_vk(args, test_perc=0.2):
             actions_of[u] = set()
             actions_of[u].add(au)
         
+        action_table[(u, au)] = tu
         # if au in action_done_by.keys():
         #     action_done_by[au].add(u)
         # else:
         #     action_done_by[au] = set()
         #     action_done_by[au].add(u)
-        # action_table[(u, au)] = tu
+        
 
     print("Log preprocessing done.")
 
@@ -549,7 +550,7 @@ def tune_vk(args, test_perc=0.2):
         # testlogs is now a numpy array
 
         # to estimate auc, taking 100 points on the curve
-        for mu in tqdm(np.linspace(0, 1, 10)):    
+        for mu in tqdm(np.linspace(0, 1, 50)):    
             
             tpx = 0
             fpx = 0
@@ -564,13 +565,18 @@ def tune_vk(args, test_perc=0.2):
 
                 # set based on similarity
                 real_action_set = set() 
+                prob_of_a = dict()
                 for u in g.predecessors(v):
                     # list of permissible actions performed by u
-                    for au in actions_of[u]:
-                        if action_table[(u, au)] > t_v:
-                            continue                        
-                        real_action_set.append(real_action[au])  
-
+                    if u in actions_of.keys():
+                        for au in actions_of[u]:
+                            if action_table[(u, au)] > t_v:
+                                continue                        
+                            real_action_set.add(real_action[au])  
+                            if real_action[au] in prob_of_a.keys():
+                                prob_of_a[real_action[au]]  += b[(u, v)] + q[(u, v)]*get_alpha(user_features[v], topic_features[au])
+                            else:
+                                prob_of_a[real_action[au]]  = b[(u, v)] + q[(u, v)]*get_alpha(user_features[v], topic_features[au])
                     # action_set = []
 
                     # for a1 in action_list:
@@ -585,17 +591,19 @@ def tune_vk(args, test_perc=0.2):
 
                 # print("Formed action set for node: ", v)
                 # now they are unique actions
-                prob = 0.0
+                
                 for ra in real_action_set:   
-                    for u in g.predecessors(v):
-                        # get valid predecessors for the actions
-                        for au in actions_of[u]:
-                            if action_table[(u, au)] > t_v:
-                                continue
-                            if real_action[au] == ra:
-                                # using topic features of au since they are the same actions
-                                prob += b[(u, v)] + q[(u, v)]*get_alpha(user_features[v], topic_features[au])
-                    
+                    prob = 0.0
+                    # for u in g.predecessors(v):
+                    #     # get valid predecessors for the actions
+                    #     if u in actions_of.keys():
+                    #         for au in actions_of[u]:
+                    #             if action_table[(u, au)] > t_v:
+                    #                 continue
+                    #             if real_action[au] == ra:
+                    #                 # using topic features of au since they are the same actions
+                    #                 prob += b[(u, v)] + q[(u, v)]*get_alpha(user_features[v], topic_features[au])
+                    prob = prob_of_a[ra]
                     # summed up prob for a by all users and through all their actions
 
                     prob = min(1, max(prob, 0))
