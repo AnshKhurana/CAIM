@@ -1,0 +1,10 @@
+../datasets/toy/edge_list.txt
+../datasets/toy/edge_weights_aug.txt
+-
+../datasets/toy/mem.txt
+../datasets/toy/com.txt
+-
+simplus
+22736114
+5
+10000

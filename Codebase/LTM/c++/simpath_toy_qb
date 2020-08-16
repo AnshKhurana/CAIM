@@ -1,0 +1,10 @@
+../datasets/toy/edge_list_cleaned.txt
+../datasets/toy/edge_weights_aug.txt
+-
+../datasets/toy/mem.txt
+../datasets/toy/com.txt
+-
+simpath
+22736114
+5
+10000

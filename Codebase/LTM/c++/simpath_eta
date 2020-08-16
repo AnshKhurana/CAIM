@@ -1,0 +1,23 @@
+Results for eta:
+eta: 0.100000
+Execution time  = 1343.020578 secs.
+eta: 0.000100
+Execution time  = 1388.436463 secs.
+eta: 0.010000
+Execution time  = 1467.429047 secs.
+eta: 0.001000
+Execution time  = 1459.698156 secs.
+eta: 0.000001
+Execution time  = 1458.843719 secs.
+eta: 0.000010
+Execution time  = 1490.098117 secs.
+eta: 0.000000
+Execution time  = 1726.023603 secs.
+eta: 0.001000
+Execution time  = 5873.933937 secs.
+eta: 0.001000
+Execution time  = 5894.504392 secs.
+eta: 0.001000
+Execution time  = 7409.820546 secs.
+eta: 0.001000
+Execution time  = 12500.658699 secs.

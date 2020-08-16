@@ -1,0 +1,12 @@
+../datasets/citation/edge_list.txt
+../datasets/citation/base_weights.txt
+../datasets/citation/marg_weights.txt
+../datasets/citation/mem.txt
+../datasets/citation/com.txt
+../datasets/citation/seeds.txt
+simpath
+35
+50
+10000
+0.05
+2

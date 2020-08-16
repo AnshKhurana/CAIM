@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "iostream": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "ostream": "cpp",
+        "vector": "cpp"
+    },
+    "python.pythonPath": "/Users/ansh/anaconda3/envs/aiml/bin/python"
+}

@@ -1,0 +1,10 @@
+../datasets/vk/edge_list.txt
+../datasets/vk/edge_weights_c3
+-
+../datasets/vk/mem.txt
+../datasets/vk/com.txt
+../datasets/vk/seeds.txt
+simplus
+10
+10
+10000

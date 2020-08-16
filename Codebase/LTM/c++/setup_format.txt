@@ -1,0 +1,10 @@
+<path to edge-list>
+<path to weights b>
+<path to weights q> // use '-' until saved separately
+<path to memberships>
+<path to com-wise file>
+<path to seeds file> // use '-' if you want to select by group_number else specify number of seeds
+<name of algorithm> - g/simpath/rr
+<group to be used as seed set> / <size of initial seed set>
+<Number of features to be selected>
+<Number of MC simulations>

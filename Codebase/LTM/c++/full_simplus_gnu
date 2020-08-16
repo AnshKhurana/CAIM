@@ -1,0 +1,10 @@
+../datasets/gnutella/edge_list.txt
+../datasets/gnutella/edge_weights.txt
+-
+../datasets/gnutella/mem.txt
+../datasets/gnutella/com.txt
+-
+simplus
+10
+50
+10000
